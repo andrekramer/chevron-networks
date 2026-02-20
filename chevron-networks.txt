@@ -1,0 +1,211 @@
+
+Andre's Baccalaureus in Arte Ingeniaria
+
+
+Notes on Chevon Networks
+A novel 2×2 Operator Neural Network Architecture for 2-channel Oppositional Meaning
+Andre Kramer
+Feb 20, 2026
+
+
+
+
+(Fig 1. Carved lintel stone with chevrons from the chamber of the Newgrange passage grave. It can be read as comparing vanila neural networks (top right) to dual chevron nets.)
+
+I’ve been thinking about a new form of artificial neural network—one designed to represent and transform differences directly, rather than treating “difference” as something that only emerges after layers of scalar weights and nonlinearities. This idea is an outgrowth of my longer exploration of meaning and self as a response to deep neural network AI development. In a sense, the project has become recursive: I started by watching neural networks reshape our theories of cognition, and I’ve ended up asking what kind of network architecture might better reflect the dynamics of interpretation, tension, selection, and retention that we associate with minds. So: we are recursing.
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
+
+What follows are my initial thoughts and working notes on what I’m calling chevron networks: a small, structured upgrade to the standard neuron-and-weight picture. The wager is that by giving the network an explicit language for opposites, polarity, and relevance—and by letting connections act as tiny transforms rather than mere scalars—we get a more fertile ground for experimenting with self-learning agents that can evolve slowly, retain structure, and avoid the worst category errors of purely associative systems.
+
+Yes, it’s a wild claim. But sometimes the only way to find the next small lever is to try a slightly wild one and see where it snaps.
+
+A chevron is the simplest “two-armed” geometry: two segments joined at a vertex with an internal acute angle, plus an overall orientation in the plane. In its default form the arms are equal length, the internal angle is small (e.g., ≈30∘), and the chevron is oriented horizontally—but in general the shape carries four degrees of freedom (two arm lengths, the internal angle, and a global orientation angle). We use this geometry as a motivating primitive for a new network substrate.
+
+The Hypercube of Opposites models meaning as a single scalar “tension” along an oppositional axis; chevrons generalize this by allowing two coupled values to flow—e.g., a complex number, or a 2-vector/tuple capturing phase and magnitude, belief and uncertainty, evidence and inhibition. Operationally, this corresponds to networks whose activations are 2-vectors and whose connections are 2×2 operators (“chevron nodes”), extending the expressive power of standard deep neural networks while remaining plausibly closer to biological organization (where signals are rarely single scalars and where relative phase, error, and gating matter).
+
+
+
+
+(Fig 2. Chevons in the default initial position in a non-sparse network)
+
+Chevron nets therefore extend our earlier ideas on oppositional meaning and tension into a concrete experimental architecture: a minimal, natural generalization of DNNs that supports richer internal degrees of freedom, and that may serve as a substrate for new AI experiments in robustness, learning-from-error, and meaning-making.
+
+
+
+
+(Fig 3. Chevrons in rotated and extended orientations after updating. Some seem to have been caught in the act of mutation and gained another arm. Interesting but for now, let’s stick to the rules below.)
+
+The Chevron Network Core
+Node state: each concept/node i carries a 2-vector
+
+
+xi=[xi+
+
+xi−]
+
+(“two opposites” channels)
+
+Edge (chevron) operator: each directed link j→i is a 2×2 matrix
+
+
+Wij=[w++ w+−
+
+w−+ w−−]
+
+(four corner couplings; complex scalar is a constrained special case)
+
+Each chevron edge applies a 2×2 transform to the sender’s two-channel state (optionally gated by relevance), producing a two-channel message; nodes simply sum these incoming messages (plus inertia and input) and pass the result through a nonlinearity before broadcasting again to the next layer or recurrent step.
+
+Update (dense or message passing):
+
+
+xi ← σ ⁣((1−λ)xi  +  ∑(j∈N(i)) (gij(t) Wij xj  +  Ii(t)))
+
+λ: inertia/leak (retention)
+
+gij(t)∈[0,1]: relevance gate (attention-like routing)
+
+Ii(t): input clamp / sensory drive
+
+This is the single “engine.”
+
+A useful feature of the chevron form is that the 2×2 operator Wij gives a surprising amount of design freedom without changing the outer learning loop.
+
+In the update above: xi←σ ⁣((1−λ)xi + ∑(j∈N(i)) (gij(t) Wij xj+Ii(t))),
+
+each node state is two-channel, and each connection is a small transform rather than a single scalar weight. This means we can implement different internal “micro-rules” by choosing how Wij mixes channels (within-channel reinforcement, cross-channel veto/disinhibition, rotation-like phase mixing as a constrained special case) and by letting the gate gij(t) depend on a second-channel quantity such as relevance, precision, or surprise. In that sense, a chevron edge can be viewed as a compact, local analogue of the R-rule: two streams combined by gating and phase/polarity-sensitive mixing, with learning driven by a temporal-difference signal. A natural next step is to introduce two time-scales—fast updates for the gating/eligibility channel and slower consolidation for the core couplings—so adaptation happens mainly through modulation and TD-style correction, while the retained structure evolves cautiously rather than being overwritten.
+
+
+
+
+Figure / diagram caption:
+Each node j carries a two-channel state xj=[xj+,xj−]. A directed chevron edge j ⁣→ ⁣i stores a 2×2 operator Wij (optionally gated by relevance gij(t) and sends a two-channel message mij=gij(t) Wijxj​. Each node i sums incoming messages (plus inertia and any input drive) and applies a nonlinearity before broadcasting its updated two-channel state to downstream chevrons.
+
+Interpretations of the Same 2-Vector
+Evidence / polarity channels (E/I-like): (x+,x−) = pro vs con.
+Collapse to belief via ℓ=x+ − x−, p=σ(ℓ).
+
+Belief + uncertainty: (μ,u) where u is confidence/precision (or log ⁡σ).
+Useful for “grain choice” and “variety absorbs variety” as explicit uncertainty.
+
+Amplitude-like (interference): treat (x+,x−) as a 2D amplitude plane; readout can be ∣x∣ or ∣x∣^2.
+Not QM-claims—just cancellation/constructive combination.
+
+Value + relevance (attention / surprise)
+
+Base + carrier (reference signal)
+
+Proportion / ratio (composition)
+
+a complex number
+
+…
+
+Channel 1 carries content (value/evidence); Channel 2 carries participation (relevance/precision), and a chevron edge is a 2×2 operator that can mix them (e.g., relevance can inhibit content; content can recruit relevance).
+
+Ratios let us generalize “tension” beyond a single real number. Instead of storing only p∈[0,1], each concept can carry a two-channel mass (a,b), so the tension becomes a proportion p=a / a+b, or, more usefully, a signed log-ratio ℓ=log⁡ a/ b. This makes relations compositional: ratios multiply cleanly, and log-ratios add, so chains of constraints naturally accumulate into meaning rather than remaining isolated scalars. In a chevron network, we can propose ratio-links between any two concepts (as 2×2 operators that transform (a,b) across connections), then let relevance gating and inertial VSR decide which ratios are stable enough to retain—turning “any relation is possible” into “only useful relations survive.”
+
+A final, optional interpretation is affect-like modulation: channel two can represent salience/urgency/valence signals that gate attention and plasticity. We mean this purely functionally—as control and prioritization—not as a claim about machine experience.
+
+Breakout: can chevrons be trained with backprop?
+Yes. At a minimum, a chevron layer is just a differentiable computation: two-channel node states, a 2×2 transform per edge, optional gating, a nonlinearity, and (if desired) recurrence. That means it can be trained end-to-end with ordinary gradient descent/backprop exactly like other neural layers. In practice, the 2×2 structure can be implemented as block-sparse matrix multiplication or message passing, both of which are standard autodiff workloads. We can also partially freeze weights (e.g., keep a stable core and learn only cross-couplings or gates), or constrain 2×2 blocks to special cases (rotation+scale) to make early experiments easier. None of this proves chevrons are better—but it does mean the architecture is testable with today’s tooling, and we can compare it fairly against familiar baselines before exploring more biologically oriented learning rules.
+
+Backprop is the baseline; the longer-term interest is whether local, gated, multi-timescale updates—VSR/TD/eligibility-style—can recover similar capability while improving robustness and interpretability, and ultimately leverage the chevron structure more fully than a generic end-to-end gradient ever would.
+
+Inertial VSR Mapping
+Inertia/Retention: the leaky carry-forward (1−λ)xi​, plus stored Wij and stable adjacency.
+
+Variation: inject proposals/perturbations (new edges, modified Wij, noise in x, exploratory gates g).
+
+Selection: multiplicative reweighting via gates/compatibility (high gij​ edges dominate); prune weak contributors; normalize activity budget.
+
+Retention (again): consolidate high-utility chevrons (strengthen/keep), decay or delete the rest.
+
+Stepwise Tests (Capabilities)
+Category-veto / avoid category errors (distribution shift):
+Show gated 2×2 chevrons resist “shortcut features” better than scalar baselines.
+
+Holographic-ish associative recall:
+Store many key–value bindings; test capacity + graceful degradation; show 2×2 cross-coupling improves interference control.
+
+Attention-like contextual routing:
+Context selects which relations apply; gates gij(t) implement routing akin to attention, with interpretability (“which chevrons lit up”).
+
+Implement either as:
+
+block-sparse matrix ops (fast first approximation), or
+
+explicit message passing (ID/associative-memory native form).
+
+Recurrence comes “for free” in a 2-channel chevron
+Once each concept carries a 2-vector (x+,x−) and each link is a 2×2 chevron operator, recurrent dynamics aren’t an add-on — they’re the default. A loop can live within a channel (content feeding content), across channels (content recruiting relevance, relevance gating content), or mixed (continuous circulation between channels). Diagonal 2×2 couplings give two largely independent recurrent streams, while off-diagonals create cross-coupled motifs: inhibition/veto, disinhibition, gain control, and even oscillation-like alternation. This gives a clean way to separate (or intentionally blend) “what is being represented” with “whether it should participate now” — e.g. value + relevance, belief + precision, or signal + eligibility trace — while keeping all updates local and compatible with an inertial Variation–Selection–Retention loop.
+
+Thesis and antithesis in the encoding
+A simple but important consequence of chevrons is that a distinction can be represented without immediately collapsing it. Instead of forcing every concept into a single scalar activation, each node carries a two-channel state:
+
+x=[x+
+
+x−]
+
+This can be read directly as thesis vs antithesis (or a proposition and its negation): the system can keep “support for P” and “support for ¬P” alive at the same time, letting context and constraints act on both channels in parallel.
+
+To recover a conventional “belief,” we can collapse the pair when needed:
+
+ℓ = x+ − x−⇒ p = σ(ℓ)
+
+where the sign of ℓ gives the direction of the stance (thesis vs antithesis) and its magnitude gives strength. Meanwhile the sum,
+
+c = x+ + x−
+
+can be treated as commitment/salience: a measure of how active or consequential the distinction is, even when the net stance is near zero.
+
+This encoding matters because it allows the network to do something ordinary scalar networks struggle with: it can represent ambivalence and contradiction explicitly. Rather than averaging away conflict, chevrons preserve it as structure. Over time, gating and 2×2 mixing can select, suppress, or retain one side—supporting a more “dialectical” form of learning in which hypotheses compete, co-exist, and only gradually collapse into decisions when the evidence warrants it.
+
+Tension Layers as Chevron Networks
+Tension Layers (as we previously described in this substack) can be implemented naturally as a Chevron network by treating each tension axis as a two-channel “opposites” state (+,−) (e.g., p vs 1−p, or evidence-for vs evidence-against). The Tension Layer’s core update—inertial retention plus uncertainty-scaled correction toward a proposed value—becomes a local chevron state update, while the layer’s salience/attention mechanism becomes an explicit gating field over chevrons. Stacking Tension Layers corresponds to composing chevron layers; adding sparse 2×2 chevron couplings between axes provides a principled upgrade path for semantic relations, inhibition/veto (category-error control), and attention-like routing—without changing the underlying inertial VSR dynamics.
+
+Proposition (Chevron Actor–Critic coupling):
+A chevron network can implement Actor–Critic learning intrinsically by representing each unit’s state as a two-channel [a,c] vector and each connection as a 2×2 mixing operator, with tension defined by actor–critic disagreement and used to gate selection, learning, and exploration.
+
+In a 2×2 chevron, we can explicitly separate what flows from what learns. One channel can carry the semantic/content signal, while the other carries a training-side quantity—relevance, surprise, uncertainty, or an eligibility trace—that gates when and where learning occurs. This also makes partial plasticity straightforward: each chevron edge has four couplings {w++,w+−,w−+,w−−}, and we can freeze any subset during training. For example, learning only the diagonals preserves two largely independent streams; learning only the off-diagonals turns the second channel into a learned veto/disinhibition mechanism (category-error control); constraining the 2×2 to the complex “rotation+scale” form recovers a phase-like special case. In short, chevrons let us treat wiring motifs as retained structure while allowing controlled variation in specific couplings—an engineered form of inertial VSR.
+
+Any setting where you keep a core set of weights fixed (or only slowly varying)—continual learning, agent “personality”/skills retention, world-model stability—can benefit from dual channels and 2×2 chevrons. The reason is simple: a chevron doesn’t just scale a signal, it can separate and transform two coupled streams. One channel can carry the stable semantic/content flow while the other carries a plastic, context-sensitive control signal—relevance, surprise, uncertainty, eligibility—so adaptation happens by gating and cross-coupling rather than overwriting the core representation. Practically, this also lets us freeze (or slow) specific parts of the 2×2 operator: keep the diagonals as a retained backbone, let off-diagonals learn category veto and routing; or keep cross-couplings stable while the gain terms adapt. That combination—slow core + fast contextual modulation—is the promise to explore next, because it offers a plausible path to continual learning without catastrophic drift: retention is built into the wiring, and variation/selection operates in a controlled secondary channel.
+
+The R-rule already contains the ingredients we want: gating, phase, and phase difference. This is clearest in its algebraic form (link), where the update is explicitly modulated rather than applied uniformly. In the rotor form (link), interference and secondary, rotation-like effects are also implicated—but any concrete implementation has to actually realize those dynamics, not just gesture at them. This is where the chevron network becomes useful. By treating each concept as a two-channel state and each connection as a small operator, the chevron model lets phase-like interactions be expressed and manipulated directly (mixing, vetoing, rotating, and gating), rather than being squeezed into a single scalar weight. We see this as a more fertile experimental ground for building self-learning agents: fast local updates and attention-like selection on top of a slowly evolving, inertial core that can accumulate structure without becoming brittle.
+
+We might say that much of modern machine learning is still living in the age of direct current: scalar activations pushed forward, scalar errors pushed back, and a largely one-way flow of influence. The chevron perspective invites a gentler upgrade—not a revolution, but an added degree of freedom—something closer to alternating current, where phase and phase difference matter as much as magnitude. If you’ve followed my Substack explorations of cycling, recurrence, and updates across a space of opposites ( and my Hypercube of Opposites book), this won’t sound exotic: oppositional systems naturally generate oscillation, interference, inhibition, and resonance-like stabilization. I’m certainly not claiming Tesla-level insight over Edison; the analogy is meant as a prompt, not a boast. But it’s a useful prompt: if we want agents that learn by iterating, revising, and rebalancing tensions over time, then giving the machinery an explicit notion of polarity/phase—and a structure that can rotate and gate those signals—may be an unusually productive line of experimentation.
+
+Multiple time-scales: temporal difference learning, fast/slow channels, and memory
+A natural advantage of chevrons is that they invite two (or more) time-scales without adding much machinery. Temporal-difference learning already depends on time: a fast prediction is compared to a slightly delayed outcome, and the difference drives an update. In our framing, the two channels can carry these roles explicitly. One channel can be fast—the immediate, high-bandwidth “A” pathway (rapid action prediction, quick eligibility changes). The other can be slow—a stabilizing “N” pathway (baseline norms, constraint, longer-horizon value, or slow-moving uncertainty/precision). This maps cleanly onto the R-rule intuition of fast A versus slower N, and also onto short-term versus long-term memory: fast dynamics explore and react; slow dynamics consolidate and resist drift.
+
+Practically, this is implemented by giving the channels different leak/retention constants (and optionally different learning rates): the fast channel updates quickly and forgets quickly; the slow channel updates cautiously and persists. Cross-coupling between channels then becomes a simple mechanism for credit assignment and control: fast surprise can open gates and write tentative structure, while the slow channel decides what is retained as the agent’s enduring model. This multi-rate design is a direct way to build inertial VSR into TD-style learning: variation happens in the fast stream, selection is gated by prediction error and relevance, and retention is expressed as slow consolidation into the core.
+
+Possible alternative implementations
+Chevron networks don’t have to live purely in conventional digital silicon. Because the core primitive is a two-channel state acted on by a 2×2 transform, they map naturally onto several “physics-first” substrates. A near-term route is hybrid photonics: interferometric 2×2 mixers (phase + magnitude) do the linear chevron coupling efficiently, while electronics provides nonlinearities, gating, and slow selection/retention control. An equally plausible route is analog / in-memory computing, where each 2×2 chevron can be realized as four conductances (the four corner couplings), with the second channel used as gain/eligibility gating. Beyond standard CMOS, emerging devices—memristive elements, phase-change, ferroelectric, or spintronic components—could encode slowly evolving “core” couplings and local plasticity. At this early stage, the point isn’t to commit to one substrate (optics for example), but to note that chevrons are unusually hardware-friendly: they’re small operators with an explicit role for phase/polarity, recurrence, and controlled plasticity.
+
+
+
+
+Biological overlap: opponent channels, 2×2 motifs, and holographic echoes
+Opponent channels are already a biological primitive. Early sensory systems often represent differences directly rather than absolute quantities. The retina and early vision use ON/OFF pathways and opponent encodings (in luminance and colour), which is conceptually very close to a two-channel chevron state (+,−)(+,-)(+,−): not “a value,” but “a value as a contrast.” The same pattern appears more broadly in action selection circuits, where control is naturally expressed as antagonistic pushes and pulls (e.g., Go/No-Go style dynamics in basal ganglia). In other words: two-channel representations are not an exotic choice—they’re a common way biology turns a world of continuous inputs into actionable distinctions.
+
+2×2 mixing is the conventional way to write local circuit dynamics. If you look at classic neural population models, the minimal unit is often an excitatory population coupled to an inhibitory population. The effective connectivity is literally a 2×2 matrix: E ⁣→ ⁣E, I ⁣→ ⁣E, E ⁣→ ⁣I, I ⁣→ ⁣I. That is exactly the “four-corner” chevron operator. It also lines up with everyday cortical motifs: inhibition is not merely “negative weight,” but gain control, normalization, and veto. A 2×2 edge/operator lets us express these motifs explicitly—reinforcement, suppression, cross-coupling, disinhibition—rather than forcing everything into a single scalar synapse.
+
+There are also ‘holographic’ and phase-like echoes in mainstream neuroscience. If by holographic we mean “a reference signal plus an encoded signal,” then oscillatory dynamics provide a grounded analogue: spikes are often interpreted relative to an ongoing rhythm (a phase reference), and timing relationships can carry structured information. Interference-like effects show up naturally when multiple oscillatory influences combine, and phase relationships can stabilise or destabilise patterns over time. In cognitive modelling, holographic associative memory ideas (e.g., binding/unbinding via superposition and correlation) provide another nearby language for “reference + payload,” and chevrons can act as a minimal operator substrate for exploring those mechanisms without committing to any one metaphysics.
+
+The takeaway: chevrons are not “biology in a box,” but they rhyme with several conventional biological themes: opponent coding, E/I-style coupling motifs, normalization/veto control, and phase-referenced representations. That makes them a plausible structural bridge between semantics (differences, relations, relevance) and dynamics (recurrence, gating, resonance) in a way that standard scalar-weight networks make harder to express directly.
+
+AI Safety Angle
+I don’t want to overclaim the AI-safety implications of any of this. A new architectural pattern is not an alignment solution, and nothing here guarantees benign behaviour. The motivation is narrower and more engineering-like: reliability and robustness. Carrying an explicit reference point in the computation—whether as a second channel for negation, uncertainty/precision, relevance gating, or a stable baseline—gives the system a built-in way to represent “I might be wrong,” “this distinction may not apply,” or “here is the counterweight.” That is less about values and more about reducing familiar failure modes: brittle generalisation, category errors, runaway feedback, and overconfident inference. And it may help with non-functional requirements we can actually test: traceability (which edges/chevrons were active), plus a more direct representation of opposition, grounding/baseline, and even valence-like modulation as an explicit internal variable rather than an emergent side-effect.
+
+So the hope is modest: chevrons may offer a convenient handle for “non-functional requirements” we already care about—interpretability (which edges/chevrons were active), controllable plasticity (what is fixed vs learnable), and graceful degradation under distribution shift. If the architecture can make those properties easier to test and enforce, that’s valuable even if it never becomes a dominant paradigm. And if it doesn’t, the experiments will still have been worth running—because they’ll tell us, quickly and concretely, where the idea breaks.
+
+This may read like a list of potential uses for an unproven architectural pattern. That’s fair. My claim is narrower: the chevron idea feels novel enough, and concrete enough, to be worth putting on the table for direct experimentation. And it’s the kind of experimentation that doesn’t require frontier-scale training runs or an arms-race mindset—many of these conjectures can be tested quickly with small models, toy tasks, and careful ablations. In fact, at a time when leading coding models can already help implement and iterate on these prototypes, it should be possible to prove or disprove the core ideas without adding much heat to an already overheating AI race (Timing is everything!). If any of this resonates and you’d like to contribute—analysis, implementations, or alternative framings—please get in touch.
+
+I’ll put the text for this article and any code on github (here).
+
+Andre with ChatGPT-5.2,
+
+February 2026
+
