@@ -209,3 +209,16 @@ Andre with ChatGPT-5.2,
 
 February 2026
 
+23/2 Updates
+
+Weight packing
+One practical sweet spot is to treat each chevron edge as an atomic 2×2 operator and pack its four weights as 4×FP8 = 32 bits. That gives excellent memory locality: one aligned 32-bit fetch brings in a complete “micro-transform” (plus its cross-couplings), which is attractive for bandwidth-bound inference. The trade-off is that a dense chevron layer has 4× the parameters and ~4× the multiply-adds of an equivalent scalar layer at the same width. Even with FP8, that means weight memory is ~2× larger than a vanilla FP16 layer (because 4×1 byte vs 1×2 bytes per connection), though it can still be smaller than higher-precision baselines and much more cache-friendly. Performance then hinges on kernel quality: if the chevron ops compile down to batched/block-sparse GEMMs that hit FP8 tensor cores, the extra arithmetic can be clawed back; if the implementation devolves into irregular gathers and dequant overhead, FP8 may not help much. Either way, it’s testable: a good first benchmark is to run a chevron-MLP/chevron-attention toy (plus category-veto OOD test) and measure not just accuracy/robustness, but also effective throughput and memory bandwidth under FP16 vs FP8 packing.
+
+Chevrons as micro-attention and micro-crossbars
+A useful way to picture a chevron network is as a fabric of tiny routing elements rather than a pile of scalar synapses. Each edge doesn’t just “weight” a signal; it routes and mixes a two-channel state from source to target. If a node carries x=[x+,x−], then a chevron connection applies a 2×2 operator WWW so that each output channel receives a controlled blend of the two inputs. In networking terms, this looks like a miniature 2×2 crossbar switch: four crosspoints (w++,w+−,w−+,w−−) determine how much of each input channel is sent to each output channel. That makes it natural to interpret diagonal terms as reinforcement within a pole, and off-diagonals as cross-coupling motifs such as veto, disinhibition, or “phase-like” rotation/mixing in the opposition plane.
+
+This same picture also connects directly to attention. Attention is fundamentally a policy for which connections participate right now and how strongly; chevrons make this explicit with a gate gij(t) multiplying the edge transform. The message along an edge is mij=gij(t) Wijxj​: the gate plays the role of a context-dependent relevance weight, while the 2×2 operator plays the role of a local value transform that can encode structured interaction (reinforce, suppress, rotate, or normalize) rather than a single scalar scaling. In other words, a chevron edge is a small, interpretable “micro-attention block”: it decides whether a relation is active and, if active, how it routes two streams of information.
+
+This framing is useful because it suggests an engineering sweet spot: a slowly varying core of chevron operators (a stable routing fabric) combined with fast, context-driven gating (dynamic scheduling). That is exactly the kind of separation we want for continual learning and inertial VSR: retain durable structure in the operator backbone, while letting attention-like gates and short-timescale traces adapt quickly to novelty and task demands.
+
+
