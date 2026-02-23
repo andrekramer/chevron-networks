@@ -2,7 +2,7 @@
 Andre's Baccalaureus in Arte Ingeniaria
 
 
-Notes on Chevon Networks
+Notes on Chevron Networks
 A novel 2×2 Operator Neural Network Architecture for 2-channel Oppositional Meaning
 Andre Kramer
 Feb 20, 2026
@@ -27,7 +27,7 @@ The Hypercube of Opposites models meaning as a single scalar “tension” along
 
 
 
-(Fig 2. Chevons in the default initial position in a non-sparse network)
+(Fig 2. Chevrons in the default initial position in a non-sparse network)
 
 Chevron nets therefore extend our earlier ideas on oppositional meaning and tension into a concrete experimental architecture: a minimal, natural generalization of DNNs that supports richer internal degrees of freedom, and that may serve as a substrate for new AI experiments in robustness, learning-from-error, and meaning-making.
 
