@@ -1,0 +1,99 @@
+Chevron Networks — WordNet Antonyms (PyTorch / Colab) — Notebook Description
+
+This notebook is a Phase 1 starter project for experimenting with Chevron Networks: a simple neural architecture where each hidden unit is treated as a two-channel state (a local “opposites” pair), and each connection applies a 2×2 transform rather than a single scalar weight.
+
+What it does
+
+We build a small supervised dataset from WordNet antonym pairs and train two comparable models:
+
+Vanilla MLP baseline
+A standard embedding + MLP that sees concatenated word embeddings 
+[
+𝑒
+(
+𝑤
+1
+)
+∥
+𝑒
+(
+𝑤
+2
+)
+]
+[e(w
+1
+	​
+
+)∥e(w
+2
+	​
+
+)].
+
+Chevron-MLP
+The same overall pipeline, but with chevron layers: hidden activations are grouped into pairs (2 channels per group), and each layer uses block 2×2 weights to allow within-channel reinforcement and cross-channel mixing (e.g., veto/disinhibition or rotation-like mixing as a constrained special case).
+
+Tasks / labels
+
+Match (antonym detection): given 
+(
+𝑤
+1
+,
+𝑤
+2
+)
+(w
+1
+	​
+
+,w
+2
+	​
+
+), predict whether the pair is an antonym pair.
+
+Polarity / orientation (optional): for true antonym pairs, predict whether the input order is “canonical” vs swapped (a minimal proxy for thesis/antithesis orientation).
+
+Why this notebook exists
+
+The aim is to test a narrow claim in the smallest possible setting:
+
+Does a two-channel representation with 2×2 mixing learn differences/oppositions more cleanly than a scalar-weight network, under the same data and training loop?
+
+This phase deliberately avoids attention, large corpora, and heavy hardware. It’s meant to be fast, falsifiable, and easy to extend.
+
+What to compare
+
+The notebook reports:
+
+match accuracy (antonym vs non-antonym)
+
+polarity accuracy (on true antonyms)
+
+(recommended next) swap-consistency metrics: does swapping inputs preserve match while flipping polarity?
+
+Extension ideas (next steps)
+
+add simple gating 
+𝑔
+𝑖
+𝑗
+(
+𝑡
+)
+g
+ij
+	​
+
+(t) as relevance/attention over edges or groups
+
+freeze parts of the 2×2 blocks (diagonals vs off-diagonals) to test which couplings matter
+
+constrain 2×2 blocks to the “rotation+scale” (complex) special case
+
+move from pair classification to small graph/message-passing over a learned opposition graph
+
+Dependencies: PyTorch, NLTK (WordNet).
+Runs on: free Colab CPU/GPU (Phase 1 scale).
