@@ -1,0 +1,10 @@
+Phase 1: Training models on 'Base Concept'...
+Phase 2: Environment changes. Learning 'Category Veto'...
+
+Phase 3: Testing CATASTROPHIC FORGETTING (Back to Phase 1 Data)...
+
+--- CATASTROPHIC FORGETTING RESULTS ---
+Baseline MLP Retained Base Skill: 84.4%
+Chevron Net  Retained Base Skill: 100.0% (Was 100.0% before Phase 2)
+
+SUCCESS: Chevron structurally eliminated catastrophic forgetting (+15.6%).
