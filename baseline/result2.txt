@@ -1,0 +1,11 @@
+What was trained: All four models saw only two sign patterns during training — (+,+) and (-,-) — both of which have label=1 (positive product). The training set contains zero negative examples.
+
+In-distribution (left bar chart): All models score 1.000. This means every model perfectly learned to classify the training patterns. But since all training labels are 1, this could be achieved by the trivial rule “always predict positive” — no compositional reasoning required.
+
+OOD (right bar chart): All models score 0.000. The test patterns are (+,-) and (-,+), both with label=0. Every model predicted label=1 for all of them — the exact wrong answer every time. Scoring 0.0 rather than 0.5 tells you the models aren’t confused or random; they’re confidently wrong. They learned “predict positive always” and applied it to a situation where the correct answer is always negative.
+
+What this means: No model learned the compositional rule s1 × s2. All four — chevron full, chevron diag, both MLPs — learned the same degenerate shortcut that the training data permitted. The architecture made no difference because the task didn’t require any real reasoning to solve.
+
+The baseline conclusion: At chain-length 3 with same-sign-only training, the task is too easy and too degenerate to discriminate between architectures. All models collapse to the same trivial solution. This is a clean, honest null result — and it tells you exactly what the next experiment needs to fix.
+
+Claud Sonnet 4.6
