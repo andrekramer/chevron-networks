@@ -1,6 +1,5 @@
 Experiment Note: Structural Elimination of Catastrophic Forgetting via 2×2 Chevron Routing
-Date: February 24, 2026
-Author: Andre
+
 Topic: Continual Learning, Category Veto, and Inertial VSR
 1. The Hypothesis
 Standard Artificial Neural Networks (MLPs) suffer from catastrophic forgetting. When the environment changes and a network must learn a new rule exception (a "Category Veto"), backpropagation overwrites the globally tangled scalar weights, destroying the core foundational knowledge.
