@@ -1,0 +1,113 @@
+Andre's Baccalaureus in Arte Ingeniaria
+
+
+Chevron Networks - Early first experiments
+Small scale testing of the 2 channel, 2 by 2 operator artifical neural networks
+Andre Kramer
+Mar 04, 2026
+
+
+
+
+Chevron networks were introduced in my last post on this substack. What follows are some early experimental results, now checked into the chevron-networks GitHub repository. One striking side note is how much of this kind of exploratory AI engineering can now be done with AI coding tools: today’s models still need human intervention and judgment, but even with free tiers and basic subscriptions (I have a standard OpenAI subscription, which gives me access to Codex), it’s possible to move from idea to prototype surprisingly quickly.
+
+The purpose of these first experiments was deliberately modest: to establish a baseline. Before making any larger claims, the first question was simply can Chevron networks be trained at all, and can they perform competitively on simple tasks? From there, the next step was to probe (with further simple small scale initial tests) something more specific: whether a chevron architecture can be trained in ways that reduce catastrophic forgetting (the familiar problem in which a previously trained deep neural network (or standard multi-layer perceptron) loses earlier capabilities when it is further trained on new data) and avoid hallucinations (when a trained network produces confident but incorrect responses to out-of-distribution queries).
+
+Breakout: what is a Chevron network?
+A Chevron network is a small extension of the standard neural-network building block. Instead of each unit carrying a single scalar activation, each unit carries a two-channel state—for example an opposition pair (thesis/antithesis, yes/no), or a value/error pair. Connections are not single weights but 2×2 operators: four weights that can relay, reinforce, suppress, or cross-couple the two channels. This makes each edge a tiny routing/mixing primitive rather than a simple scalar multiplier. In the simplest case it behaves like a standard perceptron with extra structure; in richer cases it can represent gating, interference, and even phase-like amplitude mixing. The hope is that this gives a more natural way to model processes that look biological or physical—opponent coding, excitation/inhibition, multi-timescale control, and reference-like signal mixing—than conventional layered perceptrons with only scalar activations and weights, all in efficient, GPU-friendly transformations.
+
+
+
+
+Beaseline (ChatGPT-5.3-codex)
+Early results (parameter-matched, WordNet antonyms)
+In an initial parameter-matched 3-way comparison (epochs=8, batch=128, seed=7), the baseline MLP achieved match_acc=0.6632 (loss=0.8531), the graph baseline achieved match_acc=0.6257 (loss=0.9417), and the full 2×2 chevron model achieved match_acc=0.6632 (loss=0.8537). In this run, the chevron model matched the vanilla baseline on the core “antonym match” metric, while the graph baseline underperformed. Polarity/swap behaviour differed across models, but none exceeded the vanilla baseline on the primary match objective under these settings.
+
+Baseline Take 2 (Claud Sonnet 4.6)
+In a second baseline we asked does the 2-channel architecture learn the compositional polarity rule (sign product), or does it memorise sign patterns from training data?
+
+What was trained: All four models saw only two sign patterns during training — (+,+) and (-,-) — both of which have label=1 (positive product). The training set contains zero negative examples.
+
+In-distribution (left bar chart): All models score 1.000. This means every model perfectly learned to classify the training patterns. But since all training labels are 1, this could be achieved by the trivial rule “always predict positive” — no compositional reasoning required.
+
+OOD (right bar chart): All models score 0.000. The test patterns are (+,-) and (-,+), both with label=0. Every model predicted label=1 for all of them — the exact wrong answer every time. Scoring 0.0 rather than 0.5 tells you the models aren’t confused or random; they’re confidently wrong. They learned “predict positive always” and applied it to a situation where the correct answer is always negative.
+
+What this means: No model learned the compositional rule s1 × s2. All four — chevron full, chevron diag, both MLPs — learned the same degenerate shortcut that the training data permitted. The architecture made no difference because the task didn’t require any real reasoning to solve.
+
+The baseline conclusion: At chain-length 3 with same-sign-only training, the task is too easy and too degenerate to discriminate between architectures. All models collapse to the same trivial solution but encouraged follow on experiments.
+
+Catastrophic Forgetting Exp (with Google 3.1 Pro)
+Experiment Note: Structural Elimination of Catastrophic Forgetting via 2×2 Chevron Routing
+Topic: Continual Learning, Category Veto, and Inertial VSR. Code
+
+1. The Hypothesis
+Standard Artificial Neural Networks (MLPs) suffer from catastrophic forgetting. When the environment changes and a network must learn a new rule exception (a “Category Veto”), backpropagation overwrites the globally tangled scalar weights, destroying the core foundational knowledge.
+
+In the Chevron Network notes, we proposed a structural solution:
+
+“A chevron doesn’t just scale a signal, it can separate and transform two coupled streams... keep the diagonals as a retained backbone, let off-diagonals learn category veto and routing... retention is built into the wiring.”
+
+This experiment tests whether a 2×2 Chevron layer, constrained by phase-based gradient routing (Inertial Variation-Selection-Retention), can perfectly retain a base skill while learning a contextual override.
+
+2. Experimental Design
+We designed a 3-Phase synthetic curriculum. The model is forced to rely purely on the ℓ=x+−x− oppositional collapse (no unconstrained MLP readout heads are permitted).
+
+Phase 1 (The Base Concept): The network learns a simple “Opposites Match” rule. Context tags are strictly 0.0.
+
+Phase 2 (The Category Veto): The environment shifts. Context tags become active (-1.0 or 1.0). If the context is negative, the network must VETO the match, regardless of the inputs.
+
+Phase 3 (Catastrophic Forgetting Test): The network is evaluated again on Phase 1 data (Context = 0.0) to see if learning the Phase 2 veto destroyed its Phase 1 baseline.
+
+3. Architectural Implementation (Inertial VSR)
+To test the thesis, we applied strict gradient hooks to the ChevronLinear’s 2×2 matrices during training:
+
+Phase 1 (Core Formation): We froze the off-diagonals and the Antithesis channel. The network was forced to build the Base Concept entirely within the Thesis channel (w00).
+
+Phase 2 (Contextual Veto): We froze the Core (w00). The network learned the new Category Veto entirely by routing the new Context signals into the Antithesis channel via the cross-couplings (w11, w01). We strictly prevented the Value channel from leaking into the Antithesis channel (w10 = 0.0).
+
+4. Results
+Across multiple initializations and reruns, the Baseline MLP’s retention of the Base Concept varied significantly (ranging from severe degradation to ~15% memory loss), depending on how the optimizer happened to scramble its scalar weights.
+
+The Chevron Network achieved 100.0% retention every single time.
+
+Model Phase 1 Baseline Accuracy Retention after Phase 2 Memory Loss Baseline MLP 100.0% ~50.0% to 84.4% (varies by seed) 15% - 50%
+
+Chevron Net 100.0% 100.0% (Constant). 0.0%
+
+5. Conclusion & Mechanics
+The Chevron Network did not just empirically outperform the MLP; it structurally guaranteed the outcome.
+
+Because the 2×2 geometry allowed us to physically separate Representation(the diagonals) from Contextual Relation(the off-diagonals), the Base Concept was walled off. When Phase 3 fed data whereContext = 0.0, the Phase 2 cross-couplings mathematically vanished (w×0=0), cleanly revealing the perfectly untouched Phase 1 core logic beneath.
+
+Takeaway: This serves as a hard empirical proof-of-concept for Inertial VSR. A slow core + fast contextual modulation is a viable path to continual learning without catastrophic drift.
+
+A small mechanistic hint
+Alongside the performance benchmarks, I also wanted to look inside the model and ask a narrower question: what is the Chevron actually doing? One of the architectural motivations for chevrons is that a two-channel block should, at least in principle, be able to act like a tiny dual-attention unit—allocating weight between two coupled streams such as positive and negative evidence, and then mixing them through a learned 2×2 transform. Rather than trying to prove this through a large benchmark, I set up a much simpler instrumented toy task and inspected the internal weights directly.
+
+A small mechanistic result is worth noting here. When I instrumented a simple Chevron “dual-attention” block on an easy two-cue task, the global average attention weights looked almost flat across contexts, so there was no evidence of a strong layer-wide switch between positive and negative channels. But when I looked at the hidden units individually, a different pattern appeared: some units shifted strongly toward one channel in one context, while others shifted in the opposite direction. In aggregate these unit-level shifts largely cancelled out, which is why the global averages looked so neutral.
+
+So the cautious conclusion is not that Chevron networks have demonstrated a dramatic new attention mechanism, nor that they yet outperform ordinary networks on harder robustness tests. It is simply that, in this toy setting, the Chevron block appears capable of a distributed, context-sensitive channel weighting: a dual-attention-like effect spread across specialized hidden units rather than expressed as a single global gate. The learned 2×2 chevron weights then add a mild signed mixing step on top of that. That is enough to justify further experiments, but not yet enough to make strong performance claims.
+
+The Epistemic Crossbar:
+Mixing Confidence and Content
+The power of the Chevron Network to combat LLM hallucinations does not come simply from having a second channel, but from the 2×2 operator’s ability to mix the signals dynamically. If we interpret the 2-vector state as[Content, Doubt], the four corner couplings of the chevron edge map to a complete epistemic routing system.
+
+The diagonal weights carry the standard semantic flow (Content → Content) and the accumulation of uncertainty (Doubt → Doubt). But the true architectural advantage lies in the off-diagonal cross-couplings. The network can learn a Surprise Trigger(Content → Doubt), where conflicting internal semantic states dynamically pump activation into the Doubt channel. In the very next layer, this spiked Doubt channel can trigger an Active Veto (Doubt → Content), suppressing the hallucinating semantic signal, or use the relevance gate to physically close the routing pathway.
+
+By allowing Content and Doubt to continuously interact, veto, and amplify each other at every layer of the forward pass, the Chevron architecture gives an alternative to the “blind guessing” of standard MLPs as a more structured, self-regulating epistemic loop.
+
+Our latest experiment explored a small-scale trap-avoidance scenario. The results are still preliminary, but this may be one of the most promising directions so far.
+
+Benchmark: contextual trap with abstain / reopen (ChatGPT-5.2)
+To probe whether a second channel can function as an explicit control signal, I built a small synthetic benchmark around three competing demands: ordinary answering, abstaining when an answer should be withheld, and reopening when a withheld answer becomes valid under context. Each example is an (entity, relation, override) triple. Safe relations always map to an answer; trap relations require the model to say IDK unless a simple contextual condition is met (in this case, an XOR between the override flag and the entity’s parity). This creates a controlled toy setting where a model has to learn both the content mapping and a context-sensitive veto / release rule. I compared three architectures: a baseline MLP, a Chevron network without internal gating, and a Chevron network with a separate control head that uses the second channel only at the decision stage.
+
+Early encouraging result
+Across five random seeds, the Chevron variants outperformed the baseline MLP on the main mapping task, with the Chevron Control Head achieving the highest best-threshold overall accuracy (0.660 ± 0.054). The same Control Head also produced the best best-threshold trap-reopen accuracy (0.222 ± 0.100), suggesting that the second channel is most useful when treated as an explicit decision-level control signal rather than as an internal gate. The trade-off is that the baseline MLP remained more conservative on abstention, with slightly better best-threshold trap-abstain accuracy (0.927 ± 0.073) and lower minimum hallucination (0.073 ± 0.073). In other words: the Chevron control path seems to help the model answer more and reopen more effectively, but at the cost of being less cautious.
+
+
+(see the github repo for code and more graphs)
+
+My hunch is that there’s something here worth investigating further.
+
+Andre, March 2026
+
