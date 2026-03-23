@@ -1,12 +1,20 @@
 Chevron Nets in Three Regimes
 From complex-valued recurrence to policy/value and self/world channels
+Andre Kramer
+Mar 23, 2026
 
+
+
+
+(In visual terms, the three regimes look less like three versions of one mechanism than three kinds of order: turbulence, wave propagation, and interference. The Structured Chevron appears most turbulent visually, but it is the most controllable architecturally — interference under functional constraints, not chaos.)
 
 I’ve been exploring a family of neural-network architectures built around a very small change in the basic unit of computation. Instead of a neuron carrying a single scalar activation, a Chevron unit carries two coupled channels, and instead of a single scalar weight between units, a Chevron connection acts as a small 2×2 operator. The intuition is simple: if meaning, control, and interpretation often depend on differences, counterweights, and opposition, then perhaps a network should represent those more directly rather than forcing everything through one stream of scalar activations.
 
 The original motivation came from what I called Tension Layers: trainable layers that encode positions on oppositional axes and update them using uncertainty-scaled prediction error. The promise there was modest but appealing: a more direct representation of “differences that make a difference,” something more interpretable than a generic dense hidden state. Chevron Nets generalise that idea. Instead of inserting opposition into one special layer, they try to make it part of the network’s local wiring everywhere.
 
-A useful way to think about the emerging design space is in three regimes.
+A useful way to think about the emerging design space is in three regimes. Free Chevron resembles unconstrained mixing, Complex Chevron resembles coherent phase propagation, and Structured Chevron resembles interference under functional constraints.
+
+
 
 
 Figure 1. Basic Chevron primitive
@@ -17,17 +25,19 @@ The most general form is the Free Chevron. Each unit carries a two-channel state
 
 x = [x1
 
-      x2]
+x2]
 
 and each directed connection is a full real 2×2 operator,
 
-W = [w11   w12
+W = [w11 w12
 
-     w21   w22].
+w21 w22].
 
 This is the broadest claim. It says only that paired channels and local 2×2 transforms may be a useful primitive. The two channels might later be read as positive/negative evidence, proposal/constraint, content/control, actor/critic, or something else entirely. But in the Free Chevron regime we do not yet force a semantic interpretation. We simply allow the network to learn richer local mixing than a scalar weight provides.
 
 That makes Free Chevron the most expressive regime, but also the most vulnerable to a familiar objection: perhaps this is just a more complicated parameterization of an ordinary real-valued network. That is why it is better understood not as the destination, but as the upper envelope of the Chevron family: the unconstrained case against which the more structured versions can be compared.
+
+
 
 
 Figure 2. Three Chevron regimes
@@ -53,6 +63,8 @@ Now the point of the architecture is no longer just “two numbers are better th
 This is much closer to the spirit of the earlier Tension Layer work. There, the emphasis was on maintaining a persistent internal stance over meaningful differences, and updating that stance most strongly when the system was both uncertain and surprised. Structured Chevron takes that intuition and moves it down to the cell or connection level. Opposition is no longer only a layer-level readout. It becomes a local design principle.
 
 My current hunch is that this regime is the most promising for future work. A network with two unconstrained channels may simply act like a wider real-valued model. A network whose channels are forced into useful relationships—policy and value, self and world, evidence and expectation—has a better chance of developing dynamics that are not easily reproduced by just adding width.
+
+
 
 
 Figure 3. Two structured follow-ons
@@ -115,9 +127,9 @@ Recent sequence-model work—most notably the Mamba-3—has brought complex-valu
 
 A complex number is just a two-component state: real and imaginary. Updating that state corresponds to applying a rotation-and-scale transform. Written in real form, this is a 2×2 matrix of the form:
 
-[a   −b
+[a −b
 
- b    a].
+b a].
 
 This is not arbitrary mixing. It has strong constraints:
 
@@ -158,16 +170,18 @@ Free Chevron: fully general 2×2 interaction
 Seen this way, complex-valued recurrence is not the endpoint. It is a clean, validated baseline within a larger family—one that already demonstrates the value of two-channel state, and invites us to explore what happens when those channels become not just paired, but meaningfully opposed.
 
 
-Figure 4. Complex recurrence as a constrained Chevron. 
+
+
+Figure 4. Complex recurrence as a constrained Chevron.
 A two-channel state (real and imaginary components) is updated by a restricted 2×2 operator corresponding to rotation and scaling in the plane. In Chevron terms, this is the most disciplined special case: the channels remain tightly coupled, supporting phase-like evolution and stable state tracking without allowing arbitrary mixing.
 
 Rotation preserves structure; Structured Chevrons ask what happens when we preserve not just geometry, but meaning.
 
 A particularly important special case is when the 2×2 operator takes the form
 
-[cos⁡θ   −sin⁡θ
+[cos⁡θ −sin⁡θ
 
- sin⁡θ    cos⁡θ],
+sin⁡θ cos⁡θ],
 
 which corresponds to a pure rotation. Unlike a general linear transform, this matrix preserves the length of the state vector—it does not amplify or shrink it, only rotates it in the two-dimensional plane. In complex terms, this is multiplication by a unit-magnitude complex number e^iθ, meaning the system evolves purely by changing phase. This is significant because it provides a form of stable, non-dissipative state evolution: information is not gradually erased or exploded, but continuously transformed. In the Chevron framing, this is the most constrained version of a Complex Chevron, where the two channels behave as a tightly coupled pair undergoing smooth rotation. It highlights an important point: useful dynamics can arise not from arbitrary mixing, but from structured, geometry-preserving interaction—a principle that may extend beyond rotation to richer, functionally constrained channel pairings.
 
@@ -276,11 +290,12 @@ This is exactly why the Structured regime is the most promising frontier. When w
 (with Gemini 3.1 Pro Preview)
 
 
-Figure 5. A small Long-Context Veto experiment comparing the three Chevron regimes. 
+
+
+Figure 5. A small Long-Context Veto experiment comparing the three Chevron regimes.
 On a 40-step sequence task requiring both persistent evidence accumulation and hard reset after veto tokens, the three regimes separate cleanly: Free Chevron struggles, Complex Chevron preserves state well, and Structured Chevron adds explicit control over memory.
 
 (Code for this experiment and the earlier Catastrophic Forgetting and Epistemic Veto benchmarks are available in the Chevron Networks GitHub repository).
 
 This is not just a comparison of mathematical forms; it is also a comparison of inductive biases. The structured regime has a mechanism especially suited to the task: the World channel drives a sigmoid gate that can squash the Self memory. That is exactly why it wins here. That is not a weakness — it is the point of the experiment. This task is certainly solvable by other means—an LSTM, for example, or simply more scale. The value of the experiment is not that Chevron Nets alone can do it, but that on a very small and targeted problem the three regimes separate in exactly the way the architecture suggests they should. That makes it a useful early sign that the distinctions are doing real work rather than merely renaming capacity.
-
 
