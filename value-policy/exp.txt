@@ -1,0 +1,2042 @@
+The Next Chevron Experiment
+Value, Policy, and Memory Under Reversal
+
+So far, Chevron Nets have lived mostly in small supervised tasks, memory sketches, and architectural comparisons. That has been useful: it let me separate the three regimes — Free, Structured, and Complex — and show that they are not just different names for the same thing.
+
+But if Chevron Nets are going to matter, I doubt it will be because they do slightly better on another static classification task.
+
+My stronger suspicion is this:
+
+Chevron Nets matter, if they matter, because they offer a different way to couple memory, control, and revision over time.
+
+That means reinforcement learning is probably the right next arena.
+
+The cleanest first test, I think, is a Structured Value / Policy Chevron on a tiny RL task with noisy evidence, hidden context, and occasional reversals. The goal is not to beat every standard architecture. The goal is to test one narrow but important claim:
+
+Does local coupling between proposal and critique help an agent remember, revise, and sometimes hold back?
+
+Below is a concrete experiment sketch.
+
+1. Core idea
+
+Standard actor–critic architectures already separate two roles:
+
+policy: what action should I take?
+
+value: how good or safe is the current situation?
+
+But in most implementations this split only appears at the top:
+a shared trunk feeds two separate heads.
+
+A Value / Policy Chevron makes that split local.
+
+Each recurrent unit or small module carries two channels:
+
+𝑥
+𝑡
+=
+[
+𝑃
+𝑡
+
+
+𝑉
+𝑡
+]
+x
+t
+	​
+
+=[
+P
+t
+	​
+
+V
+t
+	​
+
+	​
+
+]
+
+where:
+
+𝑃
+𝑡
+P
+t
+	​
+
+ is the policy / proposal channel
+
+𝑉
+𝑡
+V
+t
+	​
+
+ is the value / control channel
+
+and the local interaction is governed by a 2×2 Chevron operator:
+
+𝑀
+=
+[
+𝑚
+𝑃
+𝑃
+	
+𝑚
+𝑃
+𝑉
+
+
+𝑚
+𝑉
+𝑃
+	
+𝑚
+𝑉
+𝑉
+]
+.
+M=[
+m
+PP
+	​
+
+m
+VP
+	​
+
+	​
+
+m
+PV
+	​
+
+m
+VV
+	​
+
+	​
+
+].
+
+This lets us ask a sharper question than “does recurrence help?”:
+
+What happens if action tendency and critique are coupled at the cell level rather than merely separated at the output?
+
+2. The task: contextual reversal bandit with optional wait
+
+For implementation, the first version of this experiment should be a fully specified small POMDP, not a loose family of tasks.
+
+Design goals
+
+very small,
+
+easy to implement in one environment file,
+
+hard enough to require memory,
+
+and structured so that reversal recovery and action suppression can be measured directly.
+
+Recommended first environment
+
+Use a contextual reversal bandit with horizon 
+𝑇
+=
+8
+T=8 and exactly one action per time step.
+
+There is a hidden binary context 
+𝑐
+𝑡
+∈
+{
+0
+,
+1
+}
+c_t∈{0,1}.
+
+At the start of each episode, sample 
+𝑐
+0
+∼
+Bernoulli
+(
+0.5
+)
+c_0∼Bernoulli(0.5).
+
+Sample a reversal time 
+𝜏
+τ uniformly from 
+{
+3
+,
+4
+,
+5
+}
+{3,4,5} with probability 
+𝑝
+rev
+=
+0.5
+p_rev=0.5. If no reversal is sampled, keep context fixed for the whole episode.
+
+If a reversal occurs, update:
+
+𝑐
+𝑡
++
+1
+=
+1
+−
+𝑐
+𝑡
+
+only at 
+𝑡
+=
+𝜏
+c_{t+1}=1−c_t only at t=τ.
+
+Action set
+
+At every step the agent chooses exactly one of:
+
+action 
+𝐴
+A
+
+action 
+𝐵
+B
+
+action 
+𝑊
+W
+
+The environment never asks for a separate “final decision.” This removes the largest source of ambiguity in the current draft.
+
+Reward rule
+
+If 
+𝑐
+𝑡
+=
+0
+c_t=0, then:
+
+𝐴
+→
++
+1
+A→+1
+
+𝐵
+→
+−
+1
+B→−1
+
+If 
+𝑐
+𝑡
+=
+1
+c_t=1, then:
+
+𝐵
+→
++
+1
+B→+1
+
+𝐴
+→
+−
+1
+A→−1
+
+For all 
+𝑡
+, let:
+
+𝑊
+→
+−
+0.2
+W→−0.2
+
+This makes WAIT available but not free. It should be useful when evidence is weak or immediately after a reversal, but suboptimal when used repeatedly.
+
+Why this exact version
+
+This keeps the task small while making the intended behaviors measurable:
+
+the agent must accumulate noisy evidence,
+
+the agent must recover after a context flip,
+
+and the agent can explicitly trade action for caution via 
+𝑊
+W.
+
+3. Observation design
+
+A concrete observation vector for the first implementation is:
+
+𝑜
+𝑡
+=
+[
+𝑠
+𝑡
+,
+𝑟
+𝑡
+,
+𝑛
+𝑡
+]
+o_t=[s_t,r_t,n_t]
+
+where:
+
+𝑠
+𝑡
+∈
+{
+−
+1
+,
++
+1
+}
+s_t∈{−1,+1} is a noisy cue correlated with the current context
+
+𝑟
+𝑡
+∈
+{
+0
+,
+1
+}
+r_t∈{0,1} is a reversal indicator
+
+𝑛
+𝑡
+∈
+R
+4
+n_t∈R^4 is Gaussian distractor noise
+
+Cue generation
+
+If 
+𝑐
+𝑡
+=
+0
+c_t=0, sample:
+
+P
+(
+𝑠
+𝑡
+=
++
+1
+)
+=
+0.75
+,
+P
+(
+𝑠
+𝑡
+=
+−
+1
+)
+=
+0.25
+
+If 
+𝑐
+𝑡
+=
+1
+c_t=1, sample:
+
+P
+(
+𝑠
+𝑡
+=
+−
+1
+)
+=
+0.75
+,
+P
+(
+𝑠
+𝑡
+=
++
+1
+)
+=
+0.25
+
+Reversal cue
+
+For the first caution-focused variant, delay the observed reversal cue by one step.
+
+If the context flips at step 
+𝜏
+τ, then update the hidden context immediately at 
+𝑡
+=
+𝜏
+t=τ, but set:
+
+𝑟
+𝑡
+=
+1
+r_t=1 only at 
+𝑡
+=
+𝜏
++
+1
+t=τ+1, and 
+𝑟
+𝑡
+=
+0
+r_t=0 otherwise.
+
+This forces the agent to handle one step of conflicting evidence before the reset signal arrives.
+
+The first implementation should not include false positives, missing reversal cues beyond the fixed one-step delay, variable horizon, or additional observation corruption. Those belong in later ablations, not the base environment.
+
+Implementation note
+
+Build the environment in two phases.
+
+Phase 1:
+
+fixed horizon 
+𝑇
+=
+8
+T=8
+
+always include 
+𝑊
+W
+
+reversal cue is clean
+
+distractor dimension fixed at 4
+
+Phase 2 ablations:
+
+remove 
+𝑊
+W
+
+add false-positive reversal cues
+
+change 
+𝑝
+cue
+p_cue
+
+change reversal probability
+
+Why this task
+
+This task is still small enough that an LSTM should solve it. That is desirable. The question is not whether Chevron Nets are the only workable recurrent model. The question is whether local proposal/control coupling gives cleaner reversal recovery and better calibrated caution under matched training conditions.
+
+4. Baselines
+
+For the first implementation, compare five models and keep the rest fixed.
+
+Baseline 1: MLP actor–critic
+
+Observation encoder + shared trunk + separate policy/value heads.
+
+No recurrence.
+
+Baseline 2: GRU actor–critic
+
+Same observation input, recurrent hidden state, separate heads.
+
+This is the strongest lightweight recurrent baseline.
+
+Baseline 3: LSTM actor–critic
+
+Same observation input, recurrent hidden state, separate heads.
+
+This is the strongest obvious baseline for a tiny task requiring memory.
+
+Baseline 4: Free Chevron actor–critic
+
+Two-channel state and full 2×2 mixing, but no semantic role constraints.
+
+This tests whether “two channels plus more structure” helps by itself.
+
+Main model: Structured Value / Policy Chevron
+
+Two channels assigned explicit roles:
+
+policy/proposal
+
+value/control
+
+with local coupling.
+
+5. Structured Chevron Value / Policy cell
+
+Here is the simplest cell I would start with.
+
+State
+
+For hidden dimension 
+𝐻
+H, maintain:
+
+𝑃
+𝑡
+∈
+𝑅
+𝐻
+,
+𝑉
+𝑡
+∈
+𝑅
+𝐻
+P
+t
+	​
+
+∈R
+H
+,V
+t
+	​
+
+∈R
+H
+
+or stacked:
+
+𝑥
+𝑡
+∈
+𝑅
+𝐻
+×
+2
+x
+t
+	​
+
+∈R
+H×2
+Observation encoder
+
+Let:
+
+ℎ
+𝑡
+=
+𝜙
+(
+𝑊
+𝑜
+𝑜
+𝑡
++
+𝑏
+𝑜
+)
+h
+t
+	​
+
+=ϕ(W
+o
+	​
+
+o
+t
+	​
+
++b
+o
+	​
+
+)
+
+where 
+𝜙
+ϕ is something simple like 
+tanh
+⁡
+tanh or ReLU.
+
+Then generate channel-specific inputs:
+
+𝑢
+𝑡
+𝑃
+=
+𝑊
+𝑃
+ℎ
+𝑡
++
+𝑏
+𝑃
+u
+t
+P
+	​
+
+=W
+P
+	​
+
+h
+t
+	​
+
++b
+P
+	​
+
+𝑢
+𝑡
+𝑉
+=
+𝑊
+𝑉
+ℎ
+𝑡
++
+𝑏
+𝑉
+u
+t
+V
+	​
+
+=W
+V
+	​
+
+h
+t
+	​
+
++b
+V
+	​
+
+Local Chevron mixing
+
+At each hidden coordinate 
+𝑘
+k, or in vectorized form, define a 2×2 mixing:
+
+𝑥
+~
+𝑡
+=
+𝜙
+(
+𝑀
+⊙
+𝑥
+𝑡
++
+𝑈
+𝑡
+)
+x
+~
+t
+	​
+
+=ϕ(M⊙x
+t
+	​
+
++U
+t
+	​
+
+)
+
+More explicitly, per hidden unit 
+𝑘
+k:
+
+𝑃
+~
+𝑡
+,
+𝑘
+=
+𝜙
+(
+𝑚
+𝑃
+𝑃
+,
+𝑘
+𝑃
+𝑡
+,
+𝑘
++
+𝑚
+𝑃
+𝑉
+,
+𝑘
+𝑉
+𝑡
+,
+𝑘
++
+𝑢
+𝑡
+,
+𝑘
+𝑃
+)
+P
+~
+t,k
+	​
+
+=ϕ(m
+PP,k
+	​
+
+P
+t,k
+	​
+
++m
+PV,k
+	​
+
+V
+t,k
+	​
+
++u
+t,k
+P
+	​
+
+)
+𝑉
+~
+𝑡
+,
+𝑘
+=
+𝜙
+(
+𝑚
+𝑉
+𝑃
+,
+𝑘
+𝑃
+𝑡
+,
+𝑘
++
+𝑚
+𝑉
+𝑉
+,
+𝑘
+𝑉
+𝑡
+,
+𝑘
++
+𝑢
+𝑡
+,
+𝑘
+𝑉
+)
+V
+~
+t,k
+	​
+
+=ϕ(m
+VP,k
+	​
+
+P
+t,k
+	​
+
++m
+VV,k
+	​
+
+V
+t,k
+	​
+
++u
+t,k
+V
+	​
+
+)
+
+This is the minimal Structured Chevron recurrent cell.
+
+6. Reintroducing tension
+
+To connect back to the Tension Layer idea, define a local stance:
+
+ℓ
+𝑡
+,
+𝑘
+=
+𝑃
+~
+𝑡
+,
+𝑘
+−
+𝑉
+~
+𝑡
+,
+𝑘
+ℓ
+t,k
+	​
+
+=
+P
+~
+t,k
+	​
+
+−
+V
+~
+t,k
+	​
+
+𝑝
+𝑡
+,
+𝑘
+=
+𝜎
+(
+ℓ
+𝑡
+,
+𝑘
+)
+p
+t,k
+	​
+
+=σ(ℓ
+t,k
+	​
+
+)
+
+This gives a scalar “which side am I leaning toward?” variable at each unit.
+
+Now define uncertainty gain:
+
+𝑢
+𝑡
+,
+𝑘
+=
+𝜖
++
+𝑝
+𝑡
+,
+𝑘
+(
+1
+−
+𝑝
+𝑡
+,
+𝑘
+)
+u
+t,k
+	​
+
+=
+ϵ+p
+t,k
+	​
+
+(1−p
+t,k
+	​
+
+)
+	​
+
+
+This is largest when 
+𝑝
+𝑡
+,
+𝑘
+≈
+0.5
+p
+t,k
+	​
+
+≈0.5, and smaller when the unit is already committed near 0 or 1.
+
+This allows a fast state update:
+
+𝑃
+𝑡
++
+1
+,
+𝑘
+=
+(
+1
+−
+𝜆
+𝑃
+)
+𝑃
+𝑡
+,
+𝑘
++
+𝜂
+𝑃
+ 
+𝑢
+𝑡
+,
+𝑘
+ 
+(
+𝑔
+^
+𝑡
+,
+𝑘
+−
+𝑝
+𝑡
+,
+𝑘
+)
+P
+t+1,k
+	​
+
+=(1−λ
+P
+	​
+
+)P
+t,k
+	​
+
++η
+P
+	​
+
+u
+t,k
+	​
+
+(
+g
+^
+	​
+
+t,k
+	​
+
+−p
+t,k
+	​
+
+)
+𝑉
+𝑡
++
+1
+,
+𝑘
+=
+(
+1
+−
+𝜆
+𝑉
+)
+𝑉
+𝑡
+,
+𝑘
++
+𝜂
+𝑉
+ 
+𝑢
+𝑡
+,
+𝑘
+ 
+(
+ℎ
+^
+𝑡
+,
+𝑘
+−
+(
+1
+−
+𝑝
+𝑡
+,
+𝑘
+)
+)
+V
+t+1,k
+	​
+
+=(1−λ
+V
+	​
+
+)V
+t,k
+	​
+
++η
+V
+	​
+
+u
+t,k
+	​
+
+(
+h
+^
+t,k
+	​
+
+−(1−p
+t,k
+	​
+
+))
+
+where 
+𝑔
+^
+𝑡
+,
+𝑘
+g
+^
+	​
+
+t,k
+	​
+
+ and 
+ℎ
+^
+𝑡
+,
+𝑘
+h
+^
+t,k
+	​
+
+ are fast proposals derived from the encoded input or TD signal.
+
+A simpler first version is:
+
+𝑃
+𝑡
++
+1
+=
+(
+1
+−
+𝜆
+𝑃
+)
+𝑃
+𝑡
++
+𝜂
+𝑃
+ 
+𝑢
+𝑡
+⊙
+𝑃
+~
+𝑡
+P
+t+1
+	​
+
+=(1−λ
+P
+	​
+
+)P
+t
+	​
+
++η
+P
+	​
+
+u
+t
+	​
+
+⊙
+P
+~
+t
+	​
+
+𝑉
+𝑡
++
+1
+=
+(
+1
+−
+𝜆
+𝑉
+)
+𝑉
+𝑡
++
+𝜂
+𝑉
+ 
+𝑢
+𝑡
+⊙
+𝑉
+~
+𝑡
++
+𝛽
+∣
+𝛿
+𝑡
+∣
+V
+t+1
+	​
+
+=(1−λ
+V
+	​
+
+)V
+t
+	​
+
++η
+V
+	​
+
+u
+t
+	​
+
+⊙
+V
+~
+t
+	​
+
++β∣δ
+t
+	​
+
+∣
+
+where 
+𝛿
+𝑡
+δ
+t
+	​
+
+ is the TD error.
+
+That version is easier to implement and still captures the main idea:
+
+fast revision when uncertain,
+
+slower carry-forward when committed.
+
+7. Policy and value readout
+
+There are several reasonable readouts.
+
+Minimal readout
+
+Use both channels together:
+
+𝑧
+𝑡
+=
+[
+𝑃
+𝑡
+;
+𝑉
+𝑡
+]
+z
+t
+	​
+
+=[P
+t
+	​
+
+;V
+t
+	​
+
+]
+𝜋
+(
+𝑎
+𝑡
+∣
+𝑜
+≤
+𝑡
+)
+=
+softmax
+(
+𝑊
+𝜋
+𝑧
+𝑡
++
+𝑏
+𝜋
+)
+π(a
+t
+	​
+
+∣o
+≤t
+	​
+
+)=softmax(W
+π
+	​
+
+z
+t
+	​
+
++b
+π
+	​
+
+)
+𝑉
+^
+𝑡
+=
+𝑊
+𝑣
+𝑧
+𝑡
++
+𝑏
+𝑣
+V
+^
+t
+	​
+
+=W
+v
+	​
+
+z
+t
+	​
+
++b
+v
+	​
+
+More opinionated readout
+
+Read policy primarily from the 
+𝑃
+P-channel:
+
+𝜋
+(
+𝑎
+𝑡
+∣
+𝑜
+≤
+𝑡
+)
+=
+softmax
+(
+𝑊
+𝜋
+𝑃
+𝑡
++
+𝑏
+𝜋
+)
+π(a
+t
+	​
+
+∣o
+≤t
+	​
+
+)=softmax(W
+π
+	​
+
+P
+t
+	​
+
++b
+π
+	​
+
+)
+
+and value primarily from the 
+𝑉
+V-channel:
+
+𝑉
+^
+𝑡
+=
+𝑊
+𝑣
+𝑉
+𝑡
++
+𝑏
+𝑣
+V
+^
+t
+	​
+
+=W
+v
+	​
+
+V
+t
+	​
+
++b
+v
+	​
+
+
+This stronger separation makes the experiment more interpretable.
+
+Optional gating variant
+
+Let the value/control channel suppress policy expression:
+
+policy_logits
+𝑡
+=
+(
+𝑊
+𝜋
+𝑃
+𝑡
+)
+⊙
+(
+1
+−
+𝜎
+(
+𝑊
+𝑔
+𝑉
+𝑡
+)
+)
+policy_logits
+t
+	​
+
+=(W
+π
+	​
+
+P
+t
+	​
+
+)⊙(1−σ(W
+g
+	​
+
+V
+t
+	​
+
+))
+
+This is a direct Value / Policy analogue of the gated abstention experiments: the control path does not merely “advise,” it can actually attenuate the proposal path.
+
+8. Learning
+Baseline training
+
+For implementation, start with PPO only.
+
+Do not begin with PPO versus A2C versus REINFORCE comparisons. The first experiment should vary architecture while holding the optimizer fixed.
+
+Use the same PPO configuration for all models:
+
+same rollout length,
+
+same minibatch count,
+
+same optimizer,
+
+same entropy coefficient,
+
+same value-loss coefficient,
+
+same number of environment steps,
+
+and the same random seed list.
+
+For PPO, the usual losses are:
+
+Policy loss:
+
+𝐿
+𝜋
+=
+−
+𝐸
+𝑡
+[
+log
+⁡
+𝜋
+(
+𝑎
+𝑡
+∣
+𝑠
+𝑡
+)
+ 
+𝐴
+^
+𝑡
+]
+L
+π
+	​
+
+=−E
+t
+	​
+
+[logπ(a
+t
+	​
+
+∣s
+t
+	​
+
+)
+A
+^
+t
+	​
+
+]
+
+Value loss:
+
+𝐿
+𝑉
+=
+𝐸
+𝑡
+[
+(
+𝑉
+^
+𝑡
+−
+𝑅
+𝑡
+)
+2
+]
+L
+V
+	​
+
+=E
+t
+	​
+
+[(
+V
+^
+t
+	​
+
+−R
+t
+	​
+
+)
+2
+]
+
+Entropy bonus:
+
+𝐿
+𝑒
+𝑛
+𝑡
+=
+−
+𝐸
+𝑡
+[
+𝐻
+(
+𝜋
+(
+⋅
+∣
+𝑠
+𝑡
+)
+)
+]
+L
+ent
+	​
+
+=−E
+t
+	​
+
+[H(π(⋅∣s
+t
+	​
+
+))]
+
+Total loss:
+
+𝐿
+=
+𝐿
+𝜋
++
+𝑐
+𝑉
+𝐿
+𝑉
++
+𝑐
+𝐻
+𝐿
+𝑒
+𝑛
+𝑡
+L=L
+π
+	​
+
++c
+V
+	​
+
+L
+V
+	​
+
++c
+H
+	​
+
+L
+ent
+	​
+
+
+This is the right starting point.
+
+Fairness constraints
+
+To make the comparison persuasive, the main models must be matched as closely as possible.
+
+Match:
+
+parameter count within a small tolerance,
+
+hidden state size,
+
+observation encoder width,
+
+policy/value head width,
+
+optimizer settings,
+
+training budget.
+
+Recommended first model set
+
+MLP actor-critic
+
+GRU actor-critic
+
+LSTM actor-critic
+
+Free Chevron actor-critic
+
+Structured Value / Policy Chevron actor-critic
+
+Adding GRU is worthwhile because it is a strong lightweight recurrent baseline and narrows the chance that any gain is simply “not-LSTM-specific.”
+
+Two-timescale variant
+
+Do not use the two-timescale variant in the first result.
+
+Once the single-timescale PPO setup is stable, add a second experiment with:
+
+fast state updates for 
+𝑃
+𝑡
+,
+𝑉
+𝑡
+P
+t
+	​
+
+,V
+t
+	​
+
+
+slow weight updates for 
+𝑀
+,
+𝑊
+𝑜
+,
+𝑊
+𝑃
+,
+𝑊
+𝑉
+M,W
+o
+	​
+
+,W
+P
+	​
+
+,W
+V
+	​
+
+
+Implementation options:
+
+do fast recurrent state update every time step,
+
+keep weight optimizer learning rate smaller,
+
+optionally use different learning rates for diagonal vs off-diagonal terms:
+
+𝜂
+𝑑
+𝑖
+𝑎
+𝑔
+<
+𝜂
+𝑜
+𝑓
+𝑓
+𝑑
+𝑖
+𝑎
+𝑔
+η
+diag
+	​
+
+<η
+offdiag
+	​
+
+
+This would instantiate the “slow core, fast contextual correction” hypothesis.
+
+But it should be reported as a separate follow-up, not folded into the primary architecture comparison.
+
+9. Metrics
+Reward metrics
+
+mean episodic reward
+
+sample efficiency
+
+asymptotic reward
+
+Reversal metrics
+
+steps to recover after reversal
+
+reward in the first two steps after reversal
+
+bad-action rate immediately after reversal
+
+success under ambiguous cues
+
+Caution / control metrics
+
+WAIT rate overall
+
+WAIT rate in the two steps after reversal
+
+premature commitment rate
+
+Definition: fraction of episodes where the agent takes 
+𝐴
+A or 
+𝐵
+B on the first two time steps when posterior evidence from observations remains weak.
+
+For the first implementation, drop “error rate when reset cue appears late,” because late reset cues are not in the base environment.
+
+Interpretability metrics
+
+Log over time:
+
+average 
+𝑃
+𝑡
+P
+t
+	​
+
+
+average 
+𝑉
+𝑡
+V
+t
+	​
+
+
+average tension 
+𝑝
+𝑡
+=
+𝜎
+(
+𝑃
+𝑡
+−
+𝑉
+𝑡
+)
+p
+t
+	​
+
+=σ(P
+t
+	​
+
+−V
+t
+	​
+
+)
+
+uncertainty gain 
+𝑢
+𝑡
+u
+t
+	​
+
+
+TD error 
+𝛿
+𝑡
+δ
+t
+	​
+
+
+Also compute causal channel tests:
+
+zero out 
+𝑉
+V at evaluation time and measure reward drop
+
+zero out 
+𝑃
+P at evaluation time and measure reward drop
+
+shuffle 
+𝑉
+V across batch elements at evaluation time and measure change in action entropy and post-reversal recovery
+
+Also visualize a few fixed evaluation episodes:
+
+what the observation was,
+
+when the reversal happened,
+
+how the proposal channel moved,
+
+how the value/control channel countered or reopened.
+
+This is important. The experiment is not only about reward. It is about whether the channels develop measurably different jobs.
+
+10. Key ablations
+
+To keep implementation manageable, split ablations into primary and secondary.
+
+Primary ablations
+
+MLP actor-critic
+
+GRU actor-critic
+
+LSTM actor-critic
+
+Free Chevron
+
+Structured Value / Policy Chevron
+
+Secondary ablations
+
+diagonal-only coupling
+
+off-diagonal-only coupling
+
+full 2×2 coupling
+
+shared readout from 
+[
+𝑃
+;
+𝑉
+]
+[P;V]
+
+policy from 
+𝑃
+P, value from 
+𝑉
+V
+
+control-gated policy readout
+
+no uncertainty scaling
+
+uncertainty scaling on
+
+The first implementation should finish the primary ablations before touching the secondary ones.
+
+11. What would count as a real result?
+
+Not necessarily “highest reward wins.”
+
+A real result would look like this:
+
+the Structured Chevron matches or beats the GRU/LSTM baselines on mean reward,
+
+recovers faster after reversals,
+
+makes more use of 
+𝑊
+W immediately after reversal without collapsing into always-wait behavior,
+
+makes fewer premature commits under ambiguity,
+
+and shows a clear causal asymmetry between 
+𝑃
+P and 
+𝑉
+V under channel intervention tests.
+
+That would be enough to justify the next step.
+
+The stronger claim would not be:
+“Chevron Nets solve RL.”
+
+It would be:
+
+A locally coupled Value / Policy architecture can turn actor–critic from an output-level decomposition into a recurrent state-level one, and that appears useful when an agent must both remember and revise.
+
+That would already be interesting.
+
+12. Why this experiment comes before Self / World
+
+The Self / World regime is probably the deeper idea. But it is harder to operationalize cleanly.
+
+Value / Policy has two advantages:
+
+RL already knows how to evaluate it.
+
+The decomposition is uncontroversial.
+
+So this experiment is the right first step.
+
+If it works, then the next move is obvious:
+replace Value / Policy with Self / World, and move from tiny reversal bandits to a small POMDP or model-based task where the distinction between internal stance and world evidence becomes more meaningful.
+
+13. Pseudocode sketch
+
+Here is a compact implementation sketch.
+
+# State
+P = zeros(batch, hidden)
+V = zeros(batch, hidden)
+
+for t in range(T):
+    o_t = obs[:, t]                      # observation at time t
+    h_t = tanh(Wo(o_t) + bo)
+
+    uP = Wp(h_t) + bp
+    uV = Wv(h_t) + bv
+
+    # Chevron local mixing
+    P_mix = mPP * P + mPV * V + uP
+    V_mix = mVP * P + mVV * V + uV
+
+    P_tilde = tanh(P_mix)
+    V_tilde = tanh(V_mix)
+
+    # Tension-style collapse
+    ell = P_tilde - V_tilde
+    p = sigmoid(ell)
+    gain = sqrt(eps + p * (1 - p))
+
+    # Optional TD error from previous step
+    # delta = reward_t + gamma * value_next - value_now
+
+    # Fast state update
+    P = (1 - lambda_P) * P + eta_P * gain * P_tilde
+    V = (1 - lambda_V) * V + eta_V * gain * V_tilde
+
+    # Readouts
+    policy_logits = Wpi(P)              # or concat(P, V), or gated version
+    value_pred = Wval(V)                # or concat(P, V)
+
+    # sample action / store rollout
+
+Training can then use PPO/A2C in the usual way.
+
+14. Why I find this compelling
+
+What I like about this experiment is that it is small enough to be honest.
+
+It does not require frontier models, giant datasets, or vague claims. It asks one concrete question in a setting where the architecture’s biases should actually matter. A standard actor–critic can already act. An LSTM can already remember. The Chevron hypothesis is narrower:
+
+perhaps a paired-channel recurrent cell can do better when action requires not just memory, but memory under critique.
+
+That feels like the right next test.
+
+Closing
+
+So that is the next experiment I want to try: a Structured Value / Policy Chevron on a tiny reversal-style RL problem, with enough recurrence to make memory matter and enough ambiguity to make control matter too.
+
+If Chevron Nets have a future, I suspect it will begin there.
