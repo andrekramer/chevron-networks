@@ -1,0 +1,381 @@
+Agency in Chevron Nets
+Refocusing Chevron Networks as Distributed, Continuous, Oppositional Actor–Critic Learning Agents
+Andre Kramer
+Apr 01, 2026
+
+A Value-Policy Chevron Experiment
+First an update on recent Chevron experiements: I implemented and tested a small RL experiment for Value/Policy Chevron models (code) on a contextual reversal bandit with noisy cues, optional wait, and a delayed reversal cue. The goal was to check whether locally coupled proposal and control channels help an agent remember, revise after reversals, and hold back under uncertainty.
+
+The main result is mixed. On task reward, gated and ungated Structured Chevron did not beat strong recurrent baselines like lstm, and gating did not produce a clear performance winover ungated Chevron. But channel-intervention tests showed something important: in the gated Chevron model, the V channel became causally meaningful. Zeroing V increased entropy and wait rate and reduced reward, while in the ungated model V was almost inert. So the current evidence supports a narrower claim: gating makes the proposal/control split more real internally, even though it has not yet translated into better overall task performance.
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
+
+This means we have not yet hit a sweet spot for Chevron networks. Which may mean going back to the original ideas around agency and continuous safe learning - and my wider project.
+
+
+
+
+Standard actor–critic architectures are useful. They work. But conceptually they may be too thin.
+
+In the usual reinforcement learning picture, policy and value are treated as two output heads attached to a shared trunk. One head says what to do. The other estimates how good (or alternatively how bad) things are likely to be. This is efficient engineering. But if we are trying to model agency rather than just optimize a benchmark, it leaves something out. It places actor and critic at the top of the system rather than inside it. The critic judges from above. It does not live everywhere in the process.
+
+That matters if agency is not a single optimizing impulse, but an ongoing internal negotiation: proposal and restraint, action and evaluation, impulse and norm, self and world. If that is the right picture, then actor and critic should not merely appear at the readout layer. They should be distributed throughout the network.
+
+That is the intuition behind Chevron Nets.
+
+The new twist I want to explore here is that predictive coding gives this architecture a plausible learning interpretation, while the R-rule provides a natural law for when such a system should remain stable and when it should revise itself. The result is not yet a finished theory or a killer benchmark result. But it is, I think, a cleaner architectural picture of agency than the standard shared-trunk design. And it points toward an attractive application area: systems that must keep adapting without becoming reckless.
+
+1. The problem with shared-trunk actor–critic
+The usual actor–critic decomposition is straightforward. A neural network builds an internal representation of the state. From that shared representation, one head outputs an action distribution and another outputs a scalar value estimate. It works well enough. But conceptually it encourages a picture in which policy and value are late-stage products of a deeper, neutral substrate.
+
+I suspect that is backwards.
+
+If an agent is really embedded in a world, then evaluation should not arrive only at the end. It should shape perception, attention, memory, and response all the way through. Likewise, action should not emerge as a pure impulse only corrected by a final supervisory signal. Action and evaluation should be entangled from the beginning.
+
+This is not just a philosophical preference. It may matter practically whenever an agent must hesitate, revise, or defer action under uncertainty. A shared trunk with two final heads can express that in the limit, but it does not make it explicit. It does not tell us where caution lives.
+
+That is the gap I want Chevron Nets to fill.
+
+2. Chevron Nets as distributed actor–critic
+The core idea is simple. Instead of giving each node a single activation, give it a pair of coupled activations:
+
+xi =[ Ai
+
+Ni]
+
+Here the symbols can be read in several ways.
+
+A as actor, action tendency, proposal, policy drive, or fast guess.
+
+N as norm, critic, value, corrective restraint, or slower evaluation.
+
+I do not think we need to lock the interpretation down too early. That flexibility is part of the point. The same two-channel architecture can be read as actor/critic, policy/value, prediction/error, or proposal/norm. My own preference is to treat proposal and norm as the broadest reading, with actor/critic and policy/value as reinforcement-learning specializations.
+
+Connections between nodes are then not single weights but 2×2 operators:
+
+Wij = [wAA wAN
+
+wNA wNN]
+
+This is the minimal move that makes the architecture interesting. A scalar weight says only how much one unit influences another. A chevron weight says more:
+
+proposal can reinforce proposal,
+
+norm can reshape proposal,
+
+proposal can inform evaluation,
+
+norm can stabilize norm.
+
+In other words, every connection becomes a local dialogue. Not just signal transmission, but signal transmission under tension.
+
+A simple recurrent update might look like this:
+
+
+xi(t+1) = (1−λ)xi(t) + ∑j gij(t) Wij xj(t) + Ii(t)
+
+where gij(t) is an attention or relevance gate, λ is a leak or inertia term, and Ii(t) is input injection.
+
+The important point is not the exact equation. It is the shift in picture. Actor and critic are no longer two final heads. They become two intertwined channels running throughout the system.
+
+Breakout: Why Predictive Coding Matters Here
+Predictive coding is often presented as a theory of perception: the brain continually predicts its inputs and then updates itself through the mismatch between what it expected and what arrived. But for my purposes, the interesting part is not the neuroscience branding. It is the architectural lesson.
+
+The lesson is that learning and inference need not be imagined only as a single global error sent backward through a monolithic network. They can also be understood as a distributed process of local proposal and local correction. That makes predictive coding attractive as a way to think about Chevron Nets.
+
+A Chevron node already carries two coupled channels. One can read these as proposal and norm, actor and critic, or policy and value. Predictive coding adds a further interpretation: one channel carries a local prediction or action tendency, while the other carries corrective pressure, mismatch, or evaluative restraint. The important point is not that Chevron Nets must be reduced to predictive coding. It is that predictive coding offers a plausible local learning style for a broader oppositional architecture.
+
+In that sense, predictive coding is not the whole ontology of Chevron Nets. It is a useful reframing. It suggests that actor and critic need not sit at the top of the network as two output heads. They can instead be distributed throughout the system as ongoing cycles of proposal and correction.
+
+That is the connection I want to explore next: predictive coding not as a complete theory of mind, but as a distributed learning logic for oppositional self-regulation.
+
+Readers with more of a control-theory background may prefer a Bellman / TD reading of the same two-channel intuition; I’ve added a brief appendix on that parallel.
+
+3. Predictive coding as a learning interpretation
+This is where the newer angle comes in.
+
+Predictive coding is often introduced as a neuroscience-inspired alternative to pure feedforward recognition or to monolithic backpropagation. The broad idea is familiar: learning and inference arise through cycles of local proposal and correction rather than by pushing a single global error signal backward through the entire network.
+
+Whether predictive coding fully replaces backprop in practice is a separate question. What matters here is that it offers a compelling interpretation of Chevron Nets.
+
+A chevron node already carries two channels. Read through predictive coding, one can see them as:
+
+a local proposal or prediction,
+
+a local corrective or evaluative signal.
+
+In strict predictive-coding language one might call these prediction and error. But that is a little too narrow for what I want. In an acting agent, the second channel is not merely error in a passive sensory model. It can also be value, norm, restraint, counterfactual pressure, expected consequence. So I would say predictive coding gives us the learning style, while the A/N framing keeps the architecture broad enough for agency.
+
+This is the key conceptual move. Predictive coding is not the whole ontology here. It is a plausible distributed learning logic for a broader two-channel system.
+
+One can imagine each node participating in a local cycle:
+
+a proposal is generated,
+
+incoming norm or corrective pressure reshapes it,
+
+the resulting tension affects what is propagated onward,
+
+the node settles or remains plastic depending on how unresolved that tension is.
+
+That already sounds much closer to agency than a simple forward pass followed by a global scalar loss.
+
+4. The missing piece: when should the system change its mind?
+A two-channel system is not enough. It also needs a law for when to stay stable and when to revise itself.
+
+This is where the R-rule becomes valuable. The specific ingredient I keep returning to is the tension term:
+
+sqrt(p(1−p))
+
+where p is some probability-like collapse of the local state. For example, one might define
+
+pi = σ(Ai−Ni)
+
+so that strong dominance of one channel pushes pi toward 0 or 1, while unresolved tension keeps it closer to the middle.
+
+Then the local tension gate becomes
+
+
+ui = sqrt(ϵ + pi(1−pi))
+
+with a small ϵ floor if needed.
+
+This has a very nice property. It peaks when the local opposition is unresolved and fades when the local state is already settled. In that sense it acts like a local precision or plasticity gate. Not hard freezing. Not permanent churn. Automatic retention with uncertainty-sensitive revision.
+
+That, to me, is the elegant missing piece.
+
+A network built this way becomes most willing to change when its own internal opposition remains alive. When one tendency has clearly won, learning naturally slows. When proposal and norm are still in tension, the door remains open.
+
+So the update becomes something more like:
+
+
+xi(t+1) = (1−λ)xi(t) + ui(t) ∑j gij(t) Wij xj(t) + Ii(t)
+
+This is still simple enough to implement, but conceptually it is much richer than a standard recurrent cell.
+
+5. From actor–critic to policy–value to proposal–norm
+At this point we can return to reinforcement learning.
+
+The most straightforward mapping is:
+
+A as actor or policy drive,
+
+N as critic or value-like restraint.
+
+That gives a very natural reading of the four chevron terms:
+
+wAA​: policy-to-policy propagation,
+
+wAN​: value reshaping policy,
+
+wNA​: policy informing evaluation,
+
+wNN​: value stabilizing value.
+
+This is already more appealing to me than the standard shared-trunk picture. Policy and value are no longer separate bureaucratic outputs. They are ongoing coupled tendencies inside the network.
+
+But I would go one step further. The deepest interpretation is not actor/critic at all. It is proposal and norm.
+
+That lets the same architecture cover several familiar distinctions at once:
+
+actor / critic,
+
+policy / value,
+
+prediction / correction,
+
+impulse / restraint,
+
+self-assertion / self-regulation.
+
+In other words, predictive coding becomes the learning interpretation, actor–critic becomes the RL specialization, and proposal–norm becomes the broad architectural idea.
+
+That feels right to me because it avoids collapsing everything into one school’s language too early.
+
+6. Why this matters for agency
+The main attraction of this design is not that it sounds biologically plausible, though perhaps it is more plausible than plain backprop. Nor is it that it is guaranteed to outperform ordinary actor–critic. It may or may not.
+
+The attraction is that it gives a better picture of what an agent is doing.
+
+An agent is not only selecting actions. It is also continuously modulating itself. It is amplifying some possibilities, suppressing others, holding off when uncertain, and stabilizing learned dispositions over time. A good architecture for agency should make that internal tension explicit rather than burying it in a hidden state and a couple of output heads.
+
+In that sense Chevron Nets are not just another network design. They are a small proposal about the shape of self-regulation.
+
+One nice consequence is that hesitation can become a first-class phenomenon. If the system carries proposal and norm throughout, then unresolved tension can lead not only to changed gradients but to changed behavior: slow down, wait, inspect, gather more evidence, defer action. That is much closer to lived agency than a model that simply emits its current best guess.
+
+7. The next demo: a visual RL proof of concept
+The next step should not be a grand benchmark contest. It should be a small visual demonstration that makes the architecture legible.
+
+The environment I have in mind is modest: a visual RL task with cues, traps, reversals, and a WAIT action.
+
+Why these ingredients?
+
+Because they make the architectural question visible.
+
+Cues allow the agent to form expectations.
+
+Traps test whether value-like restraint can override attractive but bad options.
+
+Reversals test continual adaptation without total forgetting.
+
+WAIT lets uncertainty become behavior rather than mere metadata.
+
+A standard baseline would use an ordinary visual actor–critic model. The Chevron version would use a recurrent two-channel core with chevron weights and the tension gate. The goal would not be to announce victory over all existing methods. It would be to see whether the Chevron agent shows the kind of behavior the architecture promises:
+
+hesitation under uncertainty,
+
+less brittle reversal learning,
+
+interpretable proposal/norm dynamics,
+
+more graceful adaptation to changing cues.
+
+That would already be a meaningful result.
+
+8. The attractive application area: learning without recklessness
+Every speculative architecture wants a killer application. It is far too early to claim one here. But there is an attractive possibility.
+
+If this Chevron Net design has a natural home, it may be in systems that must continue learning without repeatedly crossing unsafe thresholds.
+
+That points toward safe continual adaptation.
+
+Not “solve robotics” in the grand sense. Something narrower and more believable: agents or robots that must keep revising their behavior a little, in the wild, without forgetting what keeps them safe. Systems that need not only performance, but restraint. Systems that sometimes ought to wait.
+
+This is where the architecture’s native features line up rather neatly:
+
+local continual revision rather than pure retraining,
+
+uncertainty-sensitive plasticity,
+
+distributed critic-like influence rather than only a final value head,
+
+the possibility of safe hesitation as an explicit behavior.
+
+That does not prove anything yet. But it does suggest a sweet spot. The first promise of this architecture may not be superhuman intelligence. It may be adaptive caution.
+
+That is not a bad place to start.
+
+9. Where this leaves the larger project
+I do not see Chevron Nets as a replacement for every existing architecture, nor predictive coding as a magic substitute for all uses of backpropagation. The point is smaller and, I think, more durable.
+
+If we want a better conceptual model of agency, then actor and critic should not merely sit at the top of a network as two readout heads. They should appear throughout the process as coupled tendencies. Predictive coding gives one way to understand how such a system might learn locally. The R-rule gives a principled account of when it should remain stable and when it should revise itself.
+
+That combination is enough to justify a first demo.
+
+So the immediate task is clear. Build the visual experiment. Give the agent proposal and norm everywhere. Add traps, reversals, and WAIT. Then see whether the architecture behaves like what it claims to be: not just a policy with a critic attached, but a distributed field of self-regulation.
+
+If that works, even modestly, it will have done something useful. Not solved agency. Not solved continual learning. But shown a more interesting way to build agents that act in a world while still being able to hold themselves back.
+
+And in the current climate, learning how to keep learning without losing restraint may be a good first ambition.
+
+
+
+
+Andre (with ChatGPT-5.4)
+
+April 2026
+
+Appendix: Bellman, HJB, and a Two-Channel Chevron Story
+Predictive coding is one interpretation of the two-channel Chevron story; Bellman and TD give another.
+
+Bellman’s principle of optimality says that an optimal course of action must remain optimal at every later step. In plain terms: if a path is truly the best, then from whatever state it reaches, the rest of the path must also be the best continuation from there. This lets a long-horizon problem be written recursively.
+
+In discrete time, that gives the Bellman equation:
+
+
+V(s) = max⁡_a[r(s,a) + γ E[V(s′)]]
+
+Here V(s) is the value of being in state s, r(s,a) is the immediate reward from taking action a, and the future enters through the value of the next state s′. So present choice is evaluated not only by what it yields now, but by what it opens or closes for the future.
+
+In continuous time, the same idea becomes the Hamilton–Jacobi–Bellman equation:
+
+
+∂V/∂t + max⁡_u{R(x,u,t) + ∇V(x,t)⋅f(x,u,t)}=0
+
+or in cost-minimizing form with a min instead of a max. Here x is the state, u the control, f(x,u,t) the system dynamics, and ∇V the gradient of the value function. The key term is
+
+∇V⋅f
+
+which measures how the chosen motion through state space aligns with the local slope of value. One part of the system says where the action tends to move; the other says whether that direction improves or worsens future prospects.
+
+That is where a two-channel reading becomes natural. One channel can be read as the proposal or action channel: what the system is inclined to do next. The other can be read as the normative or value channel: an estimate of how good that move is once future consequences are taken into account.
+
+So in compact form:
+
+A-channel = action, proposal, local tendency, dynamics
+
+N-channel = norm, value, future-weighted correction
+
+Bellman then gives the N-channel a precise role. It is not just a static veto or critic imposed from above. It is a recursively updated estimate of downstream consequences. In that sense, the value channel is a learned memory of what different directions in state space lead to.
+
+This fits neatly with a Chevron-style node. Suppose each node carries a two-channel state
+
+xi = [Ai
+
+Ni]
+
+and each connection applies a 2×2 transformation
+
+Wij = [wAA wAN
+
+wNA wNN]
+
+so that
+
+
+x_i′ = σ ⁣(∑j Wij x_j + Ii)
+
+with σ a nonlinearity and Ii any local input.
+
+This makes the channel interaction explicit:
+
+wAA​: persistence or propagation of action tendency
+
+wAN​: how value/norm reshapes or gates action
+
+wNA​: how actions update the evaluative channel
+
+wNN​: persistence or smoothing of value/norm itself
+
+In Bellman terms, the N-channel carries something like a continuation value:
+
+
+Nt ≈ rt + γNt+1
+
+or more generally the best continuation under possible actions. The A-channel proposes movement; the N-channel evaluates the future implied by that movement; the chevron weights determine how strongly the two channels influence one another.
+
+That gives a concise two-channel interpretation of control and agency. The A side is the system’s push into the next step. The N side is the system’s retained estimate of what that step means for the future. Bellman and HJB provide the recursive principle that couples them, while the Chevron matrix provides a concrete local mechanism for their interaction.
+
+So the core story can be put very simply:
+
+A acts; N appraises the future; the chevron couples them; Bellman makes the coupling recursive.
+
+That is what makes Bellman such a useful bridge between optimal control, actor–critic reinforcement learning, and a broader two-channel picture of agency as recursive selection under constraint.
+
+In this picture, the natural training rule for the N-channel is temporal-difference learning. Bellman gives the recursive target structure, while TD provides an online way to approximate it from experience. If the N-channel carries an estimate of continuation value, then after taking an action and observing reward and next state, the local target becomes
+
+
+N_t target = rt + γNt+1
+
+and the corresponding TD error is
+
+
+δt = rt + γNt+1 −Nt
+
+This error says how much the current value estimate disagrees with what actually happened plus what now appears achievable from the next step onward. In that sense, TD is the practical learning rule that makes the Bellman recursion operational.
+
+In a Chevron-style architecture, that gives a clean division of labor between the two channels. The A-channel proposes or carries the current action tendency, while the N-channel learns to predict the downstream significance of that tendency. The chevron matrix then determines how strongly value reshapes action and how strongly action outcomes revise value: wAN lets the evaluative channel steer future proposals, while wNA lets chosen actions and their consequences update the evaluative side. This makes the node look very much like a local actor–critic cell: A acts, N predicts continuation value, and TD trains N so that future consequence is gradually folded back into present choice.
+
+By framing the Chevron node as a micro actor–critic cell governed by Bellman recursion, the architecture ceases to be merely a pattern recognizer. It begins to look like a distributed society of microscopic controllers. Here wAA carries habit or momentum, wAN​ lets value gradients steer action, wNA​ learns how action updates the critic, and wNN​ diffuses and stabilizes value across the network. On this view, agency is not concentrated in a single optimizer. It is woven from many local loops of proposal, appraisal, and retention, whose partial coordination gives rise to coherent control at larger scales.
+
+So predictive coding and Bellman recursion can be seen as two readings of the same architectural intuition. In one reading, Chevron Nets distribute proposal and correction. In the other, they distribute proposal and continuation value. Either way, actor and critic cease to be two final output heads. They become a field of local loops in which present tendency is continually reshaped by retained consequence.
+
+Breakout: Magnitude, Angle, and a Hint of Something Bigger
+Google’s recent TurboQuant work includes PolarQuant, which rewrites vectors in polar rather than ordinary Cartesian form. Their goal is pragmatic: better quantization, lower KV-cache overhead, and faster attention computation. This is about compression, not agency, and certainly not about Chevron Nets.
+
+Still, there is a suggestive resonance here. Polar coordinates replace separate axis-values with a magnitude and an angle: not just “how much on each line,” but “how strong” and “in what direction.” That is mathematically ordinary enough, but conceptually it points toward a broader lesson. Sometimes a different coordinate system makes latent structure easier to express.
+
+That does not mean Google has secretly rediscovered complex-valued cognition or oppositional agency. But it does suggest that even in the Transformer world, the search is on for representations richer than plain scalar slots. If Chevron Nets are trying to make proposal and norm, actor and critic, live together as a structured pair rather than as separate outputs, then perhaps they too belong to this wider movement: not abandoning existing architectures, but looking for more expressive internal geometries.
+
+So no, PolarQuant is not a proof of Chevron Nets. But as a light-hearted thought: if the people who gave us Transformers are now happy to look for “new angles,” maybe the rest of us are allowed to wonder whether magnitude-and-phase, opposition-and-coupling, and other non-plain forms are part of something bigger.
+
