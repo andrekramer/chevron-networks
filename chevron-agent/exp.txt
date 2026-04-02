@@ -1,0 +1,469 @@
+Experiment Brief: A Trainable Proposal/Norm Agent in a Visual RL World
+
+Working title
+
+Trainable Proposal/Norm Agents with Chevron Nets:
+A Clean PyTorch Proof of Concept
+
+Purpose
+
+This experiment is a proof-of-existence test.
+
+The aim is not to claim that Chevron nets outperform standard RL architectures in general, and not yet to claim a full theory of agency. The first question is narrower:
+
+Can a Chevron network be implemented as a distributed two-channel proposal/norm agent in PyTorch, and can that agent be trained successfully on a small visual reinforcement-learning task?
+
+If the answer is yes, that is already a useful result. It would show that:
+
+- the Chevron architecture is computationally straightforward enough to build with ordinary tools,
+- the proposal/norm interpretation is not merely philosophical language attached to ordinary output heads,
+- and the architecture can support learning in a task where cautious behavior is relevant.
+
+The first success criterion is therefore simple:
+
+A Chevron-based proposal/norm agent trains stably and solves a small visual RL task at a competitive level relative to a matched recurrent baseline.
+
+Secondary questions
+
+Once trainability is established, the next questions are:
+
+- Does the Chevron version show cleaner internal separation between proposal and norm?
+- Does the tension gate support more cautious adaptation under ambiguity or reversals?
+- Do wait-like or restraint-like behaviors emerge in situations where acting too quickly is costly?
+
+Those are important, but they are secondary to the first proof-of-concept claim.
+
+1. Main hypothesis
+
+A recurrent Chevron core with two distributed channels
+
+- A = proposal / action tendency / policy drive
+- N = norm / value / evaluative restraint
+
+can be trained end-to-end with standard PyTorch and PPO on a small visual RL task.
+
+More specifically:
+
+1. A Chevron recurrent core can function as a practical distributed proposal/norm substrate rather than a standard shared trunk with separate policy and value heads.
+2. A Chevron agent can learn competitively with a matched recurrent actor-critic baseline.
+3. Adding the R-style tension gate may improve cautious adaptation under ambiguity or reversal, though this is a secondary hypothesis.
+
+The intended tension gate is:
+
+pi(t) = sigma(Ai(t) - Ni(t))
+ui(t) = sqrt(epsilon + pi(t)(1 - pi(t)))
+
+This gate should be highest when proposal and norm remain unresolved, and lower when one side has clearly settled.
+
+2. Experimental claim
+
+The claim being tested is deliberately modest:
+
+Chevron nets are sufficient to build and train a proposal/norm agent in a clean PyTorch implementation.
+
+The experiment does not need to show superiority over every alternative. It only needs to show that the architecture is:
+
+- implementable,
+- trainable,
+- behaviorally meaningful enough to test further.
+
+3. Environment design
+
+Environment type
+
+A small custom visual gridworld, simple enough to train quickly and simple enough to visualize.
+
+Design goals
+
+The environment should make three things possible:
+
+1. cue-based action selection,
+2. mistakes with delayed or non-obvious consequences,
+3. at least some situations where cautious delay is better than immediate commitment.
+
+Initial grid
+
+- 9x9 grid
+- top-down rendering
+- small RGB image observation or simple color-block image encoding
+
+Objects
+
+- cue object
+- target A
+- target B
+- trap object
+- lure object
+- optional distractors
+
+Episode structure
+
+At the start of each episode:
+
+- a cue indicates which target is currently correct,
+- the agent must interpret the cue,
+- the agent then chooses whether to move, wait, or interact.
+
+Example mapping
+
+- blue cue -> blue target rewarded, red target punished
+- red cue -> red target rewarded, blue target punished
+
+4. Caution-relevant structure
+
+The task should include at least one mechanism that makes cautious behavior useful.
+
+Recommended ingredients
+
+- noisy or partially corrupted cues,
+- lure objects with immediate reward but worse downstream outcome,
+- periodic cue-target reversals,
+- optional short periods where waiting improves information quality.
+
+Important design note
+
+If wait is included, the environment should make wait instrumentally meaningful in at least some states. Otherwise WAIT becomes mostly decorative and should not be overinterpreted.
+
+A simple way to do this is:
+
+- some cues begin partially obscured,
+- one or two wait steps reveal the cue more clearly,
+- acting immediately under ambiguity carries a real chance of choosing the wrong target or trap.
+
+That makes caution behaviorally legible without making the task complicated.
+
+5. Action space
+
+Use:
+
+- up
+- down
+- left
+- right
+- interact
+- wait
+
+The WAIT action is useful, but not the primary claim of the paper or demo.
+
+In this first proof of concept, WAIT is included because it gives the architecture a visible way to express hesitation or deferred commitment. But the core result does not depend on strong WAIT behavior. The core result is trainability of the proposal/norm Chevron agent.
+
+6. Reward structure
+
+A simple starting reward scheme:
+
+- correct target reached: +1.0
+- wrong target or trap: -1.0
+- lure collected: +0.2 immediate, then -0.6 delayed
+- wait: small cost, for example -0.01
+- step cost: -0.005
+
+The delayed lure penalty should be implemented in one fixed way, not described with multiple alternatives. For the first demo, a fixed delayed penalty is clearer than mixing timeout, reduced return, and later punishment.
+
+7. Architecture variants
+
+Model A: matched recurrent baseline
+
+- same visual encoder as Chevron model
+- recurrent core: GRU
+- policy head
+- value head
+- trained with PPO
+
+This is the comparison model. It should be recurrent, not optional-recurrent, so the comparison is clean.
+
+Model B: Chevron proposal/norm agent
+
+- same visual encoder
+- recurrent Chevron core
+- two-channel latent state throughout recurrent core
+- policy and value readouts from Chevron state
+- trained with PPO
+
+This is the core proof-of-existence model.
+
+Model C: Chevron proposal/norm agent with tension gate
+
+Same as Model B, but with the tension gate:
+
+pi(t) = sigma(Ai(t) - Ni(t))
+ui(t) = sqrt(epsilon + pi(t)(1 - pi(t)))
+
+This model tests whether uncertainty-sensitive gating improves cautious adaptation or internal separation.
+
+8. Chevron core specification
+
+Each latent unit holds a two-channel state:
+
+xi(t) = [Ai(t), Ni(t)]
+
+Interpretation
+
+- A: proposal, action tendency, policy drive
+- N: norm, value, evaluative restraint
+
+Each recurrent coupling is a 2x2 operator:
+
+Wij = [[wAA, wAN],
+       [wNA, wNN]]
+
+Interpretation of the four terms
+
+- wAA: proposal persistence or proposal-to-proposal influence
+- wAN: norm reshaping proposal
+- wNA: proposal informing norm
+- wNN: norm persistence or norm smoothing
+
+A simple recurrent update is:
+
+mi(t) = sum_j gij(t) Wij xj(t)
+xi(t+1) = (1 - lambda) xi(t) + ui(t) * mi(t) + Ii(t)
+
+where:
+
+- gij(t) is an optional relevance gate,
+- ui(t) is the local tension gate,
+- Ii(t) is input projection from the encoder.
+
+For the first implementation, this can be realized efficiently by doubling the latent dimension and using block-structured linear layers.
+
+9. Readout design
+
+Policy readout
+
+Policy logits should depend mainly on A, though readout from both channels is acceptable for an initial implementation.
+
+Value readout
+
+The value estimate should depend mainly on N.
+
+Useful readout ablations
+
+- policy from A only,
+- value from N only,
+- both readouts from both channels.
+
+These help test whether the intended specialization actually emerges.
+
+10. Training plan
+
+Initial training method
+
+Use PPO.
+
+Reason
+
+- standard,
+- stable,
+- easy to compare,
+- keeps the first demo focused on architecture rather than exotic learning rules.
+
+Important framing
+
+This first experiment is about architectural realizability and trainability, not about replacing backpropagation.
+
+So the initial setup should be:
+
+- end-to-end backpropagation,
+- same optimizer across models,
+- same rollout budget across models,
+- same encoder size across models,
+- same hidden-state budget as closely as practical.
+
+Later work can test predictive-coding-style or local TD-style updates, but not in the first proof-of-concept demo.
+
+11. Task suite
+
+Task 1: Stable cue-target mapping
+
+Purpose:
+
+- verify basic learnability,
+- verify that Chevron is not inherently hard to optimize.
+
+Task 2: Noisy cue
+
+Purpose:
+
+- test behavior under ambiguity,
+- test whether caution or waiting appears when useful.
+
+Task 3: Reversal
+
+Purpose:
+
+- test adaptation after mapping flips,
+- test whether the Chevron agent can revise behavior without collapsing.
+
+Task 4: Lure with delayed penalty
+
+Purpose:
+
+- test whether the norm channel can help restrain attractive but costly actions.
+
+Recommendation
+
+Start with Tasks 1, 3, and 4.
+
+Add the stronger WAIT-sensitive version of Task 2 only once the basic training pipeline works.
+
+12. Metrics
+
+Primary metrics
+
+- average episodic return
+- success rate
+- sample efficiency
+- reversal recovery time
+
+Secondary caution-related metrics
+
+- trap or lure approach rate
+- wrong-commit rate after reversal
+- wait frequency
+- fraction of waits under ambiguous cues
+
+Chevron-specific channel metrics
+
+- mean A activation over episode
+- mean N activation over episode
+- mean (A - N) near action commitment
+- mean tension gate u near reversals, traps, and ambiguous cues
+
+Interpretability metrics
+
+- correlation between N activity and later risk
+- correlation between elevated tension and WAIT
+- correlation between A dominance and immediate commitment
+
+Interpretability matters here because part of the value of the demo is that the proposal/norm architecture should be more legible than a generic hidden state.
+
+13. Visualizations
+
+For selected episodes, log and visualize:
+
+- environment frame
+- cue type
+- chosen action
+- reward
+- policy entropy
+- value estimate
+- A-channel heatmap
+- N-channel heatmap
+- tension heatmap
+- A-N difference heatmap
+
+Useful qualitative moments
+
+- ambiguous cue -> elevated tension -> wait or delayed commitment
+- lure visible -> proposal rises, norm counteracts -> lure avoided
+- reversal begins -> conflict rises -> behavior gradually adapts
+
+These visualizations are not the main proof, but they make the architecture legible.
+
+14. Ablations
+
+Ablation 1: remove N-to-A coupling
+
+Reduce or zero wAN.
+
+Question:
+
+Does removing norm influence reduce restraint or increase lure mistakes?
+
+Ablation 2: remove A-to-N coupling
+
+Reduce or zero wNA.
+
+Question:
+
+Does this hurt norm updating or slow reversal adaptation?
+
+Ablation 3: remove tension gate
+
+Compare Chevron with and without:
+
+ui(t) = sqrt(epsilon + pi(t)(1 - pi(t)))
+
+Question:
+
+Does the gate improve cautious adaptation without causing instability?
+
+Ablation 4: remove WAIT
+
+Question:
+
+If WAIT is unavailable, does Chevron still show cleaner proposal/norm structure internally?
+
+15. Expected outcomes
+
+Minimum success condition
+
+The Chevron proposal/norm model can be trained stably and performs competitively with the matched recurrent baseline on the basic task suite.
+
+More interesting success condition
+
+Chevron plus tension gate shows one or more of:
+
+- fewer lure or trap mistakes,
+- smoother reversal recovery,
+- more interpretable internal proposal/norm separation,
+- more selective waiting under ambiguity.
+
+Strongest success condition for this stage
+
+The implementation demonstrates that a distributed proposal/norm agent is a real, trainable Chevron-based RL architecture, not just a metaphor.
+
+16. Minimal implementation roadmap
+
+Phase 1
+
+Build the gridworld and matched GRU baseline.
+
+Phase 2
+
+Implement the Chevron recurrent core.
+
+Phase 3
+
+Train the basic Chevron model with PPO.
+
+Phase 4
+
+Add the tension gate variant.
+
+Phase 5
+
+Add logging, visualizations, and ablations.
+
+This keeps the work focused on a clean PyTorch demo rather than an overextended benchmark suite.
+
+17. Short summary
+
+Environment:
+
+small visual gridworld with cues, reversals, lure/trap structure, and optional WAIT
+
+Question:
+
+can a Chevron net realize a distributed proposal/norm agent that can actually be trained?
+
+Models:
+
+- recurrent GRU baseline
+- Chevron proposal/norm agent
+- Chevron proposal/norm agent with tension gate
+
+Training:
+
+PPO with ordinary end-to-end backpropagation
+
+What matters most:
+
+- clean implementation,
+- successful training,
+- competitive basic performance,
+- interpretable proposal/norm dynamics.
+
+18. Suggested write-up framing
+
+This experiment is not intended as a universal comparison against all reinforcement-learning architectures. It is a proof-of-concept test of a narrower claim: that Chevron nets can be implemented as a trainable distributed proposal/norm agent in PyTorch. The task is intentionally small and visual so that the architecture remains inspectable. If the model trains successfully and shows coherent internal proposal/norm dynamics, that is already a meaningful first result and a foundation for more ambitious future experiments.

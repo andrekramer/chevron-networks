@@ -1,0 +1,15 @@
+seed: 0
+device: cpu
+run_name: baseline
+model_type: baseline
+total_updates: 50
+num_envs: 8
+rollout_steps: 64
+learning_rate: 0.0003
+hidden_dim: 128
+eval_interval: 10
+eval_episodes: 10
+checkpoint_interval: 10
+max_steps: 40
+reversal_period: 50
+reveal_wait_steps: 2
