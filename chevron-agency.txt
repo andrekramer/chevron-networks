@@ -275,6 +275,17 @@ Andre (with ChatGPT-5.4)
 
 April 2026
 
+Update: I built a small PyTorch proof of concept for a Chevron proposal/norm reinforcement-learning agent and compared it against a matched GRU baseline on a staged gridworld task.
+
+The first result is simple: the architecture is real. A Chevron net can be trained with ordinary PPO, not just described abstractly. On the easy first two stages of the curriculum, the GRU baseline, plain Chevron model, and gated Chevron model all learn cleanly.
+
+The more interesting result shows up on the first nontrivial stage. Once the task requires cue-conditioned navigation with a bit of generalization pressure, the plain Chevron model currently outperforms the matched GRU baseline on best-checkpoint success across three seeds, while using fewer parameters. The gated version is not helping yet.
+
+This is still an early proof-of-existence experiment, not a polished final benchmark. Stage 3 remains somewhat unstable, and later stages are still open. But the initial conclusion is already useful: Chevron-style proposal/norm dynamics can be implemented cleanly, trained in PyTorch, and can compete with a standard recurrent baseline on a real task.
+
+Code (ChatGPT-5.4 Codex generated), configs, and current results are in the README here.
+
+
 Appendix: Bellman, HJB, and a Two-Channel Chevron Story
 Predictive coding is one interpretation of the two-channel Chevron story; Bellman and TD give another.
 
