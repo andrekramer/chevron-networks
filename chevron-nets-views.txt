@@ -1,0 +1,585 @@
+Andre's Baccalaureus in Arte Ingeniaria
+
+
+
+
+Three Ways to Think About a Chevron Network
+From ordinary MLPs to paired channels to block-matrix layers.
+Andre Kramer
+Apr 16, 2026
+
+
+
+When I describe a chevron network, it can sound more exotic than I really mean. Each node has two channels rather than one. Each connection carries a 2×2 matrix rather than a single scalar weight. That sounds like a break with ordinary neural networks.
+
+But it is not. Or at least, not at first.
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
+
+A fully connected chevron layer is still best understood as a kind of dense layer. The real change is smaller and more interesting: the basic unit of computation is no longer a single scalar activation, but a paired state. Instead of passing one number from node to node, we pass a 2-vector. Instead of weighting that with one number, we transform it with a little 2×2 operator.
+
+That one shift gives three different ways to understand the same object:
+
+as an MLP with richer neurons
+
+as two densely coupled channels
+
+as a standard dense layer with a structured block-matrix form
+
+These three views are equivalent, but they are not interchangeable. Each one highlights something different. The first gives familiarity. The second gives intuition. The third gives mathematical precision.
+
+Taken together, they turn the chevron network from something mysterious into something quite concrete.
+
+1. The MLP View
+The easiest way to think about a chevron network is as an ordinary MLP, except that each node holds two numbers instead of one.
+
+In a standard dense network:
+
+each node has a scalar activation
+
+each edge has a scalar weight
+
+In a chevron network:
+
+each node has a 2-component activation
+
+each edge has a 2×2 weight matrix
+
+So if xj​ is the state of node j, and yi is the state of node i in the next layer, a chevron layer looks like this:
+
+yi = ϕ ⁣(∑j Wij * xj + bi), xj,yi ∈ R2, Wij ∈ R2×2.
+
+
+That is just the dense-layer equation again, with scalars replaced by 2-vectors and scalar weights replaced by 2×2 operators.
+
+This is the first thing worth stressing: a chevron layer is not a rejection of the MLP idea. It is a direct generalization of it.
+
+If an MLP says, “each neuron carries one scalar state,” then a chevron MLP says, “each neuron carries a paired state.”
+
+That is the mathematical core.
+
+2. The Coupled-Channel View
+The second view is more intuitive.
+
+A chevron network can be pictured as having two channels running through the same layer structure. Call them A and N, though the labels are placeholders. Depending on the application, they might stand for:
+
+actor and critic
+
+signal and error
+
+positive and negative evidence
+
+self and world
+
+excitation and inhibition
+
+This is where the “two networks” analogy becomes useful. You can imagine a top network and a bottom network, both fully connected, moving forward together.
+
+But that picture is only an approximation.
+
+The two channels are not really independent networks sitting side by side. They are coupled at every edge. Each connection from node j to node i carries four weights:
+
+Wij=[wijAA. wijAN
+
+wijNA. wijNN].
+
+
+So the output in one channel depends on both channels from the previous layer:
+
+yiA = ∑j(wijAAxjA + wijANxjN) + biA
+
+yiN = ∑j(wijNAxjA + wijNNxjN) + biN.
+
+
+
+That is why “two separate MLPs” is not quite right. The cross terms matter. The whole point is that the two channels can preserve, amplify, inhibit, or transform one another locally at each connection.
+
+So the better description is this:
+
+A chevron network is not two networks sharing a few links. It is one network whose node state is intrinsically two-channel.
+
+This matters conceptually. Once the two channels are built into the primitive, it becomes natural to think in terms of tension, correction, opposition, or coupled roles rather than isolated scalar activations.
+
+3. The Flattened Block-Matrix View
+The third view is the most exact.
+
+Suppose one layer has n chevron nodes and the next has m. Since each node carries two values, the input can be flattened into a vector of length 2n, and the output into a vector of length 2m.
+
+Then the chevron layer can be written as an ordinary dense transformation:
+
+yflat = ϕ(Wbigxflat + bflat).
+
+
+So far, nothing unusual.
+
+But the large matrix Wbig​ is not arbitrary. It has a very specific structure: it is composed of 2×2 blocks,
+
+Wbig =[ W11 W12 ⋯ W1n
+
+W21 W22 ⋯ W2n
+
+⋮ ⋮ ⋱ ⋮
+
+Wm1Wm2⋯Wmn],
+
+
+
+where each block Wij is itself a 2×2 matrix.
+
+This is probably the cleanest exact statement of what a chevron layer is:
+
+a standard dense layer with a built-in 2×2 block structure.
+
+That sounds technical, but it matters. A generic dense layer on 2n inputs could mix all features arbitrarily. A chevron layer keeps the two components locally paired. It preserves the idea that these two values belong together at each node and should be transformed together at each edge.
+
+That is not merely an implementation detail. It is the architectural prior.
+
+A Clarification: When Is a Chevron Layer Really Different?
+At this point, a sharp reader might notice a theoretical catch. If we apply a standard element-wise activation function to the flattened output, then a chevron layer is mathematically equivalent to an ordinary dense layer with twice as many nodes. In principle, a standard network could represent exactly the same 2×2 block structure on its own.
+
+But it has no reason to do so. A conventional dense layer treats all 2n features as an undifferentiated pool, free to mix arbitrarily. The chevron form does something more specific: it makes the pairing explicit. It says that these two values belong together, should travel together, and should be transformed together.
+
+That already matters as an architectural prior. But it matters even more because it gives a clear boundary where the equivalence can be deliberately broken.
+
+As soon as we apply an operation that acts on the two channels jointly rather than independently, the chevron layer is no longer just a partitioned MLP. For example, one channel might gate the other, the two components might be normalized as a single 2-vector, or a tension-based learning rule might update the whole 2×2 block as one dynamic unit. At that point, the architecture is no longer just simulating paired structure inside a conventional network. It becomes a genuine network of paired states.
+
+The key point is this: the chevron form begins as a structured dense layer, but it creates a natural place where new dynamics can enter. That is where the architecture stops being merely notational and starts becoming conceptually distinct.
+
+Same Layer, Three Views
+At this point, it becomes clear why all three descriptions are useful.
+
+The MLP view says: this is familiar territory. It is still a dense layer.
+
+The coupled-channel view says: the two channels can play different but coordinated roles.
+
+The flattened view says: the whole thing can be implemented exactly and efficiently in standard frameworks.
+
+Each view hides something that the others reveal.
+
+The MLP view is reassuring, but can make the two-channel structure seem like a small tweak. The coupled-channel view captures the conceptual richness, but can sound vague if not tied down mathematically. The flattened view is exact, but can hide the intuition that the two values are meant to travel as a pair.
+
+So I think the right way to present a chevron network is not to pick one of these views and defend it as the true one. It is to say that the same object can be seen from all three angles, and that each angle helps for a different reason.
+
+Research Overlap: Complex Networks and Capsules
+In the machine learning literature, the closest mathematical cousin to the chevron node is the complex-valued neural network (CVNN). CVNNs also replace scalar activations with paired states: the real and imaginary parts of a complex number. Their connections can likewise be written as 2×2 blocks.
+
+But a CVNN imposes a strict constraint on those blocks. The weights must obey the symmetry of complex multiplication, so the two channels are tied to the geometry of phase, rotation, and scaling in the complex plane. A chevron network deliberately removes that restriction. Its 2×2 blocks are fully free. That shifts the emphasis away from geometric rotation and toward dynamic regulation. The two channels need not merely rotate together. They can oppose, inhibit, gate, amplify, or stabilize one another.
+
+Conceptually, the chevron architecture has a different kind of kinship with Geoffrey Hinton’s Capsule Networks. CapsNets were built around an important criticism of ordinary neural nets: scalar neurons tend to discard relational structure that ought to be preserved. Their answer was to make the basic unit of representation a vector rather than a lone scalar, and to use dynamic routing to preserve part-whole and pose relationships.
+
+Chevron networks share that dissatisfaction with the isolated scalar neuron, but they aim at something simpler and more primitive. A capsule is designed to track structured geometry: orientation, pose, and hierarchical composition. A chevron node is designed to track a local duality: proposal and norm, signal and correction, drive and restraint. It keeps the vector idea, but strips away the heavy routing machinery in favor of the simplest possible dense form. The goal is not to model the 3D pose of an object. It is to make opposition, modulation, and internal tension computationally explicit.
+
+A standard network begins with the lonely scalar. A capsule replaces it with a structured vector for spatial reasoning. A chevron replaces it with the simplest paired state needed for regulation.
+
+Breakout: A Minimal PyTorch Chevron Layer
+The code makes the structure very explicit.
+
+A fully connected chevron layer can be represented with:
+
+inputs of shape [batch, in_nodes, 2]
+
+outputs of shape [batch, out_nodes, 2]
+
+weights of shape [out_nodes, in_nodes, 2, 2]
+
+Here is a minimal implementation:
+
+import torch
+import torch.nn as nn
+
+class ChevronLinear(nn.Module):
+    def __init__(self, in_nodes, out_nodes):
+        super().__init__()
+        self.weight = nn.Parameter(
+            torch.randn(out_nodes, in_nodes, 2, 2) * 0.1
+        )
+        self.bias = nn.Parameter(torch.zeros(out_nodes, 2))
+
+    def forward(self, x):
+        # x: [batch, in_nodes, 2]
+        # output: [batch, out_nodes, 2]
+        return torch.einsum(”ijca,bja->bic”, self.weight, x) + self.bias.unsqueeze(0)
+This is a dense layer in the most literal sense: every input node talks to every output node. The only difference is that each edge carries a 2×2 matrix rather than a scalar.
+
+If one wanted, one could flatten the whole thing into a standard nn.Linear acting on vectors of length 2 * in_nodes. But writing it in chevron form makes the intended structure visible rather than hiding it in a large unstructured matrix.
+
+That visibility is important. It reminds us that the two channels are not just extra features. They are paired states.
+
+Why Bother?
+At one level, one might say this is all only notation. A large enough conventional network can often represent the same functions.
+
+But notation is not trivial. Architectural form matters because it shapes what is easy to express, easy to interpret, and easy to train.
+
+A standard scalar neuron treats each activation as an isolated number.
+
+A chevron neuron treats each node as a paired state.
+
+That small change opens the door to a whole family of ideas that feel much more natural in this setting:
+
+different learning rates for the two channels
+
+separate fast and slow dynamics
+
+cross-channel inhibition or correction
+
+actor/critic-style interpretations
+
+self/world or proposal/evaluation pairings
+
+local tension-based updates rather than only global backpropagation
+
+biological analogies such as excitatory/inhibitory or feedforward/feedback motifs
+
+The architecture does not force any one of these interpretations. But it makes them available in a clean and local way.
+
+That, to me, is why it is worth taking seriously.
+
+The Real Shift
+The real novelty of the chevron picture is not that it adds more parameters. It is that it changes the primitive object.
+
+A scalar neuron says: computation happens through isolated values.
+
+A chevron neuron says: computation happens through a structured relation between two coordinated values.
+
+That is a small mathematical shift, but potentially a large conceptual one.
+
+It suggests that the basic unit of computation need not be a lone activation. It could be a tension, a polarity, a proposal paired with a correction, or some other local duality that travels together through the network.
+
+Whether that turns out to matter empirically remains to be seen. But at the level of architecture, it already gives a cleaner language for talking about systems where two aspects belong together.
+
+From Here
+For now, I think the modest claim is enough.
+
+A fully connected chevron layer can be understood in three equivalent ways:
+
+as an MLP with 2-component neurons
+
+as two densely coupled channels
+
+as a standard dense layer with a structured block-matrix form
+
+That is enough to make the object clear without mystifying it.
+
+The next question is the more interesting one: once a node is treated as a paired state rather than a scalar, what kinds of learning dynamics become natural? Different time scales? Local actor/critic updates? Tension-sensitive learning? Recurrent correction loops? More biologically suggestive motifs?
+
+That is where the story really begins.
+
+I’ll close with a few notes on the core idea. Please feel free to skip through these. The hope is to deepen the intuition built up so far before shifting gears again in the next post.
+
+Andre with ChatGPT-5.4
+
+April 2026
+
+Note 0: What Happens at the Node?
+So far, the chevron picture has focused on the edge: each connection carries a 2×2 block that mixes the two channels as signals move forward. But that still leaves an important question open. Once the paired values arrive at a node, what happens there?
+
+The simplest option is to apply an ordinary activation function to each channel separately. That keeps the architecture very close to a structured MLP. The channels travel together, but the node itself does not yet do anything special with their pairing.
+
+More interesting possibilities appear when the node acts on the two channels jointly. The pair can be normalized as a single 2-vector, so that the node treats them as one local state rather than two unrelated scalars. One channel can gate the other, turning the node into a small unit of modulation or inhibition. The node can also compare the two channels directly, for example by extracting a difference, a total, or both, so that it explicitly represents opposition as well as overall commitment.
+
+This is where the architecture stops being just a partitioned dense layer and starts to become more distinctive. The 2×2 blocks define how paired signals are transported across the network. The node rule defines what that pairing means locally. If the edge gives the chevron network its structure, the node gives it its interpretation.
+
+The most ambitious extension would be to let the node maintain its own local state and update it through the tension between the two channels. At that point, the chevron node is no longer just a two-valued neuron. It becomes a minimal dynamical system.
+
+The edge tells us how the pair travels; the node tells us how the pair is resolved.
+
+Fully connected still means “sum over all previous nodes”; the only difference is that each message is now a paired state transformed by a 2×2 operator.
+
+Note 1: A Simple Limiting Case - Disconnecting the Channels
+One useful feature of the chevron picture is that it contains the ordinary two-network case as a special limit. If the cross-channel weights are set to zero, the two channels decouple completely.
+
+For a chevron edge
+
+Wij = [wijAA wijAN
+
+wijNA wijNN],
+
+the channels are disconnected when the off-diagonal terms vanish:
+
+wijAN = 0, wijNA =0
+
+for all connections i,j. In that case each edge reduces to a diagonal 2×2 block,
+
+Wij = [wijAA 0
+
+0 wijNN],
+
+and the layer splits into two independent dense networks, one for each channel. So the chevron architecture does not replace the familiar two-layer picture. It contains it as a limiting case. The full chevron network is what you get when those off-diagonal terms are allowed to become nonzero, so that each channel can influence, correct, inhibit, or amplify the other. That makes the decoupled case a useful baseline: it shows exactly what extra expressive structure is introduced when the channels are coupled.
+
+Note 2: Inhibition as a Special Case
+One reason the chevron form is interesting is that it makes cross-channel control local and explicit. In biological brains, inhibition is not an optional extra. It is central to stability, selection, competition, timing, and gain control. A chevron network contains a simple abstract analogue of that idea.
+
+For a chevron connection
+
+Wij = [wijAA wijAN
+
+wijNA wijNN],
+
+the off-diagonal terms wijAN and wijNA​ determine how one channel affects the other. If one channel acts to reduce, damp, or gate the activity of the other, then the connection is functioning as a form of inhibition. In that sense, inhibition appears here as a special case of chevron coupling: one channel does not merely travel alongside the other, but can constrain it.
+
+This is one of the main differences between a chevron layer and two independent parallel networks. In the decoupled case, the channels simply coexist. In the coupled case, they can regulate one another. One channel may support the other, correct it, suppress it, or hold it within bounds. That makes the chevron node more than a two-value neuron. It becomes a small local site of interaction and control.
+
+That does not mean a chevron layer reproduces the full biological reality of inhibition. Real brains add timing, thresholds, nonlinear competition, cell types, and recurrent circuitry and who knows what more. But as an architectural abstraction, the chevron form captures something important: the ability of one channel to modulate another is built into the primitive itself. The off-diagonal terms do not just add expressiveness. They turn pairing into regulation.
+
+Note 3: Complex, Dual, and Full Freedom
+Once we allow a node to carry two values, a natural question arises: how tightly should those two channels be tied together?
+
+There are three useful reference points from mathematics.
+
+Complex Numbers: Rotation and Phase
+Complex-valued neural networks treat a two-channel state as a single complex number,
+
+z = a + bi , i^2 = −1.
+
+Under this constraint, the allowed 2×2 weight matrices are not arbitrary. They must take the form
+
+[a −b
+
+b a],
+
+which corresponds to rotation and scaling in the plane.
+
+This is a powerful and elegant structure, but it is also restrictive. The two channels are locked into a symmetric relationship. They can rotate and scale together, but they cannot independently inhibit, gate, or asymmetrically control one another.
+
+Dual Numbers: Shear and Variation
+Dual numbers offer a different way to pair two values,
+
+d = a + bε, ε^2=0.
+
+Here the induced 2×2 structure is
+
+[a 0
+
+b. a],
+
+which behaves like a shear rather than a rotation.
+
+This suggests a different interpretation of the two channels:
+
+one as a base value
+
+the other as a variation, correction, or sensitivity of that value
+
+Unlike the complex case, the relationship is asymmetric. The second channel depends on the first, but not vice versa. This begins to look more like modulation or regulation than geometry.
+
+But dual numbers are still constrained. They cannot express full bidirectional coupling or independent channel dynamics.
+
+Chevron Blocks: Learned Local Algebra
+A chevron connection removes these constraints entirely. Its 2×2 matrix is fully free:
+
+[wAA wAN
+
+wNA wNN].
+
+This is the most general linear relation between the two channels. It can represent:
+
+rotation-like coupling (complex case)
+
+shear-like modulation (dual case)
+
+inhibition and gating
+
+asymmetric control
+
+independent amplification or damping of each channel
+
+In this sense, a chevron network can be viewed as learning its own local algebra at each connection. Instead of committing in advance to rotation (complex) or variation (dual), it allows the relationship between the two channels to be shaped by learning.
+
+A Small Ladder
+It is helpful to see these as points on a spectrum:
+
+Real scalar → one channel
+
+Complex number → two channels with rotational coupling
+
+Dual number → two channels with shear/variation coupling
+
+Chevron block → two channels with fully learned coupling
+
+The chevron layer does not reject the earlier cases. It contains them as special forms. But by allowing all four weights to vary freely, it shifts the emphasis from fixed geometry to dynamic regulation.
+
+Why This Matters
+Complex numbers are ideal when phase and oscillation are central. Dual numbers are natural when tracking variation or sensitivity. Chevron blocks step beyond both. They make it possible for the two channels to genuinely oppose, constrain, or stabilize one another.
+
+That is the key shift: the pair is no longer bound to a predefined relationship. It becomes a small, learnable system of interaction. Complex numbers rotate, dual numbers shear, chevron blocks regulate.
+
+A useful reference case is the complex-valued 2×2 matrix. If a complex weight is written as r * e^iϕ, its action on a real two-component state can be represented as
+
+r * [ cos⁡ϕ −sin⁡ϕ
+
+sin⁡ϕ cos⁡ϕ],
+
+which simply rotates the pair by angle ϕ and scales it by r (or not at all if r = 1). This is a helpful special case because it shows that paired-channel computation already has a well-known mathematical form. A chevron block includes this possibility, but does not stop there. By freeing all four entries of the 2×2 matrix, it moves beyond rotation and scaling to allow inhibition, asymmetric coupling, gating, and more general regulation.
+
+It also makes contact with the R rule, where phase already plays a central role in balancing different influences. In that sense, the complex matrix gives a constrained picture of phase-sensitive two-channel dynamics, while the chevron block generalizes the idea by allowing all four entries to vary freely. The result is a local coupling that can still express rotation-like behaviour, but is no longer limited to it.
+
+Note 4: Superposition as AND/OR Mixing
+A natural question is whether a chevron node can represent something like superposition: multiple possibilities coexisting before a decision or collapse.
+
+In a strict quantum sense, superposition involves complex amplitudes, phase, and interference. A general chevron layer does not enforce those constraints. But it can represent a simpler and often more useful idea: coexisting alternatives that are later resolved through interaction.
+
+One way to see this is to interpret the two channels as holding different aspects of a proposition. For example:
+
+A: support for a hypothesis
+
+N: counter-support, constraint, or alternative
+
+Now consider how a chevron connection mixes inputs:
+
+[yA
+
+yN] = ∑j[wAA wAN
+
+wNA wNN] [xjA
+
+​xjN​​].
+
+
+Two kinds of combination naturally appear:
+
+Within-channel accumulation (wAA, wNN) behaves like an OR: multiple sources contribute to the same channel, reinforcing or competing within it.
+
+Cross-channel mixing (wAN, wNA) behaves more like an AND-like interaction: one channel conditions or modulates the other, introducing dependence between them.
+
+So a chevron node does not simply accumulate evidence. It holds and mixes alternatives:
+
+OR-like accumulation gathers possibilities
+
+AND-like coupling makes them interact, constrain, or suppress one another
+
+This gives a form of computational superposition: multiple candidates are present simultaneously, but not independently. They coexist in a structured tension, influencing one another before any final selection.
+
+Not Quantum, but Useful
+It is important not to overstate the analogy. Without phase and interference rules, this is not quantum superposition. There is no guaranteed constructive or destructive interference in the strict sense.
+
+But for many cognitive and computational purposes, this simpler form may be exactly what is needed. The network can:
+
+hold competing hypotheses at once
+
+allow them to reinforce or inhibit each other
+
+delay commitment until later layers
+
+resolve tension through dynamics rather than immediate choice
+
+A Different Kind of Superposition
+In this view, superposition is not about waves interfering in a complex plane. It is about alternatives coexisting under constraint.
+
+A standard network tends to collapse alternatives quickly into a single scalar activation. A chevron network can keep them apart just long enough for them to interact.
+
+That interaction—mediated by the 2×2 coupling—is where something like superposition lives.
+
+In a chevron network, superposition is not phase—it is tension.
+
+Note 5: Toward Quantum-Like Behaviour
+If a chevron network already supports a kind of “computational superposition,” a natural next question is whether it can be extended to something closer to quantum superposition—where phase and interference play a central role.
+
+The short answer is: yes, but only with additional structure.
+
+Step 1: Make the Channels Complex
+Instead of each node carrying two real values,
+
+(A,N) ∈ R2,
+
+we allow each channel to be complex:
+
+(A,N) ∈ C2.
+
+Now each channel has both magnitude and phase. This makes it possible, in principle, for different contributions to interfere constructively or destructively.
+
+At this point, each node is effectively a 2-component complex vector, and each connection becomes a 2×2 complex matrix.
+
+Step 2: Why This Is Not Enough
+Even with complex values, a general chevron layer is still too unconstrained to behave like a quantum system.
+
+A true quantum evolution requires specific properties:
+
+linearity over complex amplitudes
+
+norm preservation (probability must sum to one)
+
+unitary transformations (no arbitrary gain or loss)
+
+phase-sensitive interference
+
+A fully free chevron matrix does not enforce any of these. It can amplify, damp, distort, or collapse signals arbitrarily.
+
+So while complex-valued chevron nets can exhibit interference-like effects, they are not automatically quantum-like systems.
+
+Step 3: Constraining Toward Quantum Behaviour
+To move closer to genuine quantum behaviour, additional constraints would be needed. For example:
+
+restricting each 2×2 block to be unitary
+
+normalizing the node state so that ∣A∣^2 + ∣N∣^2=1
+
+using nonlinearities that preserve or respect phase relationships
+
+At that point, the chevron layer begins to resemble a network of small quantum-like transformations acting on local state vectors.
+
+Chevron vs Quantum
+This highlights a useful distinction:
+
+Quantum models fix the algebra in advance (complex amplitudes, unitary evolution)
+
+Chevron models leave the algebra free and learn it from data
+
+So a chevron network can include quantum-like behaviour as a special constrained case, but its purpose is different. It is not to simulate quantum systems, but to provide a flexible framework where different kinds of coupling—rotation, inhibition, modulation, or interference—can emerge.
+
+A Useful Way to Think About It
+You can think of it as a ladder:
+
+real scalar → single value
+
+real chevron → paired values with learned coupling
+
+complex chevron → paired complex amplitudes
+
+constrained complex chevron → quantum-like dynamics
+
+Only the last step gives you something close to true quantum superposition.
+
+Complex channels give you phase. Constraints give you physics.
+
+It is tempting to push the chevron idea all the way toward quantum mechanics by introducing complex amplitudes and unitary constraints. But for most purposes, that is probably unnecessary. The core value of the chevron architecture already appears at the real-valued level: the ability to hold paired states, allow them to interact locally, and delay collapse through structured tension. Complex numbers add phase and interference, but they also introduce a rigid algebra that may distract from the more general goal of learned regulation. In that sense, the quantum analogy is best treated as an optional extension rather than a destination. The chevron network does not need to become quantum-like to be useful; its strength lies in making opposition, modulation, and constraint first-class computational primitives.
+
+Note 6: Two Kinds of Phase
+There are at least two different ways phase can enter the chevron picture. The first comes from the analogy with complex numbers, where a two-channel state can be written in terms of magnitude and phase, with the channels related like cos⁡ϕ and sin⁡ϕ. In that case, phase is part of the internal geometry of the pair itself.
+
+But there is a second, more biological notion of phase. A channel may participate in a repeated oscillatory cycle, so that its influence depends on timing as well as magnitude. In that case, phase is not just a relation between two numbers at an instant. It is a temporal rhythm that gates when one channel excites, inhibits, or modulates the other. This suggests that chevron networks may have two distinct phase-like extensions: one algebraic, tied to paired representation, and one dynamical, tied to oscillation, timing, and biological control. The first is about rotation in a space of states. The second is about regulation in time.
+
+One phase rotates a pair; the other phase schedules its interaction.
+
+Note 7: Feedforward Control Beyond the Local Pair
+So far, the chevron picture has focused on local coupling: each 2×2 block lets one channel influence the other at a single connection. But the same idea can be extended across layers. One channel may feed forward to later layers and alter how they respond there, either positively or negatively.
+
+This matters because biological control is often not purely local. Inhibition, in particular, often works by shaping downstream activity before it fully develops. Rather than simply cancelling a signal at the same point where it appears, it can arrive early enough to gate, narrow, or veto later responses. In that sense, inhibition is often feedforward as well as local.
+
+A chevron architecture can express a simple analogue of this. One channel can project ahead as a control signal, biasing or damping later activations, while the other continues to carry the main signal path. That makes the architecture richer than a stack of isolated paired nodes. It becomes a network in which regulation can travel forward through depth, not just sideways within a local pair.
+
+The result is a broader picture of chevron computation: not just two channels interacting at one node, but two channels able to shape one another across layers through both local coupling and feedforward control.
+
+The off-diagonal terms make local regulation possible; feedforward cross-links let regulation travel.
+
+One small technical note: in neuroscience, “feedforward inhibition” usually means an excitatory input activates an inhibitory interneuron, which then suppresses downstream targets very quickly. So the biological pattern is often not just a direct negative line, but a small circuit.
+
+Note 8: A Deliberate Simplification
+In the version discussed here, I am deliberately excluding recurrence and backward flows between channels. The aim is to keep the architecture feedforward, trainable, and easy to compare with an ordinary MLP. That keeps the basic idea clear: two paired channels, mixed locally by 2×2 blocks, moving forward through depth without additional temporal complications.
+
+But this simplification also points to an obvious next question. Once the channels are allowed to influence one another, why should that influence be confined to a single forward pass? Biological systems make heavy use of recurrence, delayed inhibition, feedback correction, and oscillatory loops. A feedforward chevron layer is therefore best seen as the simplest tractable case, not the final form. It isolates the architecture’s core idea while leaving open the more interesting possibility that paired channels might later interact through recurrent, feedback, or phase-dependent dynamics.
+
+The feedforward version is the clean baseline; the recurrent version is where the deeper questions begin.
+
+Note 9: From Chevron Transport to R-Rule Dynamics
+Once the chevron layer is understood as a way of transporting paired signals through 2×2 couplings, a natural next step appears. The node itself no longer has to be a passive point where inputs are merely summed and passed through a standard nonlinearity. It can instead become a small dynamical unit. This opens the door to using the R rule as the node update. In that picture, chevron connectivity determines how actor-like and norm-like signals arrive, while the R rule determines how the local paired state evolves in response. The architecture then stops being just a structured MLP and becomes something richer: a network of paired states whose updates depend on uncertainty, tension, and the balance between proposal and constraint.
+
+Chevron blocks move the pair; the R rule can let the pair negotiate.
+
+A Geometric Summary: Fibers Over a Network
+At this point, the chevron architecture can be summarized in a more geometric way. Rather than thinking of the network as a graph of isolated scalar activations, it is better to think of it as a graph whose every node carries a small local state space - an “inner space”. The graph itself provides the base structure. At each node sits a paired fiber, typically a copy of R2, holding the local A/N state. The full chevron network can then be pictured as a bundle of these paired-state fibers attached across the graph.
+
+This picture gathers together the main ideas of the post. The 2×2 edge weights act as transport maps from one local fiber to another, telling us how paired states move forward through the network. The node rule then determines what happens locally inside each fiber: whether the two channels simply pass through, compete, gate one another, normalize jointly, or evolve according to a richer update such as the R rule. In that sense, the chevron net separates naturally into two parts: transport across the graph, and dynamics within the local pair.
+
+That is why bundle language is useful here. It is not decorative physics vocabulary. It captures a real architectural shift. A standard network treats each node as a place where one scalar lives. A chevron network treats each node as a place with an inner space, and each edge as a learned map between such spaces. The graph gives the skeleton; the fibers give each node an internal state.
+
+
