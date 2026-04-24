@@ -1,0 +1,771 @@
+Building the First Allostatic Chevron Net
+A roadmap from paired-state metaphor to continual-learning experiment
+The previous post ended with a simple demand:
+
+Build it, place it in a world, and see whether the coupling matters.
+
+This post is about what that demand means.
+The first allostatic chevron net should not try to be a new foundation model, a theory of consciousness, or a general replacement for attention. That would be the wrong test. The first test should be much smaller and much sharper:
+
+Can a paired-state network with local 2×2 coupling learn sequentially without drifting as badly as an ordinary learner?
+
+Or, even more narrowly:
+
+Does the coupling between a fast adaptive channel and a slower normative channel do measurable work?
+
+That is the first experimental question.
+If the answer is no, then the allostatic interpretation weakens. Chevron nets may still be an interesting notation or architectural curiosity, but they will not yet have earned the stronger claim.
+If the answer is yes, even modestly, then something important follows. The paired-state primitive is not merely decorative. The relation between fast adaptation and slow retention has become computationally relevant.
+The aim of this post is therefore not to report results. It is to define the first implementation clearly enough that it can be coded, tested, ablated, and allowed to fail.
+
+1. The minimum experimental claim
+The first experiment should avoid grand claims.
+It should not test whether chevron nets are conscious.
+It should not test whether they solve agency.
+It should not test whether they replace transformers.
+It should not even test whether they are generally better neural networks.
+The first claim is narrower:
+
+A locally coupled A/N architecture may improve regulated continual learning compared with scalar networks or uncoupled two-stream networks.
+
+That is already enough.
+Continual learning is the natural first test because it exposes the problem the architecture was designed to address: how does a system adapt to new pressure without simply overwriting itself?
+In ordinary networks, new learning can erase old learning. The model follows the current gradient, but the current gradient does not necessarily respect older structure. This is the familiar problem of catastrophic forgetting.
+The allostatic chevron hypothesis reframes that problem. Forgetting is not only loss of old performance. It is drift between fast adaptation and retained structure. A chevron net should therefore have a way to represent, measure, and perhaps regulate that drift internally.
+The first experiment should ask whether that internal structure helps.
+
+2. The smallest chevron layer
+The first implementation begins with an ordinary multilayer perceptron, then replaces scalar hidden activations with paired states.
+An ordinary hidden unit has one activation:
+xᵢ
+A chevron hidden unit has two coupled activations:
+xᵢ = [ Aᵢ, Nᵢ ]
+The A channel is the fast adaptive channel.
+The N channel is the slower normative or retained channel.
+These names are interpretations, not metaphysical claims. At implementation level they are simply two coupled channels with different roles in training.
+An ordinary connection has one scalar weight:
+wᵢⱼ
+A chevron connection has a 2×2 block:
+Wᵢⱼ =
+[ wᵢⱼᴬᴬ  wᵢⱼᴬᴺ ]
+[ wᵢⱼᴺᴬ  wᵢⱼᴺᴺ ]
+So the incoming state from node j is transformed before contributing to node i:
+yᵢ = Σⱼ Wᵢⱼ xⱼ + bᵢ
+Written by channel:
+yᵢᴬ = Σⱼ (wᵢⱼᴬᴬ Aⱼ + wᵢⱼᴬᴺ Nⱼ) + bᵢᴬ
+yᵢᴺ = Σⱼ (wᵢⱼᴺᴬ Aⱼ + wᵢⱼᴺᴺ Nⱼ) + bᵢᴺ
+Then apply a nonlinearity, such as tanh, GELU, ReLU, or layer normalization followed by activation.
+For the first implementation, use something boring and stable.
+A good first choice is:
+x′ = tanh(y)
+or:
+x′ = LayerNorm(GELU(y))
+The first implementation does not need exotic dynamics. Ordinary PyTorch, ordinary backpropagation, and ordinary optimizers are enough.
+The novelty is the paired state and the 2×2 coupling.
+
+3. Implementation representation
+A coding model should represent a batch of chevron activations as a tensor of shape:
+(batch_size, width, 2)
+where the last dimension is:
+channel 0 = A
+channel 1 = N
+A chevron linear layer from in_width to out_width can store its weights as:
+W.shape = (out_width, in_width, 2, 2)
+and bias as:
+b.shape = (out_width, 2)
+The forward pass can be implemented with an einsum:
+y = einsum("bic,oicd→bod", x, W) + b
+where:
+x has shape (batch, in_width, 2)
+W has shape (out_width, in_width, 2, 2)
+y has shape (batch, out_width, 2)
+The final two indices are the input and output channels.
+c = input channel
+d = output channel
+So the matrix maps input A/N into output A/N.
+A good unit test is to manually construct a single-node layer where:
+W =
+[ 1  0 ]
+[ 0  1 ]
+and confirm that A maps to A and N maps to N.
+Then set:
+W =
+[ 0  1 ]
+[ 1  0 ]
+and confirm that A and N swap.
+That checks whether the 2×2 coupling is doing what we think it is doing.
+
+4. Model family for the first ablation ladder
+The first experiment should compare several models.
+This matters. Without ablations, a chevron result will be hard to interpret.
+The ladder should be:
+
+
+scalar baseline;
+
+
+parameter-matched scalar baseline;
+
+
+uncoupled two-stream model;
+
+
+full chevron model;
+
+
+allostatic chevron model.
+
+
+The point is not just to ask whether chevrons perform well. The point is to ask where the gain, if any, comes from.
+
+5. Model 0: ordinary scalar baseline
+This is a normal MLP.
+Example:
+input → Linear → GELU → Linear → GELU → output
+Purpose:
+
+Establish ordinary performance and ordinary forgetting.
+
+This tells us how much forgetting occurs without any chevron structure.
+
+6. Model 1: parameter-matched scalar baseline
+A chevron model has extra parameters because each connection becomes a 2×2 block. So a fair baseline should include a scalar MLP with roughly comparable parameter count.
+Purpose:
+
+Check whether any improvement comes merely from having more parameters.
+
+This model may be wider than Model 0.
+If the chevron model has approximately four times as many hidden-layer weights, then the parameter-matched scalar baseline should be widened until its parameter count is similar.
+
+7. Model 2: uncoupled two-stream A/N model
+This model has two channels but no cross-coupling.
+That means A maps to A and N maps to N, but A does not mix into N, and N does not mix into A.
+So the 2×2 block is constrained to be diagonal:
+Wᵢⱼ =
+[ wᵢⱼᴬᴬ   0     ]
+[ 0       wᵢⱼᴺᴺ ]
+Purpose:
+
+Test whether two streams alone explain the effect.
+
+This is a crucial control.
+If the uncoupled two-stream model performs as well as the full chevron model, then the local 2×2 coupling may not be doing useful work.
+
+8. Model 3: full chevron model
+This is the basic chevron architecture with all four coupling terms active:
+Wᵢⱼ =
+[ wᵢⱼᴬᴬ  wᵢⱼᴬᴺ ]
+[ wᵢⱼᴺᴬ  wᵢⱼᴺᴺ ]
+Purpose:
+
+Test whether cross-channel coupling matters.
+
+The cross terms are:
+wᵢⱼᴬᴺ
+and:
+wᵢⱼᴺᴬ
+These are the important terms.
+They allow retained structure to shape fast adaptation, and fast adaptation to perturb or inform retained structure.
+If removing these terms makes no difference, the chevron interpretation weakens.
+
+9. Model 4: allostatic chevron
+This is the full chevron model plus asymmetric learning and, eventually, replay.
+During wake:
+A-facing parameters update quickly.
+N-facing parameters update slowly or are frozen.
+The full forward pass still includes both channels.
+A/N disagreement is measured.
+During offline consolidation:
+Replay is performed.
+N-facing parameters are allowed to update.
+A may be regularized toward N, or N may selectively absorb patterns from A.
+High-disagreement examples may be replayed more often.
+Purpose:
+
+Test the actual allostatic hypothesis.
+
+The full roadmap is therefore:
+scalar baseline
+→ parameter-matched scalar baseline
+→ uncoupled two-stream model
+→ full chevron model
+→ allostatic chevron model
+This ladder keeps the experiment honest.
+
+10. The first task: supervised continual learning
+The first task should be small.
+This is not because small tasks are the final target, but because the early question is architectural, not benchmark-driven.
+A first experiment should be easy to run many times, easy to ablate, and easy to debug.
+Use a simple classification dataset split into sequential tasks.
+Possible choices:
+Split MNIST
+Permuted MNIST
+Split Fashion-MNIST
+Split CIFAR-10
+The simplest is Split MNIST.
+Example:
+Task 1: digits 0 and 1
+Task 2: digits 2 and 3
+Task 3: digits 4 and 5
+Task 4: digits 6 and 7
+Task 5: digits 8 and 9
+The model trains on tasks sequentially. After each task, evaluate on all tasks seen so far.
+The key measurement is forgetting.
+This task is useful because the experimental logic is familiar and easy to compare.
+It is not the final world for chevron nets. It is the first clean test bench.
+
+11. The first supervised experiment
+The first complete experiment could be:
+Dataset: MNIST
+Task format: Split MNIST, five binary tasks
+Tasks:
+T1: 0 vs 1
+T2: 2 vs 3
+T3: 4 vs 5
+T4: 6 vs 7
+T5: 8 vs 9
+Models:
+Scalar MLP
+Parameter-matched scalar MLP
+Uncoupled two-stream model
+Full chevron model
+Allostatic chevron model
+Training:
+Train sequentially on each task.
+Do not allow access to old task data during wake.
+Add a small replay buffer only in the later replay stage.
+Evaluation:
+After each task, evaluate on all tasks seen so far.
+Record the accuracy matrix.
+Compute forgetting score.
+Compute A/N disagreement over time.
+The accuracy matrix is important.
+If there are five tasks, create a matrix:
+rows = after training task t
+columns = evaluation task k
+Example:
+After T1: Eval T1 = 0.98
+After T2: Eval T1 = 0.72, Eval T2 = 0.97
+After T3: Eval T1 = 0.61, Eval T2 = 0.75, Eval T3 = 0.96
+After T4: Eval T1 = 0.55, Eval T2 = 0.68, Eval T3 = 0.70, Eval T4 = 0.96
+After T5: Eval T1 = 0.51, Eval T2 = 0.60, Eval T3 = 0.63, Eval T4 = 0.72, Eval T5 = 0.95
+This makes forgetting visible.
+The forgetting score for task k can be:
+Fₖ = maxₜ Aₖ,ₜ − Aₖ,ₜfinal
+where Aₖ,ₜ is the accuracy on task k after training stage t.
+Average forgetting:
+F = (1 ÷ (K − 1)) Σₖ Fₖ
+The last task is often excluded because it has not had time to be forgotten.
+
+12. The first chevron classifier
+A simple chevron classifier can be:
+input image
+→ flatten
+→ ordinary input projection into paired A/N state
+→ chevron hidden layer
+→ chevron hidden layer
+→ readout from A channel, N channel, or both
+For the first experiment, use both channels for readout:
+logits = readout([A_final, N_final])
+But also test A-only readout:
+logits = readout(A_final)
+The A-only readout is conceptually cleaner if A is the world-facing adaptive channel.
+The both-channel readout may perform better.
+Both should be reported.
+A minimal chevron model:
+Input: 784
+Projection: Linear(784 → width × 2)
+Reshape: (batch, width, 2)
+ChevronLayer(width → width)
+Activation
+ChevronLayer(width → width)
+Activation
+Readout: Linear(width × 2 → number_of_classes)
+Use the same number of hidden layers across baselines.
+
+13. Wake training
+Wake training is ordinary task training, but with asymmetric plasticity.
+For the simplest full chevron model, train all parameters normally.
+For the allostatic chevron model, divide parameters into groups.
+Possible parameter groups:
+AA parameters
+AN parameters
+NA parameters
+NN parameters
+bias A
+bias N
+readout parameters
+Interpretation:
+AA = fast-to-fast continuation
+AN = slow-to-fast constraint or influence
+NA = fast-to-slow perturbation or teaching
+NN = slow-to-slow retention
+During wake, use:
+AA: normal learning rate
+AN: normal or medium learning rate
+NA: low learning rate
+NN: very low learning rate or frozen
+bias A: normal learning rate
+bias N: low learning rate or frozen
+readout: normal learning rate
+A simple first setting:
+lr_AA = 1e−3
+lr_AN = 1e−3
+lr_NA = 1e−4
+lr_NN = 0
+lr_bias_A = 1e−3
+lr_bias_N = 0
+This means the slow channel participates in the forward pass but is not rapidly rewritten.
+A less strict setting:
+lr_AA = 1e−3
+lr_AN = 1e−3
+lr_NA = 1e−4
+lr_NN = 1e−5
+This allows slow drift.
+For the first clean test, freezing NN during wake may be better.
+The point is:
+
+N should constrain wake learning without simply chasing wake learning.
+
+
+14. Offline consolidation
+Do not start with complicated dreaming.
+Start with a replay buffer.
+After each task, store a small number of examples.
+For Split MNIST:
+buffer size = 100, 500, or 1000 examples
+balanced across tasks
+During offline consolidation:
+sample current task examples;
+sample replay buffer examples;
+train with lower learning rate;
+allow N-related parameters to update;
+optionally reduce A learning.
+Example consolidation learning rates:
+lr_AA = 1e−4
+lr_AN = 1e−4
+lr_NA = 1e−4
+lr_NN = 1e−4
+or more N-focused:
+lr_AA = 1e−5
+lr_AN = 1e−5
+lr_NA = 1e−4
+lr_NN = 1e−4
+The second version makes offline learning more clearly consolidation-like.
+The first replay experiment should not be generative.
+Use actual stored examples first.
+Only later move to generative replay or recombination.
+A good staged roadmap:
+Stage 1: no replay
+Stage 2: uniform replay
+Stage 3: A/N-disagreement-prioritized replay
+Stage 4: recombinatory or generative replay
+The first implementation should only cover Stage 1 and perhaps Stage 2.
+
+15. A/N disagreement as measurement
+Before using disagreement to control anything, measure it.
+For each chevron layer:
+Dₗ = (1 ÷ n) Σᵢ |Aᵢ − Nᵢ|
+In implementation terms:
+D = mean(abs(A − N))
+Track:
+mean disagreement per batch
+mean disagreement per layer
+disagreement before and after task switch
+disagreement on correct versus incorrect examples
+disagreement on old versus new tasks
+The first question:
+
+Does A/N disagreement rise when the model encounters a new task?
+
+The second question:
+
+Does high disagreement predict forgetting or error?
+
+If disagreement is not informative, then its role as salience or drift signal weakens.
+So the first stage should only log disagreement.
+Do not yet use it for replay priority or plasticity gating.
+
+16. Tension-gated plasticity
+After basic disagreement logging, introduce tension-gated updates.
+This is where the chevron work connects back to the tension-layer idea.
+Use:
+U = p(1 − p)
+s = √(ε + U)
+Δθ = η · s · g
+where:
+p is a local tension or commitment variable;
+U is highest when p = 0.5;
+U is lowest when p is near 0 or 1;
+g is the ordinary gradient;
+s scales the update.
+Interpretation:
+settled regions update less;
+unresolved regions remain plastic.
+For the first implementation, p can be derived from A/N disagreement.
+For example:
+p = σ(k(A − N))
+or:
+p = clamp(|A − N| ÷ c, 0, 1)
+But the cleanest first version may be layer-level:
+D = mean absolute A/N disagreement
+p = σ(k(D − threshold))
+s = √(ε + p(1 − p))
+Then multiply gradients by s.
+This gives the allostatic chevron a local learning rule.
+Without this, allostasis is mostly a schedule: train A, freeze N, replay, update N. With it, allostasis becomes partly intrinsic to the cell.
+The important claim is:
+
+The first allostatic chevron should not only have different learning rates for A and N. It should also have a local rule by which plasticity depends on unresolved tension. Otherwise stability is imposed only from outside, rather than built into the primitive.
+
+
+17. Using disagreement for replay priority
+Once disagreement is logged, it can be used to prioritize replay.
+Each stored example gets a priority score:
+P(x) = D(x) + λL(x)
+where:
+D(x) is A/N disagreement;
+L(x) is loss;
+λ controls how much ordinary error matters.
+Simpler:
+P(x) = D(x)
+Then sample replay examples in proportion to priority.
+Implementation steps:
+compute disagreement for stored examples;
+add a small constant so no item has zero probability;
+normalize priorities into probabilities;
+sample replay examples according to those probabilities.
+This tests a concrete hypothesis:
+
+The system should replay what it has not reconciled.
+
+This is one of the most direct ways to turn the allostatic metaphor into an experiment.
+
+18. What to measure
+The first metrics should be simple and explicit.
+Accuracy
+Per task, after each training phase.
+Average final accuracy
+Final average performance across all tasks.
+Forgetting
+For each task:
+Fₖ = maxₜ Aₖ,ₜ − Aₖ,ₜfinal
+Average across old tasks.
+Adaptation speed
+How many batches or epochs are needed to reach a threshold on the new task?
+Example:
+batches to reach 90% current-task accuracy
+Recovery speed
+If a task returns, how quickly does the model recover old performance?
+Drift
+Measure A/N disagreement:
+D = ‖A − N‖
+or:
+D = (1 ÷ n) Σᵢ |Aᵢ − Nᵢ|
+Track it per layer.
+Replay efficiency
+How much replay buffer size is needed to preserve performance?
+Run with:
+buffer size = 0
+buffer size = 100
+buffer size = 500
+buffer size = 1000
+If chevrons need less replay to avoid forgetting, that is encouraging.
+Coupling magnitude
+Track learned cross-coupling weights:
+‖Wᴬᴺ‖
+‖Wᴺᴬ‖
+If they collapse to zero, the model is not using coupling.
+If they explode, the model may be unstable.
+If they settle into meaningful nonzero values, the coupling may matter.
+
+19. What would count as early evidence?
+Early evidence does not mean state-of-the-art results.
+The first useful signs would be:
+
+
+The full chevron forgets less than the scalar baseline.
+
+
+The full chevron forgets less than the parameter-matched scalar baseline.
+
+
+The full chevron forgets less than the uncoupled two-stream baseline.
+
+
+A/N disagreement rises during task switches.
+
+
+A/N disagreement predicts error or forgetting.
+
+
+Replay prioritized by A/N disagreement improves retention.
+
+
+Cross-coupling ablation worsens performance.
+
+
+The slow channel changes less during wake but more during consolidation.
+
+
+The model adapts without completely erasing older tasks.
+
+
+The most important comparison is not scalar versus chevron.
+The most important comparison is:
+uncoupled two-stream model
+versus
+full coupled chevron model
+That comparison tests the central claim.
+
+20. What would weaken the idea?
+The experiment should also define failure conditions.
+The allostatic chevron interpretation weakens if:
+the parameter-matched scalar baseline performs just as well;
+the uncoupled two-stream model performs just as well;
+cross-coupling terms do not matter under ablation;
+A/N disagreement does not correlate with task switches, errors, or forgetting;
+the slow channel simply becomes a stale copy of the fast channel;
+the slow channel never changes at all;
+replay helps all models equally;
+tension gating only slows learning without improving retention;
+the model is too unstable to train without heavy tricks.
+A particularly clear failure would be:
+
+Removing wᴬᴺ and wᴺᴬ makes no difference.
+
+If that happens, the chevron net may simply be a more expensive way to write a two-stream network.
+That would not kill the whole project, but it would force a rethink.
+
+21. Instructions for a coding model
+A coding model should implement the first experiment in stages.
+Do not implement everything at once.
+
+Stage 1: scalar baselines
+Implement:
+ScalarMLP
+WiderScalarMLP
+Train on Split MNIST.
+Produce:
+accuracy matrix
+average final accuracy
+average forgetting
+
+Stage 2: chevron layer
+Implement a ChevronLinear module.
+It should take input of shape:
+batch × in_width × 2
+and return output of shape:
+batch × out_width × 2
+The layer should store weights for a full 2×2 channel coupling.
+Either store one tensor:
+W.shape = out_width × in_width × 2 × 2
+or store four separate matrices:
+Wᴬᴬ.shape = out_width × in_width
+Wᴬᴺ.shape = out_width × in_width
+Wᴺᴬ.shape = out_width × in_width
+Wᴺᴺ.shape = out_width × in_width
+The four-matrix version is better for the allostatic experiment because each coupling pathway can be given its own learning rate.
+The forward rule is:
+yᴬ = A Wᴬᴬᵀ + N Wᴬᴺᵀ + bᴬ
+yᴺ = A Wᴺᴬᵀ + N Wᴺᴺᵀ + bᴺ
+Then stack yᴬ and yᴺ back into a paired state:
+y = [yᴬ, yᴺ]
+Add unit tests:
+identity coupling preserves channels;
+swap coupling swaps channels;
+diagonal coupling equals uncoupled two-stream layer.
+
+Stage 3: full chevron MLP
+Implement:
+input projection to width × 2;
+ChevronLinear;
+activation;
+ChevronLinear;
+activation;
+readout.
+Readout options:
+A-only;
+N-only;
+A+N concatenated.
+Start with A+N concatenated.
+
+Stage 4: uncoupled chevron baseline
+Implement a version where cross terms are masked:
+wᴬᴺ = 0
+wᴺᴬ = 0
+This preserves diagonal channel learning but prevents cross-coupling.
+If using four separate matrices, this is easy: set Wᴬᴺ and Wᴺᴬ to zero and do not train them.
+If using a single 2×2 weight tensor, multiply by a fixed diagonal mask during the forward pass.
+Mask:
+[ 1  0 ]
+[ 0  1 ]
+This creates the uncoupled two-stream baseline.
+
+Stage 5: log disagreement
+In every chevron layer, compute:
+D = mean(|A − N|)
+Track disagreement:
+per batch;
+per epoch;
+per task;
+per layer.
+Plot:
+task boundary versus disagreement;
+disagreement versus loss;
+disagreement versus forgetting.
+
+Stage 6: asymmetric learning rates
+Separate parameters into groups.
+At minimum:
+fast group = AA and AN
+slow group = NA and NN
+A more detailed split:
+AA: fast-to-fast
+AN: slow-to-fast
+NA: fast-to-slow
+NN: slow-to-slow
+For wake:
+fast params: lr = 1e−3
+slow params: lr = 0 or 1e−5
+For consolidation:
+fast params: lr = 1e−5
+slow params: lr = 1e−4
+This creates the basic fast/slow allostatic rhythm.
+
+Stage 7: replay buffer
+Implement a small replay buffer.
+For each stored example, keep:
+input;
+label;
+task id;
+last measured disagreement.
+Start with uniform replay.
+Then add disagreement-prioritized replay.
+
+Stage 8: report results
+For each model, report:
+parameter count;
+accuracy matrix;
+average final accuracy;
+average forgetting;
+adaptation speed;
+mean disagreement;
+coupling norms.
+For chevron models, also report:
+‖Wᴬᴬ‖
+‖Wᴬᴺ‖
+‖Wᴺᴬ‖
+‖Wᴺᴺ‖
+This is enough to know whether the coupling is being used.
+
+22. Suggested first experimental configuration
+A reasonable first run:
+Dataset: MNIST
+Task split: five binary classification tasks
+Tasks:
+T1: 0 vs 1
+T2: 2 vs 3
+T3: 4 vs 5
+T4: 6 vs 7
+T5: 8 vs 9
+Epochs per task: 3–5
+Batch size: 128
+Hidden width: 128
+Chevron layers: 2
+Optimizer: Adam
+Base learning rate: 1e−3
+Seeds: 5
+Replay buffer initially: none
+Models:
+ScalarMLP
+WiderScalarMLP
+UncoupledChevronMLP
+FullChevronMLP
+AllostaticChevronMLP
+Initial metrics:
+final average accuracy;
+average forgetting;
+A/N disagreement by task;
+cross-coupling norms.
+Then add replay:
+buffer size: 200 examples per task;
+uniform replay first;
+disagreement-prioritized replay second.
+This is enough for the first experiment.
+
+23. Minimal pseudocode for the experiment
+The whole first experiment can be summarized as:
+For each random seed:
+set seed
+For each model:
+build model
+create empty replay buffer
+For each task:
+set wake learning rates
+For each wake epoch:
+for each batch:
+run model
+compute loss
+compute A/N disagreement
+backpropagate loss
+apply any masks or gated gradients
+update parameters
+log loss and disagreement
+After wake:
+evaluate on all seen tasks
+update accuracy matrix
+store examples in replay buffer
+If replay is enabled:
+set consolidation learning rates
+For each consolidation step:
+sample replay batch
+run model
+compute loss
+compute A/N disagreement
+backpropagate loss
+apply any masks or gated gradients
+update parameters
+log loss and disagreement
+After consolidation:
+evaluate on all seen tasks
+update accuracy matrix
+save coupling norms
+After all tasks:
+compute average final accuracy
+compute average forgetting
+compute disagreement curves
+compute coupling norm curves
+This is enough for a coding model to begin implementation.
+
+24. Why this is the right first test
+This first implementation is deliberately modest.
+It does not yet implement a rich world model.
+It does not yet implement generative dreaming.
+It does not yet implement the full R rule.
+It does not yet implement the Hypercube of Opposites as a semantic space.
+It does not yet prove anything about agency.
+But it does test the first necessary condition.
+If chevron nets are to support allostatic learning, then coupling should matter in small continual-learning settings.
+The fast channel should adapt.
+The slow channel should resist.
+The mismatch should be measurable.
+Replay should help reconcile rather than merely copy.
+Removing the cross-coupling should damage something.
+That is the first bridge from metaphor to mechanism.
+
+25. Closing: an experimental contract
+The first chevron experiment should therefore be almost disappointingly modest.
+A paired-state MLP.
+A few continual-learning tasks.
+A frozen or slowed N channel.
+A fast A channel.
+A disagreement measure.
+A replay buffer.
+Some ablations.
+But that modesty is the point.
+The philosophy only becomes useful when it risks contact with implementation. The allostatic chevron idea says that fast adaptation and slow retention should not merely coexist. They should be locally coupled, mutually constraining, and experimentally distinguishable.
+So the first task is not to build a mind.
+It is to build a small learner in which adaptation can pull, norm can resist, replay can negotiate, and the difference can be measured.
+If the coupling matters, the next stage begins.
+If it does not, we learn something equally important.
