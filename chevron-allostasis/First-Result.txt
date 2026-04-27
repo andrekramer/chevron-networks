@@ -1,0 +1,148 @@
+## First Allostatic Chevron Net Results
+
+  I now have the first standalone allostatic chevron experiment running.
+
+  The setup is deliberately small: Split MNIST, five sequential binary tasks:
+
+  T1: 0 vs 1
+  T2: 2 vs 3
+  T3: 4 vs 5
+  T4: 6 vs 7
+  T5: 8 vs 9
+
+  The model trains on one task at a time. After each task, it is evaluated on all tasks seen so far. The main metric is forgetting: how much performance on earlier tasks drops after later
+  tasks are learned.
+
+  The chevron model uses paired A/N hidden states. A is the fast adaptive channel. N is the slower retained or normative channel. Each chevron layer uses local 2x2 coupling between the
+  channels. The first experiment tests whether this A/N structure helps continual learning.
+
+  ## Result 1: Without Replay, It Forgets
+
+  Without replay, the chevron model learns each new task very well, but forgets older ones badly.
+
+  Across five seeds, the no-replay full chevron result was:
+
+  final forgetting: 0.4843
+  final average accuracy: 0.6068
+  old-task average accuracy: 0.5106
+  current-task accuracy: 0.9916
+
+  So the model remains highly plastic. It adapts to the current task, but old tasks collapse.
+
+  That is useful: the architecture alone does not magically solve catastrophic forgetting. The allostatic schedule matters.
+
+  ## Result 2: Replay Produces a Clear Retention Curve
+
+  Adding replay and consolidation changed the picture.
+
+  Across five seeds:
+
+  | Replay Buffer | Forgetting | Final Avg Accuracy | Old-task Accuracy | Current-task Accuracy |
+  |---:|---:|---:|---:|---:|
+  | 0 | 0.4843 | 0.6068 | 0.5106 | 0.9916 |
+  | 100 | 0.3620 | 0.6975 | 0.6270 | 0.9796 |
+  | 500 | 0.1973 | 0.7917 | 0.7763 | 0.8532 |
+  | 1000 | 0.0675 | 0.8439 | 0.8831 | 0.6871 |
+
+  This is the first important result.
+
+  Replay buffer size produced a clean retention curve. More replay meant less forgetting. The system moved from high-plasticity/high-forgetting to high-retention/lower-current-adaptation.
+
+  That is exactly the tradeoff the allostatic interpretation predicts.
+
+  The best first operating point was probably buffer 500: forgetting dropped sharply while current-task accuracy remained usable.
+
+  ## Result 3: Coupling Matters More Under A-only Readout
+
+  I then compared the full chevron model against a diagonal-only version.
+
+  The diagonal-only model still has two A/N channels, but no cross-channel coupling. A maps to A, N maps to N, but A and N do not locally mix.
+
+  With both channels used for readout, the result was mixed. Full coupling was not consistently better than diagonal-only. That meant the first result could not yet be claimed as evidence for
+  local 2x2 coupling specifically.
+
+  So I ran a cleaner version: A-only readout.
+
+  That means the classifier reads only from the fast A channel. The N channel can still shape learning through coupling, but it cannot directly feed the output head.
+
+  Under A-only readout, full coupling consistently beat diagonal-only on retention:
+
+  | Model | Buffer | Forgetting | Final Avg Accuracy | Old-task Accuracy | Current-task Accuracy |
+  |---|---:|---:|---:|---:|---:|
+  | Full chevron | 100 | 0.3795 | 0.6864 | 0.6123 | 0.9828 |
+  | Diagonal-only | 100 | 0.4182 | 0.6564 | 0.5735 | 0.9879 |
+  | Full chevron | 500 | 0.2092 | 0.7909 | 0.7695 | 0.8768 |
+  | Diagonal-only | 500 | 0.2403 | 0.7742 | 0.7422 | 0.9025 |
+  | Full chevron | 1000 | 0.0814 | 0.8462 | 0.8774 | 0.7211 |
+  | Diagonal-only | 1000 | 0.1577 | 0.8021 | 0.8038 | 0.7956 |
+
+  This is the second important result.
+
+  When the model is forced to act through A, the full 2x2 A/N coupling improves old-task retention over uncoupled two-stream learning.
+
+  The tradeoff remains: diagonal-only keeps better current-task accuracy, especially at large replay buffers. But full coupling is more retention-biased.
+
+  ## Result 4: Chevron Replay Beats a Scalar MLP Replay Baseline
+
+  The next question was whether this was just replay working in an ordinary way.
+
+  So I added a standard scalar MLP baseline using the same Split MNIST schedule, replay buffer sizes, and evaluation logic.
+
+  Results:
+
+  | Model | Buffer | Forgetting | Final Avg Accuracy | Old-task Accuracy | Current-task Accuracy |
+  |---|---:|---:|---:|---:|---:|
+  | Full chevron | 0 | 0.4843 | 0.6068 | 0.5106 | 0.9916 |
+  | MLP | 0 | 0.4987 | 0.5950 | 0.4965 | 0.9891 |
+  | Full chevron | 100 | 0.3620 | 0.6975 | 0.6270 | 0.9796 |
+  | MLP | 100 | 0.4756 | 0.6130 | 0.5191 | 0.9889 |
+  | Full chevron | 500 | 0.1973 | 0.7917 | 0.7763 | 0.8532 |
+  | MLP | 500 | 0.3704 | 0.6924 | 0.6198 | 0.9829 |
+  | Full chevron | 1000 | 0.0675 | 0.8439 | 0.8831 | 0.6871 |
+  | MLP | 1000 | 0.2046 | 0.8138 | 0.7786 | 0.9546 |
+
+  This is the third important result.
+
+  The scalar MLP also benefits from replay, but much less efficiently. At buffer 500, the full chevron model forgets 0.1973, while the MLP forgets 0.3704. At buffer 1000, the chevron model
+  preserves old tasks much better, though it pays a larger price in current-task adaptation.
+
+  So the result is not merely “replay works.” Replay works better inside the A/N chevron structure than inside the scalar MLP under these settings.
+
+  ## Current Interpretation
+
+  These are early results, not a final claim.
+
+  But the first signs are encouraging:
+
+  1. The chevron model does not solve forgetting by architecture alone.
+  2. Replay/consolidation creates a clear allostatic retention curve.
+  3. Full A/N coupling matters more when readout is constrained to A.
+  4. The chevron replay system uses replay more efficiently than a scalar MLP baseline.
+  5. The main tradeoff is retention versus plasticity.
+
+  The strongest current claim is:
+
+  > A paired A/N chevron architecture with replay-based consolidation can reduce catastrophic forgetting more efficiently than a scalar MLP under the same continual-learning schedule.
+
+  The stronger claim, still to be tested more deeply, is:
+
+  > Local 2x2 coupling between fast adaptive and slow normative channels does useful computational work.
+
+  The A-only comparison is the first positive evidence for that stronger claim.
+
+  ## What Comes Next
+
+  The next experiments should test:
+
+  - more seeds
+  - parameter-matched MLP baselines
+  - tuned MLP replay baselines
+  - A/N-disagreement-prioritized replay
+  - different consolidation schedules
+  - larger tasks such as Fashion-MNIST or CIFAR-10
+  - whether A/N disagreement predicts error, forgetting, or replay usefulness
+
+  For now, the result is enough to keep going.
+
+  The allostatic chevron net has not solved continual learning. But it has begun to show the pattern it was built to test: fast adaptation, slower retention, and measurable benefit from the
+  relation between them.
