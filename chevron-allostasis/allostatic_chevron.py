@@ -8,7 +8,7 @@ from typing import Iterable
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, Dataset, TensorDataset
+from torch.utils.data import DataLoader, Dataset, TensorDataset, WeightedRandomSampler
 from torchvision import datasets, transforms
 
 
@@ -66,9 +66,9 @@ class AllostaticChevronNet(nn.Module):
         h = self.input(x).view(x.size(0), self.width, 2)
 
         h = self.norm1(F.gelu(self.chev1(h)))
-        d1 = channel_disagreement(h)
+        d1_samples = channel_disagreement_per_sample(h)
         h = self.norm2(F.gelu(self.chev2(h)))
-        d2 = channel_disagreement(h)
+        d2_samples = channel_disagreement_per_sample(h)
 
         if self.readout == "a_only":
             readout = h[:, :, 0]
@@ -78,7 +78,11 @@ class AllostaticChevronNet(nn.Module):
 
         if not return_stats:
             return logits
-        return logits, {"disagree_1": d1, "disagree_2": d2}
+        return logits, {
+            "disagree_1": d1_samples.mean(),
+            "disagree_2": d2_samples.mean(),
+            "priority_disagreement": 0.5 * (d1_samples + d2_samples),
+        }
 
     def chevron_layers(self) -> list[ChevronLinear]:
         return [self.chev1, self.chev2]
@@ -102,7 +106,11 @@ class ScalarMLP(nn.Module):
         if not return_stats:
             return logits
         zero = logits.new_tensor(0.0)
-        return logits, {"disagree_1": zero, "disagree_2": zero}
+        return logits, {
+            "disagree_1": zero,
+            "disagree_2": zero,
+            "priority_disagreement": logits.new_zeros(logits.size(0)),
+        }
 
     def chevron_layers(self) -> list[ChevronLinear]:
         return []
@@ -171,16 +179,38 @@ class ReplayBuffer:
             self.images = self.images[overflow:]
             self.labels = self.labels[overflow:]
 
-    def loader(self, batch_size: int, device: torch.device) -> DataLoader | None:
+    def tensors(self, device: torch.device) -> tuple[torch.Tensor, torch.Tensor] | None:
         if not self.labels:
             return None
         images = torch.stack(self.images).to(device)
         labels = torch.tensor(self.labels, dtype=torch.long, device=device)
-        return DataLoader(TensorDataset(images, labels), batch_size=batch_size, shuffle=True)
+        return images, labels
+
+    def loader(
+        self,
+        batch_size: int,
+        device: torch.device,
+        priorities: torch.Tensor | None = None,
+    ) -> DataLoader | None:
+        tensors = self.tensors(device)
+        if tensors is None:
+            return None
+        images, labels = tensors
+        dataset = TensorDataset(images, labels)
+        if priorities is None:
+            return DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+        weights = priorities.detach().float().cpu().clamp_min(1e-8)
+        sampler = WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
+        return DataLoader(dataset, batch_size=batch_size, sampler=sampler)
 
 
 def channel_disagreement(h: torch.Tensor) -> torch.Tensor:
     return torch.mean(torch.abs(h[:, :, 0] - h[:, :, 1]))
+
+
+def channel_disagreement_per_sample(h: torch.Tensor) -> torch.Tensor:
+    return torch.mean(torch.abs(h[:, :, 0] - h[:, :, 1]), dim=1)
 
 
 def seed_everything(seed: int) -> None:
@@ -332,6 +362,55 @@ def run_epoch(
     )
 
 
+@torch.no_grad()
+def replay_priorities(
+    model: nn.Module,
+    buffer: ReplayBuffer,
+    batch_size: int,
+    device: torch.device,
+    policy: str,
+    disagreement_weight: float,
+    loss_weight: float,
+) -> torch.Tensor | None:
+    if policy == "uniform":
+        return None
+
+    tensors = buffer.tensors(device)
+    if tensors is None:
+        return None
+
+    model.eval()
+    images, labels = tensors
+    disagreement_scores = []
+    loss_scores = []
+    for start in range(0, labels.size(0), batch_size):
+        batch_images = images[start:start + batch_size]
+        batch_labels = labels[start:start + batch_size]
+        logits, stats = model(batch_images, return_stats=True)
+        disagreement_scores.append(stats["priority_disagreement"].detach().cpu())
+
+        if policy == "loss_disagreement":
+            loss_scores.append(F.cross_entropy(logits, batch_labels, reduction="none").detach().cpu())
+        elif policy != "disagreement":
+            raise ValueError(f"Unknown replay policy: {policy}")
+
+    disagreement = normalize_priority(torch.cat(disagreement_scores).float())
+    if policy == "disagreement":
+        priorities = disagreement
+    else:
+        loss = normalize_priority(torch.cat(loss_scores).float())
+        priorities = disagreement_weight * disagreement + loss_weight * loss
+    return priorities + 1e-6
+
+
+def normalize_priority(values: torch.Tensor) -> torch.Tensor:
+    values = values.float()
+    span = values.max() - values.min()
+    if span <= 1e-12:
+        return torch.ones_like(values)
+    return (values - values.min()) / span
+
+
 def coupling_norms(model: nn.Module) -> dict[str, float]:
     out: dict[str, float] = {}
     if not hasattr(model, "chevron_layers"):
@@ -400,6 +479,9 @@ def main() -> None:
     parser.add_argument("--slow-lr", type=float, default=1e-4)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--buffer-size", type=int, default=0)
+    parser.add_argument("--replay-policy", choices=["uniform", "disagreement", "loss_disagreement"], default="uniform")
+    parser.add_argument("--replay-disagreement-weight", type=float, default=1.0)
+    parser.add_argument("--replay-loss-weight", type=float, default=0.25)
     parser.add_argument("--readout", choices=["both", "a_only"], default="both")
     parser.add_argument("--diagonal-only", action="store_true")
     parser.add_argument("--seed", type=int, default=7)
@@ -434,8 +516,10 @@ def main() -> None:
 
     run_name = (
         f"{args.model}_seed{args.seed}_w{args.width}_{args.readout}"
-        f"_buf{args.buffer_size}_con{args.consolidation_epochs}"
+        f"_buf{args.buffer_size}_con{args.consolidation_epochs}_{args.replay_policy}"
     )
+    if args.replay_policy == "loss_disagreement":
+        run_name += f"_dw{args.replay_disagreement_weight:g}_lw{args.replay_loss_weight:g}"
     if args.model == "chevron" and args.diagonal_only:
         run_name += "_diag"
     run_dir = args.out_dir / run_name
@@ -461,7 +545,16 @@ def main() -> None:
 
         buffer.add_balanced(train_tasks[task_idx])
 
-        replay_loader = buffer.loader(args.batch_size, device)
+        priorities = replay_priorities(
+            model,
+            buffer,
+            args.batch_size,
+            device,
+            args.replay_policy,
+            args.replay_disagreement_weight,
+            args.replay_loss_weight,
+        )
+        replay_loader = buffer.loader(args.batch_size, device, priorities)
         if replay_loader is not None and args.consolidation_epochs > 0:
             con_optim = build_optimizer(model, "consolidate", args.lr, args.slow_lr, args.weight_decay)
             for epoch in range(1, args.consolidation_epochs + 1):

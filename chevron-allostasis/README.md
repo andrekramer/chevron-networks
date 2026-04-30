@@ -41,3 +41,13 @@ Add uniform replay/consolidation:
 ```bash
 python allostatic_chevron.py --epochs 3 --width 128 --batch-size 128 --buffer-size 500 --consolidation-epochs 1
 ```
+
+Compare replay policies:
+
+```bash
+python allostatic_chevron.py --readout a_only --buffer-size 500 --consolidation-epochs 1 --replay-policy uniform
+python allostatic_chevron.py --readout a_only --buffer-size 500 --consolidation-epochs 1 --replay-policy disagreement
+python allostatic_chevron.py --readout a_only --buffer-size 500 --consolidation-epochs 1 --replay-policy loss_disagreement
+```
+
+Current replay-policy result: `disagreement` is the best first tension-guided policy. `loss_disagreement` is available for tuning, but raw loss is not a reliable priority signal in the first sweeps.
