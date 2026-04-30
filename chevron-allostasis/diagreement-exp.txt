@@ -1,0 +1,259 @@
+## Tension-Guided Replay: Learning What Needs To Be Rehearsed
+
+  The next allostatic chevron experiment tested a more Batesonian question.
+
+  The earlier experiments showed that replay helps. A chevron net with replay forgot much less than the same model without replay, and it used replay more efficiently than a scalar MLP
+  baseline.
+
+  But that replay was still externally imposed. The system did not decide what mattered. It simply replayed stored examples.
+
+  So the next question was:
+
+  > Can the model’s own A/N tension tell it what it needs to rehearse?
+
+  In other words, can replay become internally guided?
+
+  This matters because the allostatic story is not just about memory. It is about regulation. A system should not only remember past experience. It should learn which experiences remain
+  unresolved, which need consolidation, and which should be brought back into training.
+
+  That is the first step from replay as storage toward replay as something more like dream.
+
+  ## From Uniform Replay To Tension-Guided Replay
+
+  The chevron model has two channels:
+
+  A = fast adaptive channel
+  N = slower retained or normative channel
+
+  The key internal signal is A/N disagreement:
+
+  D = mean(|A - N|)
+
+  This measures how far the fast adaptive channel has drifted from the slower retained channel.
+
+  The hypothesis was simple:
+
+  > The model should replay what it has not reconciled.
+
+  So I compared three replay policies:
+
+  uniform
+  disagreement
+  loss_disagreement
+
+  Uniform replay samples stored examples evenly.
+
+  Disagreement replay prioritizes examples with high A/N tension.
+
+  Loss + disagreement replay combines classifier loss with A/N disagreement.
+
+  The important distinction is this:
+
+  loss says: replay what the classifier currently finds hard
+  A/N disagreement says: replay what the system has not reconciled
+
+  Those are not the same signal.
+
+  A high-loss example may be noisy, ambiguous, or simply difficult under the current classifier. A high-tension example indicates a mismatch between fast adaptation and slower retained
+  structure. In the allostatic framing, that second signal is closer to the thing we care about.
+
+  ## First Replay Policy Sweep
+
+  The focused test used:
+
+  model: full chevron
+  readout: A-only
+  buffer sizes: 100 and 500
+  seeds: 1 through 5
+
+  A-only readout matters because it prevents the N channel from directly feeding the classifier. N can only help by shaping A through the chevron coupling.
+
+  The first sweep gave:
+
+  | Replay Policy | Buffer | Forgetting | Final Avg Acc | Old-task Avg | Current-task Acc |
+  |---|---:|---:|---:|---:|---:|
+  | uniform | 100 | 0.3795 | 0.6864 | 0.6123 | 0.9828 |
+  | disagreement | 100 | 0.3760 | 0.6863 | 0.6141 | 0.9753 |
+  | loss_disagreement | 100 | 0.3853 | 0.6816 | 0.6051 | 0.9875 |
+  | uniform | 500 | 0.2092 | 0.7909 | 0.7695 | 0.8768 |
+  | disagreement | 500 | 0.1983 | 0.7949 | 0.7749 | 0.8749 |
+  | loss_disagreement | 500 | 0.2394 | 0.7332 | 0.7250 | 0.7660 |
+
+  The result was modest but informative.
+
+  Pure disagreement replay slightly improved forgetting over uniform replay, especially at buffer 500:
+
+  uniform buffer 500:      forgetting = 0.2092
+  disagreement buffer 500: forgetting = 0.1983
+
+  That is not a dramatic improvement. But it is in the right direction.
+
+  The more interesting result was negative: adding loss made things worse.
+
+  At buffer 500, loss_disagreement increased forgetting and reduced both final average accuracy and current-task accuracy. That suggested that raw loss may be a bad replay signal in this
+  setup.
+
+  ## Is Loss The Wrong Signal?
+
+  This raised a useful question.
+
+  Maybe loss is not merely a weaker signal. Maybe loss points at the wrong kind of thing.
+
+  Loss measures classifier failure. But allostatic replay is not only about correcting errors. It is about reconciling fast adaptation with retained structure.
+
+  A high-loss example might be:
+
+  - noisy
+  - ambiguous
+  - recently displaced by task switching
+  - hard for superficial classifier reasons
+  - unrepresentative of the deeper stability-plasticity conflict
+
+  A high A/N disagreement example is different. It says:
+
+  > The fast channel and slow channel are not aligned here.
+
+  That is closer to the allostatic object of interest.
+
+  In Batesonian terms, the system should not merely rehearse what it got wrong. It should rehearse what remains unresolved at the level of context.
+
+  Uniform replay is memory.
+
+  Loss replay is correction.
+
+  Tension-guided replay is closer to learning what still needs integration.
+
+  ## Tuning Loss
+
+  To make sure this was not just a scaling problem, I changed the priority formula.
+
+  Instead of combining raw loss and raw disagreement, I normalized each signal separately:
+
+  priority = disagreement_weight * normalized_disagreement
+           + loss_weight * normalized_loss
+
+  Then I swept loss weights at buffer 500:
+
+  loss_weight = 0.05
+  loss_weight = 0.10
+  loss_weight = 0.25
+  loss_weight = 0.50
+
+  The results:
+
+  | Policy | Forgetting | Final Avg Acc | Old-task Avg | Current-task Acc |
+  |---|---:|---:|---:|---:|
+  | uniform | 0.2092 | 0.7909 | 0.7695 | 0.8768 |
+  | disagreement | 0.1983 | 0.7949 | 0.7749 | 0.8749 |
+  | loss weight 0.05 | 0.2067 | 0.7848 | 0.7660 | 0.8601 |
+  | loss weight 0.10 | 0.1995 | 0.7860 | 0.7720 | 0.8419 |
+  | loss weight 0.25 | 0.2189 | 0.7805 | 0.7565 | 0.8767 |
+  | loss weight 0.50 | 0.2135 | 0.7720 | 0.7599 | 0.8205 |
+
+  This confirmed the pattern.
+
+  A small amount of loss, especially 0.10, nearly matched pure disagreement on forgetting. But it did not beat it, and it lowered current-task accuracy.
+
+  Larger loss weights degraded performance.
+
+  So the conclusion is not that loss is useless. It may still help in a better-tuned or different task setting. But in this first allostatic replay experiment, loss was not the right primary
+  signal.
+
+  A/N disagreement was cleaner.
+
+  ## The Batesonian Reading
+
+  This is where the experiment becomes more interesting than the numbers.
+
+  Bateson’s “learning to learn” is not just about improving a task. It is about changing the conditions under which future learning happens.
+
+  Uniform replay does not do that. The experimenter decides what is rehearsed.
+
+  Tension-guided replay starts to shift that decision inside the system.
+
+  The system is no longer only learning task labels. It is beginning to use its own internal mismatch to decide what deserves further learning.
+
+  That is a primitive version of:
+
+  learning what needs to be learned again
+
+  Or:
+
+  learning what remains unresolved
+
+  The key move is from external curriculum to internal salience.
+
+  The model is not yet forming new contexts. It is not yet splitting regimes. It is not yet doing full Batesonian Learning II. But it is taking a step in that direction.
+
+  It is using the relation between fast adaptation and slow retention to shape its own future training distribution.
+
+  That is why the small improvement from disagreement replay matters. Not because the number is large. It is not. But because the direction is right.
+
+  ## Current Interpretation
+
+  The result so far is:
+
+  > A/N disagreement is mildly useful as a replay priority signal.
+
+  More importantly:
+
+  > Loss appears to be a worse primary replay signal than internal A/N tension.
+
+  This supports the allostatic interpretation.
+
+  The point of the N channel is not merely to store old answers. It provides a slower reference against which current adaptation can be measured. When A and N disagree, the system has found
+  something that may need rehearsal.
+
+  That is different from ordinary error.
+
+  Error says:
+
+  the answer is wrong
+
+  Tension says:
+
+  the system has not reconciled this experience with what it has retained
+
+  Those are related, but not identical.
+
+  For an allostatic learner, the second may be the deeper signal.
+
+  ## What Comes Next
+
+  The next experiments should make this sharper.
+
+  First, test more replay formulas:
+
+  priority = D
+  priority = D^2
+  priority = rank(D)
+  priority = softmax(kD)
+  priority = D + small_loss
+
+  Second, check whether disagreement predicts future forgetting:
+
+  Does high A/N tension after task k predict which examples or tasks degrade after task k+1?
+
+  Third, separate transient tension from persistent tension.
+
+  A momentary spike may mean surprise. Persistent tension may mean unresolved context.
+
+  That distinction matters because the larger chevron hypothesis is not only replay.
+
+  It is:
+
+  low tension -> update
+  medium tension -> replay
+  high persistent tension -> split
+
+  The present experiment only tested the middle step.
+
+  But that is the right next step. Before a system can split contexts, it should first show that its internal tension can identify what needs to be replayed.
+
+  So the practical result is modest.
+
+  The conceptual result is sharper:
+
+  > Uniform replay remembers the past. Tension-guided replay begins to ask which parts of the past have not yet been understood.
+
+
