@@ -51,3 +51,16 @@ python allostatic_chevron.py --readout a_only --buffer-size 500 --consolidation-
 ```
 
 Current replay-policy result: `disagreement` is the best first tension-guided policy. `loss_disagreement` is available for tuning, but raw loss is not a reliable priority signal in the first sweeps.
+
+Compare dream schedules:
+
+```bash
+python allostatic_chevron.py --readout a_only --buffer-size 500 --consolidation-epochs 1 --replay-policy disagreement --dream-schedule post_task
+python allostatic_chevron.py --readout a_only --buffer-size 500 --consolidation-epochs 1 --replay-policy disagreement --dream-schedule after_epoch
+```
+
+Current dream-schedule result: fixed `after_epoch` dreaming is not better than `post_task` consolidation in the first sweep. It improves current-task accuracy but worsens old-task retention, suggesting the next test should gate dream by A/N tension rather than by clock time.
+
+First tension-gated result: absolute wake-tension thresholds were brittle. Low thresholds behaved like `after_epoch`; high thresholds skipped too much dreaming and regressed toward no-replay forgetting. The next gate should use relative tension change or persistent tension, not a fixed global threshold.
+
+First persistent-tension result: epoch-average persistence was too strict and skipped useful dreams, regressing toward no-replay forgetting. The next gating test should track high-tension replay examples or use a post-task fallback, rather than relying only on global wake-epoch averages.

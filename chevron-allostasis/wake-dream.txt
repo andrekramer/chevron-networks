@@ -1,0 +1,222 @@
+## Wake, Dream, and the Timing Problem
+
+  The next chevron experiment added an explicit wake/dream rhythm.
+
+  Earlier experiments already had a crude version of this. The model trained on the current task, then replayed stored examples afterward. But that was still just “training plus
+  consolidation.” I wanted to make the distinction explicit.
+
+  In the new setup:
+
+  wake = train on the current task
+  dream = replay and consolidate through the slower A/N structure
+
+  The question was not only whether replay helps. We already know that it does. The question was:
+
+  > When should the model dream?
+
+  This matters because the allostatic interpretation is not simply “do more replay.” A living learner does not leave wake every time it encounters surprise. It continues acting, adapting, and
+  absorbing. Dream should be necessary, but not constant.
+
+  So I compared several schedules.
+
+  ## Post-task Dream
+
+  The baseline schedule was:
+
+  train on the task
+  then dream afterward
+
+  This is the current best result.
+
+  With full chevron, A-only readout, buffer 500, and disagreement-prioritized replay, post-task dreaming gave:
+
+  forgetting: 0.1984
+  final average accuracy: 0.7947
+  old-task accuracy: 0.7748
+  current-task accuracy: 0.8747
+
+  This remains the best balance so far.
+
+  It is not wake-only. Wake-only keeps current-task accuracy high but forgets old tasks badly. Some dream-like consolidation is necessary.
+
+  But the schedule matters.
+
+  ## Clocked Dream: After Every Wake Epoch
+
+  The next test was more frequent dreaming:
+
+  after each wake epoch, run a dream phase
+
+  The intuition was straightforward. Maybe more frequent integration would reduce forgetting. Instead, it made retention worse.
+
+  Results:
+
+  forgetting: 0.2625
+  final average accuracy: 0.7634
+  old-task accuracy: 0.7252
+  current-task accuracy: 0.9160
+
+  This is interesting because current-task accuracy improved, but old-task retention got worse.
+
+  So the lesson is not:
+
+  dream more
+
+  The lesson is:
+
+  dream timing matters
+
+  Clocked dream interrupts wake in a way that does not improve the long-term stability-plasticity tradeoff.
+
+  ## Absolute Tension-Gated Dream
+
+  The next attempt was to trigger dream from A/N tension.
+
+  The chevron model measures internal disagreement:
+
+  D = mean(|A - N|)
+
+  The idea was:
+
+  dream when wake tension exceeds a threshold
+
+  I swept several thresholds.
+
+  Results:
+
+  | Schedule | Forgetting | Final Avg Acc | Old-task Avg | Current-task Acc |
+  |---|---:|---:|---:|---:|
+  | post-task | 0.1984 | 0.7947 | 0.7748 | 0.8747 |
+  | after-epoch | 0.2625 | 0.7634 | 0.7252 | 0.9160 |
+  | tension threshold 0.85 | 0.2625 | 0.7634 | 0.7252 | 0.9160 |
+  | tension threshold 0.90 | 0.3174 | 0.7231 | 0.6729 | 0.9239 |
+  | tension threshold 0.95 | 0.4072 | 0.6614 | 0.5872 | 0.9578 |
+  | tension threshold 1.00 | 0.4947 | 0.5982 | 0.5000 | 0.9911 |
+
+  This was a useful negative result.
+
+  Low thresholds behaved like after-epoch dreaming: the model dreamed too often.
+
+  High thresholds skipped too much dreaming and regressed toward wake-only behavior: excellent current-task accuracy, severe forgetting.
+
+  So a fixed global tension threshold is too crude.
+
+  ## Persistent Tension-Gated Dream
+
+  The next idea was more Batesonian: do not dream after a single spike of surprise. Dream only when tension persists.
+
+  The schedule was:
+
+  track an exponential moving average of wake tension
+  count unresolved epochs when tension stays above baseline + margin
+  dream only after unresolved tension persists for patience epochs
+
+  That sounds closer to the theory. One spike should not force consolidation. Persistent unresolved difference should.
+
+  But the first implementation failed.
+
+  | Schedule | Forgetting | Final Avg Acc | Old-task Avg | Current-task Acc |
+  |---|---:|---:|---:|---:|
+  | post-task | 0.1984 | 0.7947 | 0.7748 | 0.8747 |
+  | after-epoch | 0.2625 | 0.7634 | 0.7252 | 0.9160 |
+  | persistent margin 0.01 | 0.5000 | 0.5938 | 0.4947 | 0.9904 |
+  | persistent margin 0.03 | 0.4947 | 0.5982 | 0.5000 | 0.9911 |
+  | persistent margin 0.05 | 0.4947 | 0.5982 | 0.5000 | 0.9911 |
+
+  This gate was too strict. It skipped nearly all useful dreaming. The model stayed awake, learned the current task, and forgot the past.
+
+  The failure is informative. It suggests that global epoch-average tension is the wrong persistence signal. It smooths away the unresolved examples we care about.
+
+  Persistent tension probably needs to be measured at the example level, not the whole-epoch level.
+
+  ## What These Experiments Suggest
+
+  The current result is not that we have found the right wake/dream rhythm.
+
+  We have not.
+
+  The result is more specific:
+
+  post-task dream is currently necessary and best
+  clocked dream is too blunt
+  absolute tension thresholds are too crude
+  global persistent tension is too strict
+
+  That sounds negative, but it sharpens the hypothesis.
+
+  Dream is not just extra replay. It is not something to run constantly. It also cannot yet be triggered by a single global tension number.
+
+  The better framing may be:
+
+  > It is better to stay awake unless there is a real reason to dream.
+
+  But dream is still necessary. Without it, wake learning overwrites the past.
+
+  So the allostatic picture becomes:
+
+  wake by default
+  dream when consolidation is needed
+  but the right trigger is still unknown
+
+  ## Dream May Be About Future Ability
+
+  One important lesson is that dream may not be best evaluated by immediate performance.
+
+  After-epoch dreaming improved current-task accuracy, but worsened old-task retention. Wake-only learning also gives high current-task performance while destroying the past.
+
+  So current-task accuracy is not the right measure of dream’s value.
+
+  Dream may be more about future ability:
+
+  Can the model learn the next task with less damage?
+  Can it preserve old structure while adapting?
+  Can it reduce future interference?
+  Can it make later replay more efficient?
+
+  In that sense, dream is not simply rehearsal. It is preparation.
+
+  A good formulation is:
+
+  > Dream is not primarily a way to improve the task just learned. It is a way to preserve the conditions under which future learning remains possible.
+
+  That fits the Batesonian reading. The system is not only learning within a context. It is adjusting the conditions under which future learning will occur.
+
+  ## Current Interpretation
+
+  The wake/dream experiments suggest this:
+
+  > Allostatic chevron nets need dream-like consolidation, but the timing of dream is itself a learning problem.
+
+  The simple schedules are not enough.
+
+  Post-task consolidation works best so far because it gives wake enough room to adapt, then gives dream a separate phase to reconcile new adaptation with retained structure.
+
+  More frequent dream interrupts that balance.
+
+  Tension-gated dream is still promising, but it needs a better signal. The next version should not use global epoch-average tension. It should track examples whose A/N disagreement remains
+  high across phases.
+
+  That gives the next experimental direction:
+
+  example-level persistent tension
+
+  Instead of asking:
+
+  is the whole model tense?
+
+  ask:
+
+  which experiences remain unreconciled?
+
+  Then dream should not happen because a clock says so, or because a global average crosses a threshold. It should happen because specific unresolved traces keep demanding integration.
+
+  That is closer to the larger hypothesis:
+
+  low tension -> stay awake and update
+  medium persistent tension -> dream and replay
+  high persistent incompatibility -> split context
+
+  For now, we have only tested the middle layer imperfectly.
+
+  But the result is useful: dream is necessary, schedule is unresolved, and future ability may be the right metric.
+

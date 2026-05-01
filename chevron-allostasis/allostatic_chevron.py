@@ -314,6 +314,49 @@ def train_epoch(
     return run_epoch(model, loader, device, optimizer)
 
 
+def build_replay_loader(
+    model: nn.Module,
+    buffer: ReplayBuffer,
+    batch_size: int,
+    device: torch.device,
+    policy: str,
+    disagreement_weight: float,
+    loss_weight: float,
+) -> DataLoader | None:
+    priorities = replay_priorities(
+        model,
+        buffer,
+        batch_size,
+        device,
+        policy,
+        disagreement_weight,
+        loss_weight,
+    )
+    return buffer.loader(batch_size, device, priorities)
+
+
+def dream_phase(
+    model: nn.Module,
+    buffer: ReplayBuffer,
+    device: torch.device,
+    args: argparse.Namespace,
+) -> list[EvalResult]:
+    replay_loader = build_replay_loader(
+        model,
+        buffer,
+        args.batch_size,
+        device,
+        args.replay_policy,
+        args.replay_disagreement_weight,
+        args.replay_loss_weight,
+    )
+    if replay_loader is None or args.consolidation_epochs <= 0:
+        return []
+
+    con_optim = build_optimizer(model, "consolidate", args.lr, args.slow_lr, args.weight_decay)
+    return [train_epoch(model, replay_loader, con_optim, device) for _ in range(args.consolidation_epochs)]
+
+
 @torch.no_grad()
 def evaluate(model: AllostaticChevronNet, loader: DataLoader, device: torch.device) -> EvalResult:
     model.eval()
@@ -482,6 +525,15 @@ def main() -> None:
     parser.add_argument("--replay-policy", choices=["uniform", "disagreement", "loss_disagreement"], default="uniform")
     parser.add_argument("--replay-disagreement-weight", type=float, default=1.0)
     parser.add_argument("--replay-loss-weight", type=float, default=0.25)
+    parser.add_argument(
+        "--dream-schedule",
+        choices=["post_task", "after_epoch", "tension_gated", "persistent_tension"],
+        default="post_task",
+    )
+    parser.add_argument("--dream-threshold", type=float, default=0.95)
+    parser.add_argument("--dream-margin", type=float, default=0.03)
+    parser.add_argument("--dream-ema", type=float, default=0.9)
+    parser.add_argument("--dream-patience", type=int, default=2)
     parser.add_argument("--readout", choices=["both", "a_only"], default="both")
     parser.add_argument("--diagonal-only", action="store_true")
     parser.add_argument("--seed", type=int, default=7)
@@ -517,7 +569,12 @@ def main() -> None:
     run_name = (
         f"{args.model}_seed{args.seed}_w{args.width}_{args.readout}"
         f"_buf{args.buffer_size}_con{args.consolidation_epochs}_{args.replay_policy}"
+        f"_{args.dream_schedule}"
     )
+    if args.dream_schedule == "tension_gated":
+        run_name += f"_thr{args.dream_threshold:g}"
+    if args.dream_schedule == "persistent_tension":
+        run_name += f"_m{args.dream_margin:g}_ema{args.dream_ema:g}_p{args.dream_patience}"
     if args.replay_policy == "loss_disagreement":
         run_name += f"_dw{args.replay_disagreement_weight:g}_lw{args.replay_loss_weight:g}"
     if args.model == "chevron" and args.diagonal_only:
@@ -526,6 +583,8 @@ def main() -> None:
 
     rows: list[dict[str, object]] = []
     accuracy_matrix: list[list[float]] = []
+    tension_ema: float | None = None
+    unresolved_epochs = 0
 
     for task_idx, task_digits in enumerate(TASKS):
         log(f"\ntrain_task={task_idx + 1} digits={task_digits}")
@@ -543,24 +602,38 @@ def main() -> None:
                 f"d1={result.disagree_1:.4f} d2={result.disagree_2:.4f}"
             )
 
+            wake_tension = 0.5 * (result.disagree_1 + result.disagree_2)
+            should_dream = args.dream_schedule == "after_epoch"
+            if args.dream_schedule == "tension_gated":
+                should_dream = wake_tension >= args.dream_threshold
+            elif args.dream_schedule == "persistent_tension":
+                baseline = wake_tension if tension_ema is None else tension_ema
+                if wake_tension > baseline + args.dream_margin:
+                    unresolved_epochs += 1
+                else:
+                    unresolved_epochs = 0
+                should_dream = unresolved_epochs >= args.dream_patience
+                tension_ema = (
+                    wake_tension
+                    if tension_ema is None
+                    else args.dream_ema * tension_ema + (1.0 - args.dream_ema) * wake_tension
+                )
+                if should_dream:
+                    unresolved_epochs = 0
+            if should_dream and len(buffer) > 0:
+                for dream_idx, dream_result in enumerate(dream_phase(model, buffer, device, args), start=1):
+                    log(
+                        f"dream after_wake_epoch={epoch} dream_epoch={dream_idx} "
+                        f"loss={dream_result.loss:.4f} acc={dream_result.accuracy:.4f} "
+                        f"d1={dream_result.disagree_1:.4f} d2={dream_result.disagree_2:.4f}"
+                    )
+
         buffer.add_balanced(train_tasks[task_idx])
 
-        priorities = replay_priorities(
-            model,
-            buffer,
-            args.batch_size,
-            device,
-            args.replay_policy,
-            args.replay_disagreement_weight,
-            args.replay_loss_weight,
-        )
-        replay_loader = buffer.loader(args.batch_size, device, priorities)
-        if replay_loader is not None and args.consolidation_epochs > 0:
-            con_optim = build_optimizer(model, "consolidate", args.lr, args.slow_lr, args.weight_decay)
-            for epoch in range(1, args.consolidation_epochs + 1):
-                result = train_epoch(model, replay_loader, con_optim, device)
+        if args.dream_schedule == "post_task":
+            for epoch, result in enumerate(dream_phase(model, buffer, device, args), start=1):
                 log(
-                    f"consolidate epoch={epoch} loss={result.loss:.4f} acc={result.accuracy:.4f} "
+                    f"dream post_task_epoch={epoch} loss={result.loss:.4f} acc={result.accuracy:.4f} "
                     f"d1={result.disagree_1:.4f} d2={result.disagree_2:.4f}"
                 )
 
