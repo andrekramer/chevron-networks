@@ -1,0 +1,647 @@
+Andre's Baccalaureus in Arte Ingeniaria
+
+
+Chevron Predictive Architecture
+Why World Models Need Retained Difference
+Andre Kramer
+May 20, 2026
+
+
+Yann LeCun’s JEPA architecture makes a powerful wager: perhaps world models can be learned by predicting missing or future representations in latent space, rather than by reconstructing raw pixels or memorizing linguistic tokens.
+
+That is an important shift.
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
+
+A system does not need to predict every blade of grass, every photon, every texture. It needs to predict what matters: the hidden structure, the persistent object, the likely continuation, the affordance, the constraint. JEPA’s elegance lies in this abstraction. It says: do not predict the world as sensation; predict the world as representation.
+
+But there is a deeper question.
+
+Is prediction enough?
+
+A world model is not merely a machine that guesses what comes next. It is a retained structure of expectations, constraints, distinctions, and affordances that survives repeated contact with the world. It is not just a predictor. It is a memory of what continues to matter.
+
+This post proposes a possible extension of the JEPA idea: Chevron Predictive Architecture.
+
+The central claim is simple:
+
+Prediction gives the gradient. Inertia gives the world.
+
+The JEPA Wager
+JEPA — Joint Embedding Predictive Architecture — does not try to reconstruct sensory input directly. Instead of predicting missing pixels, it predicts missing or future representations.
+
+In simplified form:
+
+context representation → predicted target representation
+This is a powerful idea. It avoids wasting effort on irrelevant details. If part of an image is hidden, the system does not need to predict the exact texture of every surface. It needs to infer the meaningful structure: object continuation, spatial relation, category, motion, or possibility.
+
+In this sense, JEPA is closer to how animals seem to learn. A cat does not need to generate a photorealistic image of the other side of the sofa. It needs to know whether the mouse might be there.
+
+So JEPA shifts the problem from raw generation to latent compatibility.
+
+But this raises the central question:
+
+Does predicting latent targets automatically produce a world model?
+
+Perhaps not.
+
+Prediction tells us that something follows from something else. But a world model requires more than following. It requires retention. It requires knowing which differences are stable, which are accidental, which matter for action, and which should be ignored.
+
+Prediction can generate error.
+
+Error can generate difference.
+
+But only retention produces a world.
+
+Prediction Is Not Retention
+A predictive system can learn correlations. It can learn that one representation tends to follow another. It can learn that one hidden patch is compatible with a visible context.
+
+But a world model must do more.
+
+It must retain object persistence.
+It must distinguish signal from noise.
+It must preserve causal regularities.
+It must learn affordances.
+It must remember failed expectations.
+It must survive distribution shift.
+It must know what remains true when the surface changes.
+
+This is not just prediction. It is the stabilization of useful difference.
+
+That phrase matters: useful difference.
+
+Not every difference matters. Most differences are noise. Not every prediction error deserves structural change. Many errors are local, accidental, or misleading. A world model forms only when certain differences are repeatedly selected, stabilized, and retained.
+
+This is where I think JEPA may need a richer training story.
+
+The problem is not that JEPA is wrong. The problem is that latent prediction may be only one part of world-model formation. It gives the system a pressure toward compatibility, but it does not by itself explain how the system decides which differences become durable structure.
+
+A world model is not simply learned.
+
+It is sedimented.
+
+Biology Does Not Learn From Scratch
+Biological systems do not begin as blank predictive encoders.
+
+Animals inherit bodies, sensors, reflexes, drives, developmental sequences, ecological niches, and species-level priors. A newborn organism is not an empty JEPA waiting for data. It is already the result of a long evolutionary search.
+
+Evolution has already discovered a great deal before individual learning begins:
+
+which sensory distinctions are likely to matter,
+
+which movements are possible,
+
+which bodily needs are urgent,
+
+which environmental regularities are worth tracking,
+
+which forms of plasticity are safe,
+
+which structures should change quickly,
+
+which should change slowly.
+
+An organism does not merely learn from the environment. It is built by an evolutionary history that has already shaped how the environment will be sampled, parsed, and acted upon.
+
+This is an important correction to any overly simple claim that world models are “easily learned.”
+
+They may be learned efficiently by animals because animals are not starting from zero.
+
+They are born inside retained structure.
+
+Evolution does not knowingly design intelligence. But it does retain what has worked. It builds on inertia. It does not search the space of possible organisms afresh every generation. It modifies what already exists.
+
+That is the clue.
+
+A world model may need not only prediction, but inertial retention.
+
+Inertial VSR
+The evolutionary pattern is usually described as:
+
+variation → selection → retention
+Variation produces difference.
+
+Selection tests difference.
+
+Retention preserves difference.
+
+But real evolution is not a clean reset at each cycle. It is inertial. Existing structures constrain what variations are possible. What has been retained becomes the ground for what can vary next.
+
+This gives us a general learning principle:
+
+Learning should not merely reduce error. It should decide which differences are worth retaining.
+
+That principle is what I call Inertial VSR.
+
+In a learning system, variation might appear as exploration, perturbation, gradient movement, masking, alternative predictions, or competing internal proposals.
+
+Selection might appear as prediction error, action success, robustness, recurrence, or compatibility with existing structure.
+
+Retention might appear as memory, consolidation, slower weights, replay, habits, norms, or world-model structure.
+
+This reframes learning.
+
+The question is not only:
+
+What prediction minimizes error now?
+
+The deeper question is:
+
+Which predictive differences remain worth keeping?
+
+Enter the Chevron
+Chevron Networks begin with a simple architectural move.
+
+Instead of treating a node or representation as a single scalar or vector, split it into two interacting channels:
+
+A = adaptive / active / proposal channel
+N = normative / retained / constraint channel
+The A channel is fast, plastic, present-facing.
+
+The N channel is slower, stabilizing, past-facing.
+
+A proposes.
+
+N constrains.
+
+Their mismatch becomes meaningful.
+
+The point is not that A is “good” and N is “bad,” or that one is conscious and the other unconscious. The point is that learning needs an internal tension between what changes quickly and what changes slowly.
+
+A system that changes too quickly forgets.
+
+A system that changes too slowly cannot adapt.
+
+A system in which both channels collapse into sameness has no productive internal difference.
+
+The Chevron idea is that intelligence may require a structured opposition between adaptation and retention.
+
+In a predictive architecture, this becomes especially interesting.
+
+A can learn what works now.
+
+N can retain what keeps working.
+
+Prediction can test their compatibility.
+
+This suggests a new form:
+
+Chevron Predictive Architecture — a JEPA-like architecture in which latent prediction is mediated by fast/slow A/N dynamics.
+
+Breakout: The Minimal Chevron Block
+A Chevron block begins by replacing a single hidden state with a paired state:
+
+x = [A, N]
+Instead of passing one vector through one weight matrix, the Chevron block passes the paired state through a local 2×2 operator:
+
+[ A' ]   [ W_AA  W_AN ] [ A ]
+[ N' ] = [ W_NA  W_NN ] [ N ]
+
+
+
+Think of a Chevron with it’s 4 degrees of freedom - length of arms, angle and orientation.
+
+
+
+
+Each term has a possible interpretation:
+
+Term / Role
+
+W_AA A preserves and transforms its own proposal
+
+W_AN N constrains or steers A
+
+W_NA A perturbs or informs N
+
+W_NN N preserves and transforms retained structure
+
+In Python-like pseudo-code:
+
+class ChevronBlock:
+    def __init__(self, dim):
+        self.W_AA = Linear(dim, dim)
+        self.W_AN = Linear(dim, dim)
+        self.W_NA = Linear(dim, dim)
+        self.W_NN = Linear(dim, dim)
+
+        self.norm_A = LayerNorm(dim)
+        self.norm_N = LayerNorm(dim)
+
+    def forward(self, A, N, input=None):
+        # Fast proposal update
+        A_update = self.W_AA(A) + self.W_AN(N)
+
+        # Slow constraint update
+        N_update = self.W_NA(A) + self.W_NN(N)
+
+        if input is not None:
+            A_update = A_update + input
+
+        A_next = self.norm_A(A + activation(A_update))
+        N_next = self.norm_N(N + activation(N_update))
+
+        return A_next, N_next
+This is the minimal mathematical idea.
+
+The architecture is not merely “two networks.” The point is the cross-coupling:
+
+A influences N through W_NA
+N influences A through W_AN
+So the block can express several regimes:
+
+Regime / Chevron interpretation
+
+W_AN strong retained constraint strongly shapes current proposal
+
+W_NA strong current experience strongly updates retained structure
+
+W_AA dominant fast adaptive continuity
+
+W_NN dominant slow normative continuity
+
+off-diagonal balance active A/N negotiation
+
+off-diagonal suppression channel separation / anti-collapse
+
+For a predictive architecture, the block becomes:
+
+A_context, N_context = chevron_encoder(context)
+
+prediction = predictor(A_context, N_context)
+
+loss = distance(prediction, target_representation)
+The training rule then gives the channels different time-scales:
+
+optimizer_A = AdamW(A_parameters, lr=fast_lr)
+optimizer_N = AdamW(N_parameters, lr=slow_lr)
+This is where the Chevron becomes more than a block matrix. It becomes an allostatic learning unit:
+
+A learns quickly from present error.
+N learns slowly from retained usefulness.
+The world model forms in their negotiated difference.
+The Chevron block is mathematically simple: a paired state and a 2×2 operator. The speculative claim is not in the matrix itself, but in the training discipline imposed on it: A is allowed to move quickly, N is made to retain slowly, and prediction tests whether their difference is useful.
+
+
+
+
+CPA as a JEPA-like Architecture
+A simplified JEPA says:
+
+context representation → predictor → target representation
+A Chevron Predictive Architecture says:
+
+A(context) + N(retained constraints)
+    → predictor
+    → hidden / future / target representation
+This changes the meaning of prediction.
+
+The system is no longer merely asking:
+
+What target representation follows from this context?
+
+It is asking:
+
+What target representation follows when the current proposal is constrained by retained structure?
+
+This makes the prediction less like a one-step mapping and more like a negotiation.
+
+A is the local proposal.
+
+N is the retained constraint.
+
+The predictor works through their tension.
+
+In ordinary JEPA, asymmetry is often introduced through mechanisms such as target encoders, stop-gradient, or slowly updated representations. These are important anti-collapse devices.
+
+CPA internalizes that asymmetry.
+
+Instead of only having an online encoder and a target encoder, CPA asks whether every representation should contain an internal fast/slow polarity.
+
+A does not merely predict.
+
+N does not merely store.
+
+Their relation becomes the site of learning.
+
+N Attends to the Past
+This also suggests a different way to think about attention.
+
+Modern architectures often use attention to decide which tokens or patches matter. More recent residual-attention ideas extend this into depth: later layers can selectively retrieve earlier layer or block representations rather than simply accumulating them through fixed residual streams.
+
+CPA gives that a Chevron interpretation:
+
+A attends to the present. N attends to the retained past.
+
+N should not merely be a slower copy of A. It should selectively retrieve prior constraints: earlier block states, previous interpretations, replay traces, failed predictions, stable object expectations, or action consequences.
+
+In a block-based CPA, each block could leave behind an N-summary — a retained trace of its A/N negotiation. Later blocks could attend over these summaries.
+
+Conceptually:
+
+A_l = fast transform of current input
+
+N_l = slow transform of:
+      previous N
+      attended prior N blocks
+      current A/N mismatch
+
+prediction = P(A_l, N_l)
+This gives a different kind of attention.
+
+Not just:
+
+Which token matters?
+
+But:
+
+Which retained constraint matters now?
+
+That is closer to the problem a world model faces. It must not simply process what is present. It must bring the right past structure to bear on the present.
+
+A world is not given all at once. It is reassembled through memory, expectation, and constraint.
+
+Collapse as the Central Training Problem
+All of this depends on training.
+
+An architecture can suggest a space of possibilities, but training determines what actually forms.
+
+The obvious danger is collapse.
+
+A JEPA-like system may learn trivial embeddings.
+A predictive system may learn shortcuts.
+A two-channel system may allow A and N to become identical.
+A slow channel may dominate and suppress adaptation.
+A fast channel may drift and lose coherence.
+
+So the training problem is not simply:
+
+Minimize prediction error.
+
+It is:
+
+Learn useful differences without collapsing into sameness or diverging into noise.
+
+This is why the A/N distinction matters.
+
+If A and N become identical, the system loses its internal opposition.
+If A and N become unrelated, the system loses coherence.
+The useful regime lies between collapse and chaos.
+
+The aim is not maximum difference.
+
+The aim is productive tension.
+
+Breakout: Between Collapse and Chaos
+The useful regime for Chevron Predictive Architecture lies between two failures. If A and N collapse into sameness, the system becomes over-ordered: stable, but unable to generate meaningful difference. If A drifts too far from N, the system becomes chaotic: flexible, but unable to retain structure.
+
+This echoes the entropic brain hypothesis, where rich conscious dynamics are associated with a critical zone between excessive order and excessive disorder. In CPA terms, this zone is not merely high entropy. It is productive tension: a state in which proposal and constraint remain distinct enough to generate novelty, but coupled enough to preserve coherence.
+
+This is also the familiar explore/exploit dilemma in another form. A, the fast proposal channel, corresponds to exploration: trying new variations, loosening existing expectations, testing what might be possible. N, the slower constraint channel, corresponds to exploitation: using what has already proven reliable, preserving structure, acting from retained knowledge. But intelligence cannot live at either pole alone. Pure exploitation becomes rigidity; pure exploration becomes noise. The useful regime is a controlled alternation: A opens the space of possible differences, while N selects and stabilizes the differences worth keeping. In CPA, explore/exploit is not merely a policy choice; it is built into the architecture as the tension between adaptive variation and inertial retention.
+
+Gradient Descent as Efficient (A) Search
+This is where next-token prediction remains instructive.
+
+Large language models work astonishingly well partly because next-token prediction provides a dense training signal. Every token gives a local correction. Gradient descent turns those corrections into an efficient search process.
+
+CPA should not reject that.
+
+Gradient descent is not the enemy of Inertial VSR. It can be understood as a compressed local version of variation and selection.
+
+In VSR terms:
+
+VSR / Gradient descent analogue
+
+Variation possible local parameter changes
+
+Selection gradient direction
+
+Retention weight update
+
+Gradient descent searches efficiently. But it does not by itself decide what should become durable world structure. It updates according to local error.
+
+In CPA, the proposal is:
+
+Use gradient descent for efficient local search, but use A/N asymmetry and inertial retention to decide what becomes stable.
+
+A can be trained quickly by ordinary predictive gradients.
+
+N can be trained more slowly, through delayed updates, replay, lower learning rates, or consolidation-like mechanisms.
+
+So we get:
+
+Gradient descent searches. Inertia retains.
+
+Playing A and N Against Each Other
+Both A and N could be trained by SGD, but under different rules.
+
+A receives fast updates.
+
+N receives slow updates.
+
+A explores the current predictive landscape.
+
+N preserves what has remained useful.
+
+This gives a training rhythm:
+
+1. Hold N fixed or slow.
+2. Let A adapt quickly to prediction error.
+3. Test whether A's changes remain compatible with N.
+4. Replay or perturb the situation.
+5. Consolidate into N only what remains useful.
+This is not full neuroevolution. It does not require a population of whole models.
+
+The evolutionary logic can be local.
+
+A produces variations.
+
+Prediction tests them.
+
+N retains what survives.
+
+The selected unit is not merely a weight update. It is an A/N difference.
+
+This is the important shift:
+
+Learning is not just changing parameters. Learning is selecting which differences deserve inertia.
+
+Evolutionary Training Without Full Evolution
+Evolutionary language can sound computationally expensive. But CPA does not require replacing gradient descent with full evolutionary search.
+
+The VSR process can be approximated inside gradient training.
+
+Variation can come from:
+
+masking,
+
+dropout,
+
+perturbation,
+
+augmentation,
+
+alternative predictions,
+
+different temporal contexts,
+
+action-conditioned futures.
+
+Selection can come from:
+
+prediction loss,
+
+robustness,
+
+recurrence,
+
+compatibility with N,
+
+avoidance of collapse,
+
+usefulness under replay.
+
+Retention can come from:
+
+slow N updates,
+
+replay,
+
+EMA-like consolidation,
+
+memory blocks,
+
+recurrent stabilization.
+
+This gives an evolutionary style without requiring literal biological evolution.
+
+The slogan is:
+
+SGD supplies variation. A/N tension supplies selection. N supplies retention.
+
+Or more compactly:
+
+A learns by gradient. N learns by inertia.
+
+Not Just Prediction Loss
+A CPA objective cannot be only prediction loss.
+
+If the system only minimizes prediction error, it may find cheap shortcuts. It may collapse representations. It may make A and N redundant. It may preserve local correlations rather than world structure.
+
+The objective must encourage prediction and productive difference.
+
+Conceptually:
+
+Loss =
+    latent prediction loss
+  + anti-collapse pressure
+  + A/N distinction pressure
+  + temporal consistency
+  + perturbation robustness
+  + slow retention penalty
+The exact mathematics is a later question.
+
+The conceptual point is that the system must be rewarded not merely for getting the next representation right, but for doing so in a way that preserves useful internal structure.
+
+A and N should not be forced apart arbitrarily.
+
+They should not be fused prematurely.
+
+They should remain different in ways that help the system predict, adapt, and retain.
+
+A world model is not a bag of accurate predictions. It is a stable structure of useful distinctions.
+
+World Model as Retained Difference
+This brings us back to the central thesis.
+
+JEPA says: predict latent structure.
+
+CPA says: retain the differences that keep mattering.
+
+A world model is not simply a predictor. It is the retained structure of differences that have survived prediction, action, replay, perturbation, and environmental recurrence.
+
+This also returns us to Bateson’s phrase: a difference that makes a difference.
+
+The world model is not all difference.
+It is selected difference.
+It is difference under inertia.
+
+That is why biological intelligence is such an important clue. Organisms are not just trained by experience. They are shaped by an evolutionary history of retained differences. Individual learning then continues this process at a faster time scale.
+
+Evolution supplies deep N.
+Development reshapes N.
+Experience perturbs A.
+Prediction tests A against N.
+Replay consolidates what survives.
+
+A world model forms when useful differences become retained constraints.
+
+So perhaps the missing piece in purely predictive accounts is not prediction itself, but retention.
+
+JEPA learns latent compatibility.
+
+CPA learns retained difference.
+
+Breakout: The R-rule as a Possible Update Law
+There is a possible mathematical refinement here, which I will only gesture toward.
+
+If A is the adaptive proposal and N is the retained constraint, then learning can be understood not only as scalar loss minimization, but as movement in the plane formed by A and N.
+
+This is where the R-rule may enter.
+
+The R-rule treats update as a controlled movement through tension:
+
+A = proposal / action / adaptive pressure
+N = norm / constraint / retained structure
+tension = uncertainty or mismatch
+update = movement toward better compatibility
+In this interpretation, learning is not merely “downhill” motion on a loss surface. It is a rotation or reorientation in the A/N plane.
+
+That may eventually give CPA a more precise formal core. But the conceptual point can stand without it:
+
+Predictive learning needs a rule for how proposal and constraint change each other without collapsing into sameness.
+
+The R-rule is one possible candidate for that rule.
+
+From Prediction to World
+JEPA is valuable because it shifts AI away from raw reconstruction and toward latent prediction. That is a real advance.
+
+But world models may require something more.
+
+They may require an architecture of retained difference.
+
+A world is not learned merely by guessing what comes next. It is built by retaining what continues to matter.
+
+That is the intuition behind Chevron Predictive Architecture.
+
+A proposes.
+
+N remembers.
+
+Prediction tests.
+
+Inertia decides what becomes structure.
+
+The first claim is conceptual: world models are not predictions alone. They are retained differences under constraint.
+
+The next question is practical:
+
+Can we train them that way?
+
+That is where Chevron Predictive Architecture becomes an experimental program. Start with JEPA. Split the state. Slow one channel. Measure collapse. Add memory. Then add selection.
+
+There is a useful connection here to an already successful trick in modern self-supervised learning: slow weights and exponential moving averages (EMA). BYOL uses a target network whose weights are an exponential moving average of the online network, and MoCo uses a slowly progressing momentum encoder to maintain more consistent representations. I-JEPA similarly uses a target encoder updated by exponential moving average of the context encoder. These systems suggest that a delayed, slower representation can stabilize learning and help prevent representational collapse.
+
+Chevron Predictive Architecture can be read as taking this macro-level design pattern and turning it into a micro-level representational principle. Instead of keeping a separate slow target network outside the main representation, CPA builds a fast/slow relation into each unit or edge. The A-channel plays the role of the fast, adaptive proposal; the N-channel plays the role of the slower retained constraint. The point is not merely to stabilize a loss function, but to make proposal and constraint native to the representation itself.
+
+In that sense, CPA does not reject the lesson of BYOL, MoCo, or JEPA. It generalizes it. The delayed target encoder becomes a local architectural motif: every Chevron can carry both the current adaptive movement and the retained structure against which that movement is tested. What appears in self-supervised learning as a useful training trick becomes, in CPA, a candidate substrate for continual learning, semantic control, and resistance to collapse.
+
+EMA says: keep a slow copy of the learner. CPA says: make fast/slow learning the structure of the representation.
+
+Chevron Predictive Architecture is an attempt to trade off two demands: the practical efficiency of current AI techniques — gradient descent, latent prediction, residual attention, and self-supervised training — with the conceptual framework developed in the Mandala of Meaning: oppositional structure, retained difference, recursive tension, and inertial VSR.
+
+Previous Posts on Chevron Networks and the R rule are available as Amzon Kindle eBooks (or here and here on my substacks).
+
+Andre with ChatGPT 5.5, May 2026
+
+
