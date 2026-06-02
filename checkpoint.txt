@@ -1,0 +1,140 @@
+Oppositional Channel Networks (Chevron Nets)
+A compact checkpoint on a minimal dual-channel neural architecture
+
+
+Oppositional Channel Networks (OCNs), or Chevron networks, are a proposed neural architecture in which each unit carries two coupled channels rather than a single scalar activation, and each connection acts as a small 2×2 operator rather than a single weight. The aim is to represent and transform differences, opposition, and control more explicitly than in standard dense neural networks.
+
+At the core of the idea is a simple change in representation. Instead of a neuron holding one value, a Chevron unit holds a pair:
+
+x=[A, N]
+
+These two channels can be interpreted in different but related ways: positive/negative evidence, proposal/constraint, actor/critic, sensory input/prediction, or content/control. The key point is that the architecture preserves a distinction internally rather than collapsing everything immediately into one scalar.
+
+A Chevron connection between units is a 2×2 matrix:
+
+W=[wAA wAN wNA wNN]
+
+This allows four local motifs in one primitive: within-channel reinforcement, cross-channel inhibition, disinhibition, and mixed rotation-like coupling. In effect, a Chevron edge is not just a strength but a tiny local transform.
+
+Core intuition
+Standard networks often treat difference as something that emerges indirectly from many scalar weights. Chevron networks instead try to make difference first-class. A unit can maintain both a tendency and a counter-tendency, both evidence and counter-evidence, or both a proposed action and a control signal. This makes it easier to model:
+
+explicit opposition,
+
+veto or relevance gating,
+
+uncertainty and ambivalence,
+
+fast vs slow adaptation,
+
+and potentially more interpretable internal dynamics.
+
+A minimal update
+A simple Chevron layer updates by summing transformed incoming two-channel messages, then applying a nonlinearity:
+
+xi←σ ⁣((1−λ)xi+∑j∈N(i)gij Wij xj+Ii)
+
+where:
+
+xiis the 2-channel state at node iii,
+
+Wij is the 2×2 Chevron operator,
+
+gij is a gate or relevance weight,
+
+λ is an inertia / leak term,
+
+Ii is external input.
+
+This already gives a useful baseline: a trainable two-channel operator network that can be optimized with ordinary backprop.
+
+Tension and collapse
+A useful derived quantity is a scalar stance or tension collapse, formed from the two channels:
+
+ℓ=A−N, p=σ(ℓ)
+
+Here p can be read as a temporary commitment on an oppositional axis, while the uncertainty term
+
+u=ϵ+p(1−p)
+
+can scale fast state updates. This preserves an important feature from earlier Tension Layer ideas: updates are largest when the unit is uncertain and smaller when it is already committed.
+
+This gives Chevron networks a natural way to combine:
+
+a richer two-channel internal state,
+
+with a simple interpretable scalar summary,
+
+and an uncertainty-sensitive update rule.
+
+Dual-path variants
+Chevron units become more interesting when the two channels come from different pathways.
+
+Two especially important variants are:
+
+Dual-forward: both channels are feed-forward, but along separate rails.
+
+Forward/backward: one channel carries bottom-up sensory or proposal signals, while the other carries top-down prediction, context, or constraint.
+
+The second variant has a strong family resemblance to predictive processing: evidence rises, expectation descends, and the Chevron cell becomes the local point where they meet and reconcile.
+
+Minimal actor–critic interpretation
+Chevron networks also offer a natural minimal actor–critic style dynamic at the cell level.
+
+A-channel: action tendency, proposal, or “go” signal
+
+N-channel: normative correction, critic, veto, or precision signal
+
+A temporary stance p can be formed from their difference, while the uncertainty term u controls how quickly the internal state moves. This suggests a simple recurrent RL cell in which:
+
+fast updates happen in the internal stance,
+
+slower learning happens in the weights,
+
+and the second channel modulates whether action should proceed confidently or be inhibited.
+
+What current experiments suggest
+Early toy experiments suggest that Chevron networks are:
+
+trainable and competitive with simple baselines,
+
+not automatically superior on ordinary tasks,
+
+but potentially useful when the structure is forced to matter.
+
+The most promising directions so far are:
+
+controlled plasticity (slow core, fast override),
+
+category veto / trap avoidance,
+
+reopening decisions after new evidence,
+
+and continual-learning style settings where retention matters.
+
+So far, the evidence supports a modest claim: Chevron networks are a viable structured alternative to scalar dense layers, with distinctive behavior when used as a control or veto architecture. The broader claim—that they are intrinsically better than standard nets—remains open.
+
+Why this matters
+The value of Chevron networks is not that they are “bigger” than ordinary neurons. It is that they may provide a cleaner substrate for:
+
+explicit oppositional coding,
+
+interpretable dual-path processing,
+
+uncertainty-sensitive updates,
+
+and a bridge between representation, control, and minimal agency.
+
+In that sense, the Chevron is less a claim of immediate superiority than a claim that the design space is worth exploring.
+
+Near-term roadmap
+The next experiments that matter most are:
+
+comparing dual-forward vs forward/backward channel routing,
+
+reintroducing tension-based fast updates inside Chevron cells,
+
+and testing small RL agents where uncertainty, reversals, and veto decisions matter.
+
+If Chevron networks are going to show a genuine advantage, it will likely be in tasks that require the agent to maintain a persistent, uncertainty-aware internal stance rather than simply map inputs to outputs.
+
