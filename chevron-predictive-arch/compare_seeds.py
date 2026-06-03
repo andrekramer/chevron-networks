@@ -53,6 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--conditions", nargs="+", default=list(CONDITIONS))
+    parser.add_argument("--mlp-hidden-dim", type=int, default=64)
     parser.add_argument("--cpa-hidden-dim", type=int, default=64)
     return parser.parse_args()
 
@@ -81,7 +82,9 @@ def run_condition(args: argparse.Namespace, condition: str, seed: int) -> Path:
         "--out-dir",
         str(condition_out),
     ]
-    if condition.startswith("cpa"):
+    if condition == "mlp":
+        cmd.extend(["--hidden-dim", str(args.mlp_hidden_dim)])
+    elif condition.startswith("cpa"):
         cmd.extend(["--hidden-dim", str(args.cpa_hidden_dim)])
     print(f"\n=== {condition} seed={seed} ===", flush=True)
     subprocess.run(cmd, check=True)

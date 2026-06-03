@@ -4,7 +4,7 @@ This note summarizes the experimental trajectory so far for the minimal Chevron 
 
 The short version:
 
-> A naive CPA did not beat simple baselines on the harder task. But after diagnosis, adding mismatch-driven N updates, increasing capacity, and training longer produced a CPA variant that reliably beats the MLP baseline and reaches near 5-epoch Transformer parity on the current synthetic lagged/distractor task.
+> A naive CPA did not beat simple baselines on the harder task. But after diagnosis, adding mismatch-driven N updates, increasing capacity, and training longer produced a CPA variant that reliably beats the original h64/5-epoch MLP baseline and reaches near 5-epoch Transformer parity on the current synthetic lagged/distractor task. A larger h128/10-epoch MLP, however, beats the h128/10-epoch CPA again.
 
 ## Setup
 
@@ -163,9 +163,9 @@ Per-seed h128 CPA diff, 10 epochs:
 | 1 | 0.8744 | 7.61 | 34.68 | 0.6783 | 0.7908 |
 | 2 | 0.8770 | 8.77 | 34.26 | 0.6725 | 0.7842 |
 
-This is the strongest result so far.
+This was the strongest result at that stage.
 
-CPA h128 10e beats MLP on every reported aggregate metric:
+CPA h128 10e beats the original MLP h64 5e baseline on every reported aggregate metric:
 
 - higher accuracy
 - faster post-switch recovery
@@ -176,19 +176,85 @@ It also reaches near 5-epoch Transformer parity, and slightly exceeds that Trans
 
 Interpretation:
 
-> A larger mismatch-driven CPA trained longer reliably beats the MLP baseline on the harder lagged/distractor task. Transformer parity is plausible but not yet established under matched training budgets.
+> A larger mismatch-driven CPA trained longer reliably beats the original smaller MLP baseline on the harder lagged/distractor task. Transformer parity is plausible but not yet established under matched training budgets.
+
+## 7. Larger MLP Beat CPA Again
+
+The next sanity check was whether the MLP result was mostly a capacity/training-budget artifact. The MLP was scaled from h64 to h128 and trained for 10 epochs across the same three seeds and lagged/distractor setup.
+
+Three-seed aggregate:
+
+| Model | Params | Accuracy | Switch Recovery | Distractor Recovery | Post-Distractor Acc |
+|---|---:|---:|---:|---:|---:|
+| CPA diff h128 10e | 182,274 | 0.8765 +/- 0.0019 | 7.92 +/- 0.74 | 34.21 +/- 0.50 | 0.6818 +/- 0.0115 |
+| MLP h128 10e | 25,090 | 0.8849 +/- 0.0060 | 7.08 +/- 0.81 | 32.40 +/- 2.71 | 0.7265 +/- 0.0234 |
+
+Per-seed MLP h128, 10 epochs:
+
+| Seed | Accuracy | Switch Recovery | Distractor Recovery | Post-Distractor Acc |
+|---:|---:|---:|---:|---:|
+| 0 | 0.8877 | 6.14 | 29.55 | 0.7512 |
+| 1 | 0.8780 | 7.59 | 34.94 | 0.7045 |
+| 2 | 0.8890 | 7.51 | 32.71 | 0.7236 |
+
+MLP h128 10e beats CPA h128 10e on every reported aggregate metric except distractor-step accuracy, where they are effectively tied:
+
+- higher accuracy
+- faster post-switch recovery
+- faster distractor recovery
+- higher post-distractor accuracy
+
+Interpretation:
+
+> The previous CPA-over-MLP result does not survive a larger, equally longer-trained MLP baseline. The current evidence supports "CPA can be made competitive with a simple MLP on this task," not "CPA beats MLP."
+
+## 8. Longer Distractor Bursts Did Not Reveal a CPA Advantage
+
+The next stress test increased distractor burst length while keeping the distractor start probability fixed:
+
+- current: 20-40 steps
+- long: 40-80 steps
+- very long: 80-160 steps
+
+MLP h128, CPA diff h128, and Transformer h128 were trained for 10 epochs across the same three seeds. Note that h128 is the same hidden dimension, not the same parameter count: MLP h128 has 25,090 parameters, CPA h128 has 182,274, and Transformer h128 has 405,250.
+
+Three-seed aggregate:
+
+| Burst Length | Model | Accuracy | Switch Recovery | Distractor Recovery | Post-Distractor Acc | Non-Distractor Acc |
+|---|---|---:|---:|---:|---:|---:|
+| 20-40 | MLP h128 10e | 0.8849 +/- 0.0060 | 7.08 +/- 0.81 | 32.40 +/- 2.71 | 0.7265 +/- 0.0234 | 0.9480 +/- 0.0049 |
+| 20-40 | CPA diff h128 10e | 0.8765 +/- 0.0019 | 7.92 +/- 0.74 | 34.21 +/- 0.50 | 0.6818 +/- 0.0115 | 0.9379 +/- 0.0036 |
+| 20-40 | Transformer h128 10e | 0.8895 +/- 0.0048 | 6.27 +/- 0.13 | 33.16 +/- 1.14 | 0.7242 +/- 0.0363 | 0.9532 +/- 0.0073 |
+| 40-80 | MLP h128 10e | 0.8246 +/- 0.0114 | 14.29 +/- 0.42 | 56.43 +/- 2.43 | 0.6879 +/- 0.0326 | 0.9409 +/- 0.0069 |
+| 40-80 | CPA diff h128 10e | 0.8212 +/- 0.0058 | 15.27 +/- 1.20 | 58.47 +/- 1.22 | 0.6719 +/- 0.0077 | 0.9352 +/- 0.0018 |
+| 40-80 | Transformer h128 10e | 0.8342 +/- 0.0087 | 12.35 +/- 1.24 | 55.58 +/- 1.87 | 0.6924 +/- 0.0408 | 0.9505 +/- 0.0057 |
+| 80-160 | MLP h128 10e | 0.7702 +/- 0.0132 | 19.21 +/- 1.20 | 63.90 +/- 9.86 | 0.7112 +/- 0.0073 | 0.9446 +/- 0.0057 |
+| 80-160 | CPA diff h128 10e | 0.7588 +/- 0.0103 | 19.77 +/- 4.64 | 52.01 +/- 1.56 | 0.6308 +/- 0.0111 | 0.9294 +/- 0.0104 |
+| 80-160 | Transformer h128 10e | 0.7762 +/- 0.0172 | 17.52 +/- 0.70 | 64.56 +/- 10.42 | 0.6942 +/- 0.0556 | 0.9530 +/- 0.0072 |
+
+Longer bursts made the task harder as intended: overall accuracy fell as more targets became random distractors. Non-distractor accuracy stayed high, so the models were still learning the underlying lagged regimes.
+
+The h128 Transformer did not break under longer distractors. It had the best mean accuracy and non-distractor accuracy at every burst length, and the best switch recovery. Its weak point was very-long post-distractor accuracy: at 80-160 bursts, MLP did better there.
+
+The only CPA-favorable signal was very-long distractor recovery: at 80-160 bursts, CPA recovered faster on average after distractors. But that came with much worse post-distractor accuracy and lower non-distractor accuracy, so it is not a convincing robustness win.
+
+Interpretation:
+
+> Lengthening distractor bursts does not rescue the CPA claim. The MLP remains stronger overall than CPA, and the h128 Transformer remains stronger still on accuracy and non-distractor rule use. The current CPA's faster recovery under very long bursts appears to be a narrow metric tradeoff rather than better retained rule use.
 
 ## Current Best Claim
 
 The honest claim is:
 
-> Minimal CPA did not work out of the box. But the trajectory is positive: A/N coordination, mismatch-driven N updates, larger hidden state, and longer training produced a CPA variant that beats the MLP baseline across three seeds and approaches the Transformer baseline on this synthetic task.
+> Minimal CPA did not work out of the box. But the trajectory is positive: A/N coordination, mismatch-driven N updates, larger hidden state, and longer training produced a CPA variant that beats the original h64/5-epoch MLP baseline across three seeds and approaches the 5-epoch Transformer baseline on this synthetic task. Once the MLP is also scaled to h128 and trained for 10 epochs, the MLP is ahead again.
+> Longer distractor bursts do not change that conclusion. The h128 Transformer also survives the longer-burst stress test.
 
-The stronger claim not yet justified:
+The stronger claims not yet justified:
 
+> CPA beats a capacity-tuned MLP.
 > CPA beats Transformer.
 
-To make that claim, the next experiment should train the Transformer under the same 10-epoch budget and compare across the same three seeds.
+To make the Transformer claim, the next experiment should train the Transformer under the same 10-epoch budget and compare across the same three seeds. To make the MLP claim, CPA needs either a stronger architecture/training setup or a parameter-matched comparison against larger MLPs.
 
 ## Why This Is a Good Experimental Story
 
@@ -199,7 +265,9 @@ The trajectory is useful because it was not a straight confirmation.
 3. The failure identified specific architectural/training issues.
 4. A CPA-specific mismatch mechanism improved results.
 5. Scaling CPA improved results further.
-6. Larger CPA trained longer beat MLP across seeds.
+6. Larger CPA trained longer beat the original MLP baseline across seeds.
+7. Larger MLP trained longer beat CPA again.
+8. Longer distractor bursts produced one narrow CPA-favorable recovery metric, but not an overall advantage.
 
 That makes the result more credible than a single cherry-picked win.
 
