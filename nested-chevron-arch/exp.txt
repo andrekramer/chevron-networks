@@ -1,0 +1,98 @@
+Suggested Experiment Sequence
+
+Experiment 1: Flat CPA on regime-switching prediction
+
+Compare:
+
+MLP
+Tiny Transformer
+Flat CPA
+
+
+Task:
+
+Predict the next bit in a sequence whose hidden rule changes occasionally.
+
+
+Measure:
+
+overall accuracy
+recovery after rule switch
+resistance to noise
+A/N collapse or divergence
+
+
+The goal is not just maximum accuracy. The goal is the adaptation-retention trade-off.
+
+Experiment 2: Nested CPA on nested regimes
+
+Compare:
+
+Tiny Transformer
+Flat CPA
+Nested CPA
+
+
+Task:
+
+Predict the next bit when there is both a local rule and a slower-changing global rule family.
+
+
+Hypothesis:
+
+local A/N adapts quickly to the current rule
+global A/N retains the broader task family
+
+
+This tests whether nesting adds something beyond simply having two channels.
+
+Experiment 3: Moving-object prediction with occlusion
+
+Create a tiny grid world:
+
+a dot moves across a 16x16 grid
+it has hidden velocity
+it sometimes disappears behind occlusion
+distractor dots sometimes appear
+
+
+Task:
+
+predict the next position or next frame
+
+
+Hypothesis:
+
+A tracks current apparent motion
+N retains object identity and velocity through occlusion
+
+
+This moves CPA toward video-like prediction without requiring real video.
+
+Experiment 4: Instruction-following gridworld
+
+Create a symbolic VLA-like task:
+
+vision: small grid
+language: instruction token
+action: next move
+
+
+Example instructions:
+
+go to red
+avoid blue
+collect key
+push block
+
+
+The instruction persists over many steps while the visual field changes.
+
+Hypothesis:
+
+visual A/N adapts to the changing scene
+task A/N retains the instruction
+action A/N proposes moves constrained by task and safety
+
+
+This becomes the first toy Chevron VLA experiment.
