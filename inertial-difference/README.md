@@ -1,7 +1,7 @@
 # Inertial Difference Learning Test
 
 This directory contains a small, dependency-free test harness for the idea in
-`idl.txt`.
+`../idl.txt`.
 
 The stream is an online binary classification task with three pressures:
 
