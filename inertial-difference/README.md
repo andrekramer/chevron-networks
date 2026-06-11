@@ -1,6 +1,6 @@
-# Inertial Difference Learning Test
+# Inertial Difference Learning Signal Detecttion Test
 
-This directory contains a small, dependency-free test harness for the idea in
+This directory contains a small, dependency-free sginal detect test harness for the idea in
 `../idl.txt`.
 
 The stream is an online binary classification task with three pressures:
@@ -19,7 +19,7 @@ The comparison is:
 Run:
 
 ```bash
-.venv/bin/python run_idl_experiment.py
+.venv/bin/python signal_idl_experiment.py
 ```
 
 Outputs:

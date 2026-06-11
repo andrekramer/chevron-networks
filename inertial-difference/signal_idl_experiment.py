@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Small pure-Python experiment for Inertial Difference Learning.
+"""Small pure-Python signal detect experiment for Inertial Difference Learning.
 
 The task is an online binary classification stream with:
   - a long stable concept,
