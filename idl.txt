@@ -1,6 +1,10 @@
+Andre's Baccalaureus in Arte Ingeniaria
+
+
 Inertial Difference Learning
 How Systems Change Without Losing Themselves
-
+Andre Kramer
+Jun 11, 2026
 
 
 Learning is often described as error correction.
@@ -8,6 +12,8 @@ Learning is often described as error correction.
 A system makes a prediction.
 The prediction is wrong.
 The system updates.
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
 
 That picture is powerful, but it may be too simple.
 
@@ -128,7 +134,6 @@ But N should not be frozen. It should update when difference persists.
 A simple persistence signal might be:
 
 P_t = βP_{t-1} + (1 - β)||A_t - N_t||
-
 Then N updates only when persistent difference becomes strong enough:
 
 ρ_t = sigmoid(k(P_t - θ))
@@ -139,7 +144,7 @@ do not retain every difference; retain difference that persists.
 
 That is the core of the idea.
 
-“Here,  Pt​ tracks the momentum of the mismatch. It acts as a low-pass filter for surprise, ensuring that N only absorbs differences that refuse to go away.”
+“Here, Pt​ tracks the momentum of the mismatch. It acts as a low-pass filter for surprise, ensuring that N only absorbs differences that refuse to go away.”
 
 Orbiting a Viability Zone
 Many adaptive systems do not optimize one goal to the maximum. They orbit around a viable zone.
@@ -189,7 +194,7 @@ from: learning as error minimization
 to: learning as regulated retention of difference
 That is the sense in which the idea is both familiar and different. It belongs to the family of error-based and difference-based learning methods, but it gives the difference an internal architecture: fast adaptation pressing against slow retention.
 
-A Note on Cross-entropy: 
+A Note on Cross-entropy:
 
 Cross-entropy is a selection pressure. It tells the system how wrong its output was. A - N is a candidate retention signal. The A/N difference tells the system how much its fast proposal has diverged from retained structure. Inertial Difference Learning becomes interesting when these two signals are coupled: external error selects which internal differences matter, and only persistent useful differences are allowed to change N.
 
@@ -276,7 +281,7 @@ This reframes learning as regulated feedback over time. The system is not simply
 
 That is why cybernetics remains relevant. It reminds us that intelligence is not just representation or computation. It is circular causality: a system acting into a world, receiving difference back, and deciding what difference should change its future form.
 
-Culture as Retained Difference: A speculation
+A Speculation on Culture as Retained Difference
 Culture may be the most widely spread human example of inertial difference learning.
 
 Conventions are slow structures: manners, rituals, laws, genres, institutions, scientific methods, professional norms, inherited ways of seeing. They constrain local behaviour so that every interaction does not have to be invented from scratch.
@@ -358,6 +363,8 @@ Here P_t measures persistent A/N difference. The threshold θ regulates when tha
 So ART and IDL share the same underlying problem: how much difference should a system tolerate before it treats the difference as structurally meaningful? Too low a threshold and the system overlearns noise. Too high a threshold and it becomes rigid. The interesting regime lies between: enough vigilance to detect real novelty, enough inertia to preserve stable structure.
 
 
+
+
 This post is mostly a reframing of Chevron Networks, Inertial VSR ideas, and the earlier redictive architecture work, focused on what now seems to be the central promise: continuous, non-collapsing learning.
 
 The maths in the Appendix is deliberately minimal. It introduces the A/N pair, the 2×2 Chevron operator, and a possible complex-number version that connects back to the R-rule as rotation in the A/N plane. The point is not to claim a finished theory, but to simplify the threads I have been circling for the past year into a more testable form.
@@ -377,6 +384,34 @@ So the first result is modest but useful. The A/N distinction is experimentally 
 Andre with ChatGPT-5.5,
 
 June 2026
+
+UPDATE
+Second Small Experiment: Resisting Temporary Difference
+The first experiment showed that the A/N distinction produces a measurable internal signal. The next question was whether that signal can do useful work.
+
+In particular: can a system avoid retaining temporary difference, while still adapting to persistent difference?
+
+To test this, I ran a second small online classification experiment. The stream had four phases.
+
+First, the model learned a stable concept. Then it encountered a short contradictory concept. This contradiction was not meant to represent a real change in the world; it was a temporary disturbance. After that, the stream returned to the original stable concept. Later, the contradictory concept returned again, but this time it persisted. That final phase represented a real shift.
+
+The comparison was between three models:
+
+a standard MLP,
+
+a slow A/N chevron where N always updates,
+
+an IDL-gated chevron where persistent excess A-N difference controls retention into N.
+
+The diagnostic was not simply accuracy. The key question was how much the retained channel N moved during the temporary disturbance, and whether the retention gate opened during the later persistent shift.
+
+The result was encouraging. During the brief temporary difference, the IDL-gated model moved N about half as much as the always-updating chevron. In the latest run, the N movement during the temporary phase was about 0.0241 for the IDL-gated model, compared with about 0.0502 for the slow chevron.
+
+But when the persistent shift arrived later, the IDL gate opened strongly. The average retention strength during the shift-adaptation window was about 0.899.
+
+This is a more meaningful result than the first signal-detection test. The first test showed that an A-N signal exists. This second test shows that the signal can begin to regulate retention: brief difference is partly resisted, while sustained difference is treated as a candidate for structural change.
+
+That is close to the core claim of Inertial Difference Learning. Learning is not just reaction to error. It is selective retention of difference under inertia.
 
 Appendix: Basic Chevron Maths, and a Complex Version
 The minimal Chevron state has two channels:
