@@ -409,6 +409,8 @@ The result was encouraging. During the brief temporary difference, the IDL-gated
 
 But when the persistent shift arrived later, the IDL gate opened strongly. The average retention strength during the shift-adaptation window was about 0.899.
 
+The external recovery metric points in the same direction, though more modestly. Using a 20-step rolling accuracy window, the IDL-gated model returned to within one percentage point of its pre-disturbance baseline after about 24 steps, compared with about 34 steps for the MLP. So the gated model recovered roughly 10 steps faster than the ordinary MLP, consistent with the idea that it had retained less of the temporary disturbance. This advantage was not dramatic, and it did not clearly beat the slow chevron on this recovery metric, but it gives an external performance counterpart to the internal N-movement result.
+
 This is a more meaningful result than the first signal-detection test. The first test showed that an A-N signal exists. This second test shows that the signal can begin to regulate retention: brief difference is partly resisted, while sustained difference is treated as a candidate for structural change.
 
 That is close to the core claim of Inertial Difference Learning. Learning is not just reaction to error. It is selective retention of difference under inertia.
