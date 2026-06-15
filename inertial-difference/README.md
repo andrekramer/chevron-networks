@@ -124,3 +124,51 @@ This supports the third diagnostic claim in a limited but useful form: IDL does
 not eliminate forgetting, but it can create a window where the adaptive channel
 learns the new task while the retained channel still preserves much more of the
 old task.
+
+## 4. Task 1 Recovery
+
+This PyTorch experiment tests whether retained N structure can improve external
+behavior when an old task returns.
+
+The stream has three phases:
+
+- Task 1 is learned first until it is stable.
+- Task 2 is then learned without replaying Task 1.
+- Task 1 then returns.
+
+The comparison is:
+
+- `MLP`: ordinary online MLP.
+- `ChevronSlow`: A/N chevron where N is mostly overwritten during Task 2.
+- `IDLGated`: A/N chevron where N retains more Task 1 structure during Task 2.
+
+This experiment adds an explicit N-to-A recovery constraint during Task 1
+phases. That tests whether retained structure can steer fast adaptation when an
+old regime returns.
+
+Run:
+
+```bash
+.venv-torch/bin/python task1_recovery_experiment.py
+```
+
+Outputs:
+
+- `runs_task1_recovery/probes.csv`: Task 1 and Task 2 probe accuracy through
+  all three phases.
+- `runs_task1_recovery/summary.csv`: recovery speed and end-state metrics.
+
+The central diagnostic is whether IDL recovers Task 1 faster after Task 2.
+
+Current default result over eight seeds:
+
+- After Task 2, `IDLGated` has retained much more Task 1 in N (`0.816`) than
+  `ChevronSlow` (`0.260`).
+- At 10 return steps, `IDLGated` reaches about `0.601` Task 1 accuracy, versus
+  about `0.436` for the MLP.
+- `IDLGated` reaches 95% of its Task 1 baseline in about `26.2` return steps,
+  versus `30.0` for the MLP and `33.8` for `ChevronSlow`.
+
+This supports a stronger behavioral claim than the catastrophic-forgetting
+probe alone: retained structure in N can help the system recover an old task
+faster, provided N is allowed to constrain A during recovery.
