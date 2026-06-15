@@ -2,13 +2,13 @@
 """PyTorch experiment: IDL and catastrophic forgetting.
 
 This third test uses sequential learning:
-  1. Train on Task A until it is stable.
-  2. Train on Task B with no replay of Task A.
+  1. Train on Task 1 until it is stable.
+  2. Train on Task 2 with no replay of Task 1.
   3. Probe both tasks throughout.
 
-The diagnostic is whether the IDL retained channel N preserves Task A better
-while the adaptive channel A learns Task B. The default Task B phase is long
-enough for B to be learned, but short enough to inspect the catastrophic
+The diagnostic is whether the IDL retained channel N preserves Task 1 better
+while the adaptive channel A learns Task 2. The default Task 2 phase is long
+enough for Task 2 to be learned, but short enough to inspect the catastrophic
 forgetting window before very long-run consolidation overwrites N.
 
 Run:
@@ -34,14 +34,14 @@ from torch.nn import functional as F
 
 @dataclass(frozen=True)
 class ProbeResult:
-    task_a: float
-    task_b: float
+    task1: float
+    task2: float
 
 
 def task_labels(x: torch.Tensor, task: str) -> torch.Tensor:
-    if task == "A":
+    if task == "task1":
         score = x[:, 1] + 0.85 * x[:, 0] - 0.55 * x[:, 0].square() + 0.12
-    elif task == "B":
+    elif task == "task2":
         score = -0.75 * x[:, 0] + x[:, 1].square() - 0.35 * x[:, 1] - 0.10
     else:
         raise ValueError(f"unknown task: {task}")
@@ -117,15 +117,21 @@ class OnlineMLP:
         self.opt.step()
         return loss.item()
 
-    def probe(self, x_a: torch.Tensor, y_a: torch.Tensor, x_b: torch.Tensor, y_b: torch.Tensor) -> dict[str, float]:
+    def probe(
+        self,
+        x_task1: torch.Tensor,
+        y_task1: torch.Tensor,
+        x_task2: torch.Tensor,
+        y_task2: torch.Tensor,
+    ) -> dict[str, float]:
         with torch.no_grad():
             return {
-                "combined_a": accuracy_from_logits(self.model(x_a), y_a),
-                "combined_b": accuracy_from_logits(self.model(x_b), y_b),
-                "a_channel_a": 0.0,
-                "a_channel_b": 0.0,
-                "n_channel_a": 0.0,
-                "n_channel_b": 0.0,
+                "combined_task1": accuracy_from_logits(self.model(x_task1), y_task1),
+                "combined_task2": accuracy_from_logits(self.model(x_task2), y_task2),
+                "a_channel_task1": 0.0,
+                "a_channel_task2": 0.0,
+                "n_channel_task1": 0.0,
+                "n_channel_task2": 0.0,
                 "rho": 1.0,
                 "persistence": 0.0,
                 "a_n_distance": 0.0,
@@ -201,7 +207,7 @@ class Chevron:
         loss.backward()
 
         n_scale = 1.0
-        if self.gated and phase == "B":
+        if self.gated and phase == "task2":
             n_scale = self.rho
         for p in self.n.parameters():
             if p.grad is not None:
@@ -211,20 +217,34 @@ class Chevron:
         self.opt_n.step()
 
         with torch.no_grad():
-            pull = self.retain_pull if not self.gated or phase == "A" else self.retain_pull * self.rho
+            pull = (
+                self.retain_pull
+                if not self.gated or phase == "task1"
+                else self.retain_pull * self.rho
+            )
             for pn, pa in zip(self.n.parameters(), self.a.parameters()):
                 pn.add_(pull * (pa - pn))
         return loss.item()
 
-    def probe(self, x_a: torch.Tensor, y_a: torch.Tensor, x_b: torch.Tensor, y_b: torch.Tensor) -> dict[str, float]:
+    def probe(
+        self,
+        x_task1: torch.Tensor,
+        y_task1: torch.Tensor,
+        x_task2: torch.Tensor,
+        y_task2: torch.Tensor,
+    ) -> dict[str, float]:
         with torch.no_grad():
             return {
-                "combined_a": accuracy_from_logits(self._combined_logits(x_a), y_a),
-                "combined_b": accuracy_from_logits(self._combined_logits(x_b), y_b),
-                "a_channel_a": accuracy_from_logits(self.a(x_a), y_a),
-                "a_channel_b": accuracy_from_logits(self.a(x_b), y_b),
-                "n_channel_a": accuracy_from_logits(self.n(x_a), y_a),
-                "n_channel_b": accuracy_from_logits(self.n(x_b), y_b),
+                "combined_task1": accuracy_from_logits(
+                    self._combined_logits(x_task1), y_task1
+                ),
+                "combined_task2": accuracy_from_logits(
+                    self._combined_logits(x_task2), y_task2
+                ),
+                "a_channel_task1": accuracy_from_logits(self.a(x_task1), y_task1),
+                "a_channel_task2": accuracy_from_logits(self.a(x_task2), y_task2),
+                "n_channel_task1": accuracy_from_logits(self.n(x_task1), y_task1),
+                "n_channel_task2": accuracy_from_logits(self.n(x_task2), y_task2),
                 "rho": self.rho,
                 "persistence": self.persistence,
                 "a_n_distance": param_distance(self.a, self.n),
@@ -250,8 +270,8 @@ def model_rows(
 def run_seed(args: argparse.Namespace, seed: int) -> list[dict[str, object]]:
     torch.manual_seed(seed)
     generator = torch.Generator().manual_seed(seed + 1000)
-    x_a_probe, y_a_probe = make_probe("A", args.probe_size, seed + 2000)
-    x_b_probe, y_b_probe = make_probe("B", args.probe_size, seed + 3000)
+    x_task1_probe, y_task1_probe = make_probe("task1", args.probe_size, seed + 2000)
+    x_task2_probe, y_task2_probe = make_probe("task2", args.probe_size, seed + 3000)
 
     models = {
         "MLP": OnlineMLP(args.hidden_dim, args.lr_mlp),
@@ -284,14 +304,14 @@ def run_seed(args: argparse.Namespace, seed: int) -> list[dict[str, object]]:
     }
 
     rows: list[dict[str, object]] = []
-    total_steps = args.task_a_steps + args.task_b_steps
+    total_steps = args.task1_steps + args.task2_steps
     for step in range(total_steps + 1):
-        if step % args.probe_every == 0 or step in (args.task_a_steps, total_steps):
-            phase = "A" if step <= args.task_a_steps else "B"
-            if step == args.task_a_steps:
-                phase = "end_A"
+        if step % args.probe_every == 0 or step in (args.task1_steps, total_steps):
+            phase = "task1" if step <= args.task1_steps else "task2"
+            if step == args.task1_steps:
+                phase = "end_task1"
             if step == total_steps:
-                phase = "end_B"
+                phase = "end_task2"
             for name, model in models.items():
                 rows.append(
                     model_rows(
@@ -299,35 +319,46 @@ def run_seed(args: argparse.Namespace, seed: int) -> list[dict[str, object]]:
                         step,
                         phase,
                         name,
-                        model.probe(x_a_probe, y_a_probe, x_b_probe, y_b_probe),
+                        model.probe(
+                            x_task1_probe,
+                            y_task1_probe,
+                            x_task2_probe,
+                            y_task2_probe,
+                        ),
                     )
                 )
         if step == total_steps:
             break
 
-        task = "A" if step < args.task_a_steps else "B"
+        task = "task1" if step < args.task1_steps else "task2"
         x, y = sample_batch(task, args.batch_size, generator, args.label_noise)
         for model in models.values():
             model.step(x, y, task)
     return rows
 
 
-def summarize(rows: list[dict[str, object]], task_a_steps: int, task_b_steps: int) -> list[dict[str, object]]:
+def summarize(
+    rows: list[dict[str, object]], task1_steps: int, task2_steps: int
+) -> list[dict[str, object]]:
     summary: list[dict[str, object]] = []
-    total_steps = task_a_steps + task_b_steps
+    total_steps = task1_steps + task2_steps
     for model in ["MLP", "ChevronSlow", "IDLGated"]:
-        end_a = [r for r in rows if r["model"] == model and int(r["step"]) == task_a_steps]
-        end_b = [r for r in rows if r["model"] == model and int(r["step"]) == total_steps]
-        for label, group in [("end_A", end_a), ("end_B", end_b)]:
+        end_task1 = [
+            r for r in rows if r["model"] == model and int(r["step"]) == task1_steps
+        ]
+        end_task2 = [
+            r for r in rows if r["model"] == model and int(r["step"]) == total_steps
+        ]
+        for label, group in [("end_task1", end_task1), ("end_task2", end_task2)]:
             n = len(group)
             row: dict[str, object] = {"model": model, "checkpoint": label, "n": n}
             for key in [
-                "combined_a",
-                "combined_b",
-                "a_channel_a",
-                "a_channel_b",
-                "n_channel_a",
-                "n_channel_b",
+                "combined_task1",
+                "combined_task2",
+                "a_channel_task1",
+                "a_channel_task2",
+                "n_channel_task1",
+                "n_channel_task2",
                 "rho",
                 "persistence",
                 "a_n_distance",
@@ -337,22 +368,25 @@ def summarize(rows: list[dict[str, object]], task_a_steps: int, task_b_steps: in
 
         before = summary[-2]
         after = summary[-1]
-        retained_key = "combined_a" if model == "MLP" else "n_channel_a"
+        retained_key = "combined_task1" if model == "MLP" else "n_channel_task1"
         summary.append(
             {
                 "model": model,
                 "checkpoint": "forgetting",
-                "n": len(end_b),
-                "combined_a": float(before["combined_a"]) - float(after["combined_a"]),
-                "combined_b": float(after["combined_b"]),
-                "a_channel_a": float(before["a_channel_a"]) - float(after["a_channel_a"]),
-                "a_channel_b": float(after["a_channel_b"]),
-                "n_channel_a": float(before["n_channel_a"]) - float(after["n_channel_a"]),
-                "n_channel_b": float(after["n_channel_b"]),
+                "n": len(end_task2),
+                "combined_task1": float(before["combined_task1"])
+                - float(after["combined_task1"]),
+                "combined_task2": float(after["combined_task2"]),
+                "a_channel_task1": float(before["a_channel_task1"])
+                - float(after["a_channel_task1"]),
+                "a_channel_task2": float(after["a_channel_task2"]),
+                "n_channel_task1": float(before["n_channel_task1"])
+                - float(after["n_channel_task1"]),
+                "n_channel_task2": float(after["n_channel_task2"]),
                 "rho": float(after["rho"]),
                 "persistence": float(after["persistence"]),
                 "a_n_distance": float(after["a_n_distance"]),
-                "retained_task_a_accuracy": float(after[retained_key]),
+                "retained_task1_accuracy": float(after[retained_key]),
             }
         )
     return summary
@@ -369,34 +403,35 @@ def write_csv(path: str, rows: list[dict[str, object]]) -> None:
 
 def print_summary(summary: list[dict[str, object]]) -> None:
     print("Catastrophic forgetting experiment")
-    print("model          checkpoint  comb_A comb_B A_A   A_B   N_A   N_B   rho   P")
+    print("model          checkpoint  comb_1 comb_2 A_1   A_2   N_1   N_2   rho   P")
     for row in summary:
         if row["checkpoint"] == "forgetting":
             continue
         print(
             f"{str(row['model']):<14} {str(row['checkpoint']):<10} "
-            f"{float(row['combined_a']):.3f}  {float(row['combined_b']):.3f}  "
-            f"{float(row['a_channel_a']):.3f} {float(row['a_channel_b']):.3f} "
-            f"{float(row['n_channel_a']):.3f} {float(row['n_channel_b']):.3f} "
+            f"{float(row['combined_task1']):.3f}  {float(row['combined_task2']):.3f}  "
+            f"{float(row['a_channel_task1']):.3f} {float(row['a_channel_task2']):.3f} "
+            f"{float(row['n_channel_task1']):.3f} {float(row['n_channel_task2']):.3f} "
             f"{float(row['rho']):.3f} {float(row['persistence']):.3f}"
         )
     print("\nForgetting summary")
-    print("model          retained_A  combined_A_drop  N_A_drop  after_B")
+    print("model          retained_1  combined_1_drop  N_1_drop  after_2")
     for row in summary:
         if row["checkpoint"] != "forgetting":
             continue
-        retained = row.get("retained_task_a_accuracy", row["combined_a"])
+        retained = row.get("retained_task1_accuracy", row["combined_task1"])
         print(
             f"{str(row['model']):<14} {float(retained):.3f}       "
-            f"{float(row['combined_a']):.3f}            {float(row['n_channel_a']):.3f}     "
-            f"{float(row['combined_b']):.3f}"
+            f"{float(row['combined_task1']):.3f}            "
+            f"{float(row['n_channel_task1']):.3f}     "
+            f"{float(row['combined_task2']):.3f}"
         )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--task-a-steps", type=int, default=2200)
-    parser.add_argument("--task-b-steps", type=int, default=220)
+    parser.add_argument("--task1-steps", type=int, default=2200)
+    parser.add_argument("--task2-steps", type=int, default=220)
     parser.add_argument("--seeds", type=int, default=8)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--probe-size", type=int, default=2048)
@@ -422,7 +457,7 @@ def main() -> None:
     all_rows: list[dict[str, object]] = []
     for seed in range(args.seeds):
         all_rows.extend(run_seed(args, seed))
-    summary = summarize(all_rows, args.task_a_steps, args.task_b_steps)
+    summary = summarize(all_rows, args.task1_steps, args.task2_steps)
     write_csv(os.path.join(args.out_dir, "probes.csv"), all_rows)
     write_csv(os.path.join(args.out_dir, "summary.csv"), summary)
     print_summary(summary)

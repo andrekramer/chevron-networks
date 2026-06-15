@@ -84,14 +84,14 @@ a sequential learning setting.
 
 The stream has two tasks:
 
-- Task A is learned first until it is stable.
-- Task B is then learned without replaying Task A.
+- Task 1 is learned first until it is stable.
+- Task 2 is then learned without replaying Task 1.
 
 The comparison is:
 
 - `MLP`: ordinary online MLP.
-- `ChevronSlow`: A/N chevron where both A and N continue updating during Task B.
-- `IDLGated`: A/N chevron where A adapts to Task B while N is protected by an
+- `ChevronSlow`: A/N chevron where both A and N continue updating during Task 2.
+- `IDLGated`: A/N chevron where A adapts to Task 2 while N is protected by an
   IDL retention gate.
 
 Run:
@@ -102,23 +102,23 @@ Run:
 
 Outputs:
 
-- `runs_catastrophic_forgetting/probes.csv`: Task A and Task B probe accuracy
+- `runs_catastrophic_forgetting/probes.csv`: Task 1 and Task 2 probe accuracy
   through training.
 - `runs_catastrophic_forgetting/summary.csv`: end-of-Task-A, end-of-Task-B,
   and forgetting summary metrics.
 
-The central diagnostic is whether Task B can be learned while the retained N
-channel still preserves Task A better than the baselines.
+The central diagnostic is whether Task 2 can be learned while the retained N
+channel still preserves Task 1 better than the baselines.
 
 Current default result over eight seeds:
 
-- After Task A, all models are near `0.99` accuracy on Task A.
-- After Task B, the ordinary MLP has fallen to `0.163` on Task A while reaching
-  `0.950` on Task B.
-- After Task B, `ChevronSlow` has also largely overwritten N: N retains only
-  `0.192` Task A accuracy.
-- After Task B, `IDLGated` reaches `0.958` combined Task B accuracy while its N
-  channel still retains `0.784` Task A accuracy.
+- After Task 1, all models are near `0.99` accuracy on Task 1.
+- After Task 2, the ordinary MLP has fallen to `0.163` on Task 1 while reaching
+  `0.950` on Task 2.
+- After Task 2, `ChevronSlow` has also largely overwritten N: N retains only
+  `0.192` Task 1 accuracy.
+- After Task 2, `IDLGated` reaches `0.958` combined Task 2 accuracy while its N
+  channel still retains `0.784` Task 1 accuracy.
 
 This supports the third diagnostic claim in a limited but useful form: IDL does
 not eliminate forgetting, but it can create a window where the adaptive channel
