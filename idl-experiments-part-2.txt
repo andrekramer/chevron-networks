@@ -1,0 +1,296 @@
+IDL Experiments, Part 2
+Why difference matters
+
+
+
+This post builds on the previous discussion of Inertial Difference Learning (IDL) and Chevron Networks. The core idea is simple: instead of passing scalar activations through single weighted connections, we represent each unit with two coupled channels, (A) and (N), connected by learned (2 times 2) transformations. The (A) channel adapts quickly, while the (N) channel changes more slowly and preserves a retained norm. In our recent experiments, the difference between them, (A-N), has produced the clearest and most useful signal so far.
+
+Third Small Experiment: Catastrophic Forgetting
+The first experiment showed that the A/N distinction produces a measurable internal signal.
+
+The second experiment showed that the signal can do some useful work: the IDL-gated model retained less of a brief temporary disturbance, while still opening retention during a later persistent shift.
+
+The third experiment asks a harder question:
+
+Can this help with catastrophic forgetting?
+
+Catastrophic forgetting happens when a model learns a new task and loses performance on an earlier task. In ordinary neural networks, this is a familiar problem. If the same weights are used to absorb every new pattern, then learning Task 2 can overwrite what was learned for Task 1.
+
+In A/N terms, this is exactly the kind of problem IDL is meant to address. A should be able to adapt quickly to new pressure. But N should not be overwritten too cheaply.
+
+So I ran a simple sequential learning test.
+
+The model first learned Task 1 until performance was stable. Then it learned Task 2, with no replay of Task 1. During and after this second phase, I probed both tasks.
+
+The comparison was between three models:
+
+a standard MLP,
+
+a slow A/N chevron where N always updates,
+
+an IDL-gated chevron where A adapts quickly but N is protected by a retention gate.
+
+The important question was not only whether the model could learn Task 2. It was whether any part of the system still retained Task 1 after Task 2 learning began.
+
+The result was encouraging.
+
+After Task 1, all models reached about 0.99 accuracy on Task 1.
+
+After Task 2, the standard MLP had learned Task 2, reaching about 0.950 accuracy. But its Task 1 accuracy had fallen to about 0.163. This is the expected catastrophic forgetting pattern: the new task was learned by overwriting the old one.
+
+The slow chevron behaved similarly. It learned Task 2 well, reaching about 0.961, but its retained N channel also largely converted to Task 2. N retained only about 0.192 accuracy on Task 1.
+
+The IDL-gated chevron behaved differently. It also learned Task 2, reaching about 0.958 combined Task 2 accuracy. But its N channel still retained about 0.784 accuracy on Task 1.
+
+That is the key result.
+
+The IDL model did not prevent the adaptive channel from learning the new task. A moved toward Task 2. But N retained much more of Task 1 than either the MLP or the always-updating chevron.
+
+This matters because it shows a possible functional role for the A/N split. The system can contain two temporal attitudes at once:
+
+A: adapt to the new task,
+
+N: preserve older structure unless the new difference earns retention.
+
+This does not solve catastrophic forgetting outright. In longer Task 2 runs, N eventually begins to consolidate Task 2 as well. That is not necessarily a failure. It shows the tradeoff IDL is designed to regulate: protect old structure from immediate overwrite, but allow persistent new structure to be retained over time.
+
+So the result should be stated carefully.
+
+IDL does not make forgetting disappear. But it creates a useful window in which new learning and old retention coexist. The adaptive part of the system can learn Task 2, while the retained part still carries Task 1.
+
+That is much closer to the original motivation for Inertial Difference Learning:
+
+learning is not merely changing in response to error.
+
+Learning is deciding which differences should become structure.
+
+Fourth Small Experiment: Recovering an Old Task
+The third experiment showed that IDL can preserve older structure inside the retained channel N while the adaptive channel A learns a new task.
+
+But that leaves an important question.
+
+It is not enough for N to “remember” something internally. Does that retained structure actually help behavior?
+
+To test this, I ran a fourth experiment.
+
+The sequence was simple:
+
+The model learned Task 1.
+
+The model then learned Task 2, without replaying Task 1.
+
+The stream then returned to Task 1.
+
+The question was whether the IDL model could recover Task 1 faster because N had preserved more Task 1 structure during Task 2.
+
+The comparison was again between three models:
+
+a standard MLP,
+
+a slow A/N chevron,
+
+an IDL-gated chevron.
+
+In this experiment I added an explicit N-to-A recovery constraint during Task 1 phases. In other words, when Task 1 returned, retained structure in N was allowed to steer the adaptive channel A. This matters because memory is only useful if it can influence future adaptation.
+
+The result was modest but meaningful.
+
+After Task 2, the IDL-gated model retained much more Task 1 structure in N than the slow chevron. The retained Task 1 accuracy in N was about 0.816 for IDL, compared with about 0.260 for the slow chevron.
+
+When Task 1 returned, this internal retention translated into faster behavioral recovery. After only 10 return steps, IDL reached about 0.601 Task 1 accuracy, compared with about 0.436 for the MLP.
+
+Measured another way, IDL reached 95% of its Task 1 baseline in about 26.25 return steps. The MLP took about 30.0 steps, and the slow chevron took about 33.75.
+
+This is not a dramatic victory. But it is important because it closes a loop left open by the previous experiment.
+
+The third experiment showed that N can preserve an older task while A learns a new one. The fourth experiment shows that this retained structure can help the system recover the old task faster when it returns.
+
+There is also a useful caveat. Without the N-to-A recovery constraint, the retained memory in N was visible internally but did not strongly improve the combined output. That suggests that retention alone is not enough. A useful IDL system needs both:
+
+a way to protect retained structure,
+
+a way for retained structure to guide later adaptation.
+
+This fits the broader theory. N should not just be an archive. It should be a constraint: a slower structure that can shape future learning.
+
+So the fourth result strengthens the IDL picture.
+
+Learning is not only adapting to what is new. It is also keeping enough structure from the past that returning conditions can be recognized and recovered quickly.
+
+Fifth Small Experiment: Fast Guesses, Slow Knowledge
+The first four experiments tested whether the A/N structure could produce a signal, resist temporary difference, reduce catastrophic forgetting, and help recover an old task.
+
+The next question was different.
+
+Can A learn quickly without forcing N to treat every quick adaptation as knowledge?
+
+This matters because rapid learning is useful. A system should sometimes jump to a provisional conclusion. If a new pattern appears, the system should be able to respond quickly. But it should not necessarily write that conclusion into long-term structure after one example.
+
+In IDL terms:
+
+A should be allowed to guess quickly.
+
+N should consolidate slowly.
+
+Repeated useful guesses may become knowledge.
+
+One-off guesses should remain provisional.
+
+To test this, I ran a fifth small experiment.
+
+The model first learned a stable background task. Then it encountered a sequence of small local exception rules. Some rules appeared only once. Others appeared repeatedly across episodes.
+
+For the chevron models, each episode began by copying N into A. A then adapted quickly to a tiny support set. After the episode, N had the opportunity to consolidate toward A.
+
+The comparison was:
+
+a standard MLP,
+
+a slow chevron where N consolidated after every episode,
+
+an IDL-gated chevron where N consolidated mainly when a rule recurred.
+
+The key question was not just whether the model could learn the one-shot exception. It was whether it could keep one-shot adaptation provisional while consolidating repeated structure.
+
+The result was encouraging.
+
+The IDL-gated model still adapted rapidly to one-shot rules. Its provisional accuracy on one-shot exceptions was about 0.927. The MLP was higher, at about 0.963, so IDL was not the most aggressive one-shot learner.
+
+But the important difference appeared in what became retained structure.
+
+For recurring rules, IDL consolidated into N about as well as the slow chevron: about 0.696 for IDL versus 0.698 for the slow chevron.
+
+For one-shot rules, IDL retained less in N: about 0.454, compared with 0.513 for the slow chevron and 0.595 for the MLP.
+
+This gives a useful selectivity measure: retained accuracy on recurring rules minus retained accuracy on one-shot rules. Higher means the system is better at distinguishing repeated structure from one-off adaptation.
+
+On this measure, IDL did best:
+
+MLP: 0.175
+
+slow chevron: 0.185
+
+IDL-gated chevron: 0.242
+
+IDL also preserved the background task best: about 0.806, compared with 0.786 for the slow chevron and 0.727 for the MLP.
+
+So the result is not that IDL simply learns fastest. It does not. The MLP is more aggressive on one-shot adaptation.
+
+The result is more specific:
+
+IDL allows fast provisional adaptation in A, while making N more selective about what becomes retained structure.
+
+That is close to the original intuition.
+
+A can jump to conclusions.
+
+N decides which conclusions are allowed to become knowledge.
+
+This gives a different way to think about rapid learning. The goal is not always to make the whole system update as fast as possible. Sometimes the useful architecture is split: a fast channel for guesses, and a slow channel for commitment.
+
+Summary 
+Experiment 1: Showed the A−N signal exists. (previous post)
+
+Experiment 2: Showed it can filter temporary noise. (previous post update section)
+
+Experiment 3: Showed it mitigates catastrophic forgetting.
+
+Experiment 4: Showed it accelerates recovery of old tasks.
+
+Experiment 5: Showed it can filter one-shot anomalies from recurring structural rules.
+
+The code with README.md is on GitHub here.
+
+Andre with ChatGPT-5.5/Codex, 
+
+June 2026
+
+Appendix: From A/N Chevron to the Experiments
+The conceptual model starts with two channels:
+
+A = adaptive proposal
+N = retained constraint
+D = A - N
+
+In the abstract chevron form, the two channels interact through a 2x2 operator:
+
+A' = W_AA A + W_AN N
+N' = W_NA A + W_NN N
+
+The experiments do not implement this as one literal matrix multiplication. Instead, they implement the same roles using two neural networks:
+
+A = fast network
+N = slow retained network
+
+Both networks have the same architecture. The difference is in how quickly they update.
+
+A is allowed to adapt rapidly to the current input or episode. N updates more slowly, and in the IDL version its update is gated by a persistence signal derived from the difference between A and N.
+
+In code, the combined prediction is usually:
+
+output = (1 - λ) A(x) + λ N(x) # λ is the blend factor
+
+where λ controls how much the retained channel contributes to the current prediction.
+
+The internal difference is measured by comparing A and N:
+
+D = distance(A, N)
+
+Depending on the experiment, this distance may include differences in outputs, hidden activations, or parameters. This is the implemented version of A - N.
+
+The persistence signal is a smoothed version of this difference:
+
+P_t = β P_{t-1} + (1 - β) D_t
+
+or, in later experiments, an excess mismatch signal:
+
+fast_mismatch = short-term average of D
+baseline_mismatch = long-term average of D
+P = fast_mismatch - baseline_mismatch
+
+The retention gate is then:
+
+ρ = sigmoid(k(P - θ))
+
+When ρ is low, N is protected. When ρ is high, N is allowed to move toward A.
+
+So the experimental update is:
+
+A updates quickly from current loss
+N updates slowly or conditionally
+N <- N + ρ · η · (A - N)
+
+This corresponds to the chevron roles:
+
+W_AA: A preserves and transforms its own adaptive state
+W_AN: N constrains A through the combined output or recovery pull
+W_NA: A perturbs N through gated consolidation
+W_NN: N preserves its retained structure through slow update
+
+The four weight paths are therefore implemented functionally rather than as a single explicit 2x2 matrix.
+
+In the experiments:
+
+MLP has only one channel. It updates all structure directly.
+
+ChevronSlow has A and N, but N always updates.
+
+IDLGated has A and N, and N updates only when the A/N difference is persistent enough.
+
+This is why the experiments are diagnostic. They test whether the distinction between fast adaptation, slow retention, and the difference signal between them produces measurable behavior:
+
+temporary differences should affect A more than N,
+
+persistent differences should eventually update N,
+
+old structure should survive in N when A adapts elsewhere,
+
+recurring patterns should consolidate more than one-shot anomalies.
+
+In short, the code translates the chevron equation into a neural learning rule:
+
+A = fast plasticity
+N = slow retained structure
+A - N = candidate retention signal
+ρ = decision about whether difference becomes structure
+
