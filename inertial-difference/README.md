@@ -172,3 +172,58 @@ Current default result over eight seeds:
 This supports a stronger behavioral claim than the catastrophic-forgetting
 probe alone: retained structure in N can help the system recover an old task
 faster, provided N is allowed to constrain A during recovery.
+
+## 5. Rapid Provisional Learning
+
+This PyTorch experiment tests whether A can jump to a fast provisional
+conclusion while N consolidates only repeated patterns.
+
+The stream has three ingredients:
+
+- a stable background task learned first,
+- one-shot local exception rules,
+- recurring local exception rules.
+
+For the chevron models, each episode starts by copying N into A. A then adapts
+quickly to a tiny support set. After the episode, N may consolidate toward A.
+
+The comparison is:
+
+- `MLP`: ordinary online MLP, where every one-shot update changes the same
+  long-term weights.
+- `ChevronSlow`: A/N chevron where N consolidates every episode.
+- `IDLGated`: A/N chevron where N consolidates only when a rule recurs.
+
+Run:
+
+```bash
+.venv-torch/bin/python rapid_learning_experiment.py
+```
+
+Outputs:
+
+- `runs_rapid_learning/episodes.csv`: per-episode provisional accuracy,
+  retention gate, and background accuracy.
+- `runs_rapid_learning/summary_by_seed.csv`: per-seed aggregate metrics.
+- `runs_rapid_learning/summary.csv`: aggregate metrics over all seeds.
+
+The central diagnostic is whether A can adapt rapidly while N is selective
+about what becomes retained structure.
+
+Current default result over eight seeds:
+
+- `IDLGated` still adapts rapidly on one-shot rules (`0.927` provisional
+  accuracy), though not as strongly as the MLP (`0.963`).
+- `IDLGated` consolidates recurring rules into N about as well as
+  `ChevronSlow` (`0.696` vs `0.698`).
+- `IDLGated` retains fewer one-shot rules in N than the baselines (`0.454`,
+  versus `0.513` for `ChevronSlow` and `0.595` for the MLP).
+- `IDLGated` has the best consolidation selectivity, measured as recurring N
+  accuracy minus one-shot N accuracy (`0.242`, versus `0.185` for
+  `ChevronSlow` and `0.175` for the MLP).
+- `IDLGated` also preserves the background task best (`0.806`, versus `0.786`
+  for `ChevronSlow` and `0.727` for the MLP).
+
+This supports the fifth diagnostic claim: A can make fast provisional
+adaptations, while N is more selective about which fast adaptations become
+long-term structure.
