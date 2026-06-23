@@ -1,11 +1,12 @@
+
 IDL Experiments, Part 2
 Why difference matters
 
 
 
-This post builds on the previous discussion of Inertial Difference Learning (IDL) and Chevron Networks. The core idea is simple: instead of passing scalar activations through single weighted connections, we represent each unit with two coupled channels, (A) and (N), connected by learned (2 times 2) transformations. The (A) channel adapts quickly, while the (N) channel changes more slowly and preserves a retained norm. In our recent experiments, the difference between them, (A-N), has produced the clearest and most useful signal so far.
+This post builds on the previous discussion of Inertial Difference Learning (IDL) and Chevron Networks. The core idea is simple: instead of passing scalar activations through single weighted connections, we represent each unit with two coupled channels, (A) and (N), connected by learned (2 times 2) transformations. The (A) channel adapts quickly, while the (N) channel changes more slowly and preserves a retained norm. In our recent first two experiments, the difference between them, (A-N), has produced the clearest and most useful signal so far.
 
-Third Small Experiment: Catastrophic Forgetting
+3rd Small Experiment: Catastrophic Forgetting
 The first experiment showed that the A/N distinction produces a measurable internal signal.
 
 The second experiment showed that the signal can do some useful work: the IDL-gated model retained less of a brief temporary disturbance, while still opening retention during a later persistent shift.
@@ -64,7 +65,7 @@ learning is not merely changing in response to error.
 
 Learning is deciding which differences should become structure.
 
-Fourth Small Experiment: Recovering an Old Task
+4th Small Experiment: Recovering an Old Task
 The third experiment showed that IDL can preserve older structure inside the retained channel N while the adaptive channel A learns a new task.
 
 But that leaves an important question.
@@ -117,7 +118,7 @@ So the fourth result strengthens the IDL picture.
 
 Learning is not only adapting to what is new. It is also keeping enough structure from the past that returning conditions can be recognized and recovered quickly.
 
-Fifth Small Experiment: Fast Guesses, Slow Knowledge
+5th Small Experiment: Fast Guesses, Slow Knowledge
 The first four experiments tested whether the A/N structure could produce a signal, resist temporary difference, reduce catastrophic forgetting, and help recover an old task.
 
 The next question was different.
@@ -293,4 +294,5 @@ A = fast plasticity
 N = slow retained structure
 A - N = candidate retention signal
 ρ = decision about whether difference becomes structure
+
 
