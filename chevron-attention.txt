@@ -1,11 +1,17 @@
+Andre's Baccalaureus in Arte Ingeniaria
+
+
 From Chevron Nets & IDL to Chevron Attention
 Paired channels and inertial difference learning as choice, selection and retained change in a Transformer.
-
+Andre Kramer
+Jul 03, 2026
 
 
 How does a learning system change without losing the structure that allows it to remain coherent?
 
 That may be the central question behind Chevron Networks.
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
 
 If you have been following along this series of posts you can skip straight to Section 5: Chevron Attention. That’s the new idea this post introduces.
 
@@ -27,15 +33,7 @@ In a Chevron Network, the two arms become two internal channels:
 [ x= [A N].]
 
  
-x
-=
-[
-A
  
-N
-]
-.
-
 The labels are intentionally broad.
 
 The (A)-channel may be read as:
@@ -70,28 +68,11 @@ The most useful current interpretation is:
 
 [ A=\text{fast adaptive proposal}, ]
 
-A
-=
-fast adaptive proposal
-,
-
 [ N=\text{slow retained constraint}. ]
-
-N
-=
-slow retained constraint
-.
 
 The important quantity is then their difference:
 
 [ D = A - N. ]
-
-D
-=
-A
-−
-N
-.
 
 This difference is not necessarily an error that should immediately be eliminated. It may represent novelty, surprise, contradiction, opportunity, noise, or evidence that the environment has genuinely changed.
 
@@ -102,114 +83,29 @@ What kind of difference is this, and should it be retained?
 2. The (2 x 2) Chevron operator
 A standard neural connection scales a signal with a scalar weight. A Chevron connection transforms a paired state using a (2 times 2) operator:
 
-[  [A′ N′] [WAAWAN WNAWNN][A N]. ]
+[ [A′ N′] [WAAWAN WNAWNN][A N]. ]
 
   
   
  
-[
-A
-′
  
-N
-′
-]
-=
-[
-W
-A
-A
-W
-A
-N
  
-W
-N
-A
-W
-N
-N
-]
-[
-A
  
-N
-]
-.
-
 Expanded:
 
 [ A’ = W_{AA}A + W_{AN}N, ]
 
-A
-′
-=
-W
-A
-A
-A
-+
-W
-A
-N
-N
-,
-
 [ N’ = W_{NA}A + W_{NN}N.]
-
-N
-′
-=
-W
-N
-A
-A
-+
-W
-N
-N
-N
-.
 
 The four paths can be interpreted as:
 
 [ W_{AA}: \text{adaptive continuity}, ]
 
-W
-A
-A
-:
-adaptive continuity
-,
-
 [ W_{NN}: \text{retained continuity}, ]
-
-W
-N
-N
-:
-retained continuity
-,
 
 [ W_{AN}: \text{retained structure constrains }A,]
 
-W
-A
-N
-:
-retained structure constrains 
-A
-,
-
 [ W_{NA}: \text{adaptive pressure modifies }N. ]
-
-W
-N
-A
-:
-adaptive pressure modifies 
-N
-.
 
 The cross-couplings are the crucial addition. (A) does not merely change independently, and (N) does not merely remain fixed. Each can act on the other.
 
@@ -218,50 +114,6 @@ This makes the Chevron a small local negotiation between adaptation and retentio
 A general recurrent or message-passing update is:
 
 [ x_i(t+1) = \phi\left(R_ix_i(t) + \sum_j g_{ij}(t)W_{ij}x_j(t) + I_i(t) \right), ]
-
- 
-x
-i
-(
-t
-+
-1
-)
-=
-ϕ
-(
-R
-i
-x
-i
-(
-t
-)
-+
-∑
-j
-g
-i
-j
-(
-t
-)
-W
-i
-j
-x
-j
-(
-t
-)
-+
-I
-i
-(
-t
-)
-)
-,
 
 where:
 
@@ -301,47 +153,14 @@ A more disciplined form constrains the operator to:
 [ W= [α−β βα]. ]
 
  
-W
-=
-[
-α
-−
-β
  
-β
-α
-]
-.
-
 Writing:
 
 [ z = A+iN, \qquad w = \alpha + i\beta,]
 
-z
-=
-A
-+
-i
-N
-,
-w
-=
-α
-+
-i
-β
-,
-
 the update becomes:
 
 [ z’ = wz. ]
-
-z
-′
-=
-w
-z
-.
 
 This corresponds to rotation and scaling in the (A/N) plane. It provides stable phase-like dynamics and a useful constrained baseline.
 
@@ -373,67 +192,17 @@ The Chevron becomes distinctive not when it contains two numbers, but when the t
 4. Inertial Difference Learning
 IDL gives the Structured Chevron a temporal learning rule.
 
-Let (A) change quickly: 
+Let (A) change quickly:
 
 [ A_{t+1} A_t + \eta_A F_A(x_t,A_t,N_t), ]
-
-A
-t
-+
-1
-A
-t
-+
-η
-A
-F
-A
-(
-x
-t
-,
-A
-t
-,
-N
-t
-)
-,
 
 and let (N) change more slowly:
 
 [ N_{t+1} N_t + \eta_N F_N(A_t,N_t), ]
 
-N
-t
-+
-1
-N
-t
-+
-η
-N
-F
-N
-(
-A
-t
-,
-N
-t
-)
-,
-
-where: 
+where:
 
 [ \eta_N\ll\eta_A. ]
-
-η
-N
-≪
-η
-A
-.
 
 The (A)-channel tracks current conditions. The (N)-channel carries what has survived previous learning.
 
@@ -441,58 +210,13 @@ Their instantaneous difference is:
 
 [ D_t = \lVert A_t - N_t\rVert. ]
 
-D
-t
-=
-‖
-A
-t
-−
-N
-t
-‖
-.
-
 But a single large difference should not necessarily rewrite retained structure. IDL therefore tracks persistent difference:
 
 [ P_t = \beta P_{t-1} + (1-\beta)D_t.]
 
-P
-t
-=
-β
-P
-t
-−
-1
-+
-(
-1
-−
-β
-)
-D
-t
-.
-
 A retention gate can then be defined as:
 
 [ \rho_t = \sigma\left(k(P_t-\theta)\right), ]
-
-ρ
-t
-=
-σ
-(
-k
-(
-P
-t
-−
-θ
-)
-)
-,
 
 where:
 
@@ -502,56 +226,17 @@ where:
 
 (k) controls how sharply the gate opens.
 
-The retained channel is updated through: 
+The retained channel is updated through:
 
 [ N_{t+1} N_t + \eta_N\rho_tH(A_t-N_t).]
-
-N
-t
-+
-1
-N
-t
-+
-η
-N
-ρ
-t
-H
-(
-A
-t
-−
-N
-t
-)
-.
 
 This creates three qualitative regimes:
 
 [ \text{small difference} \rightarrow \text{ordinary processing}, ]
 
-small difference
-→
-ordinary processing
-,
-
 [ \text{brief large difference} \rightarrow \text{adapt mainly in }A, ]
 
-brief large difference
-→
-adapt mainly in 
-A
-,
-
 [ \text{persistent large difference} \rightarrow \text{allow }N\text{ to change}. ]
-
-persistent large difference
-→
-allow 
-N
- to change
-.
 
 The point is not to eliminate (A-N). If the two channels always become identical, there is no productive internal tension. But if they diverge without constraint, the system loses coherence.
 
@@ -584,7 +269,7 @@ The more modest finding is:
 
 (A), (N), and persistent (A-N) difference can be made experimentally visible, and the difference can regulate when slow structure changes.
 
-That is enough to justify a continuing research programme. Especially if the alternative is to IDLy stand by.
+That is enough to justify a continuing research programme. Especially if the alternative is to IDLy stand by as current AI is accellerated.
 
 6. Chevron Predictive Architecture
 The same distinction can be applied to predictive learning.
@@ -595,77 +280,13 @@ A simple predictive model can use:
 
 [ (A_c,N_c) = E(x_{\text{context}}), ]
 
-(
-A
-c
-,
-N
-c
-)
-=
-E
-(
-x
-context
-)
-,
-]
-
 [ \widehat z = P(A_c,N_c), ]
 
-z
-^
-=
-P
-(
-A
-c
-,
-N
-c
-)
-,
-
 [ L_{\text{pred}} d(\widehat z,z_{\text{target}}). ]
-
-L
-pred
-d
-(
-z
-^
-,
-z
-target
-)
-.
-]
 
 The most useful modification in the initial experiments was to expose the difference directly to the slow channel:
 
 [ N_{\text{drive}} W_{NA}A + W_{NN}N + W_{DN}(A-N). ]
-
-N
-drive
-W
-N
-A
-A
-+
-W
-N
-N
-N
-+
-W
-D
-N
-(
-A
-−
-N
-)
-.
 
 This improved the Chevron Predictive Architecture substantially compared with a naive two-channel model, although it did not outperform tuned MLP and Transformer baselines overall.
 
@@ -680,6 +301,8 @@ The Chevron is the substrate.
 IDL is the rule by which difference becomes retained change.
 
 7. Chevron Attention
+
+
 
 The next natural step is to bring the same principle into a Transformer.
 
@@ -699,124 +322,35 @@ Let (A) generate queries, keys, and values:
 
 [ Q = AW_Q, ]
 
-Q
-=
-A
-W
-Q
-,
-
 [ K = AW_K, ]
 
-K
-=
-A
-W
-K
-,
-
 [ V = AW_V. ]
-
-V
-=
-A
-W
-V
-.
 
 The usual attention weights are:
 
 [ \alpha_{ij} \operatorname{softmax}_j \left( \frac{Q_iK_j^\top}{\sqrt{d_h}} \right). ]
 
  
-α
-i
-j
-softmax
-j
-(
-Q
-i
-K
-j
-⊤
-d
-h
-)
-.
-
+ 
 Now let (N) generate a gate:
 
 [ g_j = \sigma(N_jW_G+b_G). ]
-
-g
-j
-=
-σ
-(
-N
-j
-W
-G
-+
-b
-G
-)
-.
 
 The output becomes:
 
 [ Y_i= \sum_j \alpha_{ij} \left(g_j\odot V_j\right). ]
 
- 
-Y
-i
-=
-∑
-j
-α
-i
-j
-(
-g
-j
-⊙
-V
-j
-)
-.
-]
-
 The roles are now asymmetric:
 
 [ A: \text{What is relevant?} ]
 
-A
-:
-What is relevant?
-
 [ N: \text{Should the retrieved value participate?} ]
-
-N
-:
-Should the retrieved value participate?
 
 This is more than having two attention heads. The channels perform complementary functions.
 
 A particularly important case occurs when:
 
 [ \alpha_{ij}\approx1, \qquad g_j\approx0. ]
-
-α
-i
-j
-≈
-1
-,
-g
-j
-≈
-0.
 
 The model has retrieved the relevant information but declined to use it.
 
@@ -831,37 +365,11 @@ Post-softmax value gating does something different:
 
 [ Y_i = \sum_j\alpha_{ij}g_jV_j. ]
 
- 
-Y
-i
-=
-∑
-j
-α
-i
-j
-g
-j
-V
-j
-.
-
 Because the gated values are not renormalized, all of them can be suppressed.
 
 This permits genuine non-participation:
 
 [ \sum_j\alpha_{ij}g_j\approx0. ]
-
- 
-∑
-j
-α
-i
-j
-g
-j
-≈
-0.
 
 That could support:
 
@@ -888,146 +396,33 @@ To remain a Chevron and IDL-derived mechanism, (A) and (N) should be persistent 
 
 [ X^{(l)} \left(A^{(l)}, N^{(l)}\right). ]
 
-X
-(
-l
-)
-(
-A
-(
-l
-)
-,
-N
-(
-l
-)
-)
-.
-
 They should have different dynamics:
 
 [ A^{(l+1)} A^{(l)} + F_A(Y^{(l)},N^{(l)}), ]
 
-A
-(
-l
-+
-1
-)
-A
-(
-l
-)
-+
-F
-A
-(
-Y
-(
-l
-)
-,
-N
-(
-l
-)
-)
-,
-
 [ N^{(l+1)} N^{(l)} + \eta_N\rho^{(l)} F_N(A^{(l+1)}-N^{(l)}), ]
-
-N
-(
-l
-+
-1
-)
-N
-(
-l
-)
-+
-η
-N
-ρ
-(
-l
-)
-F
-N
-(
-A
-(
-l
-+
-1
-)
-−
-N
-(
-l
-)
-)
-,
 
 with:
 
 [ \eta_N<\eta_A. ]
 
-η
-N
-<
-η
-A
-.
-
 The complete Chevron Attention cycle is therefore:
 
 [ A\text{ retrieves}, ]
 
-A
- retrieves
-,
-
 [ N\text{ gates}, ]
-
-N
- gates
-,
 
 [ A-N\text{ exposes unresolved difference}, ]
 
-A
-−
-N
- exposes unresolved difference
-,
-
 [ \text{persistent difference modifies }N. ]
-
-persistent difference modifies 
-N
-.
 
 In Variation–Selection–Retention terms:
 
 [ A\text{ supplies variation}, ]
 
-A
- supplies variation
-,
-
 [ N\text{ selects participation}, ]
 
-N
- selects participation
-,
-
 [ \text{persistence determines retention}. ]
-
-persistence determines retention
-.
 
 This is the deeper contribution. The gate is merely the point at which the mechanism becomes visible inside a Transformer.
 
@@ -1052,27 +447,9 @@ A rough Chevron mapping is:
 
 [ A \approx \text{current evidence or proposal}, ]
 
-A
-≈
-current evidence or proposal
-,
-
 [ N \approx \text{retained category or expectation}, ]
 
-N
-≈
-retained category or expectation
-,
-]
-
 [ A-N \approx \text{mismatch}. ]
-
-A
-−
-N
-≈
-mismatch
-.
 
 ART’s vigilance parameter resembles the IDL threshold (\theta). Both regulate how much mismatch is tolerated before the system treats the current difference as structurally important.
 
@@ -1082,55 +459,17 @@ ART emphasizes:
 
 [ \text{mismatch} \rightarrow \text{reset and search}. ]
 
-mismatch
-→
-reset and search
-.
-
 IDL emphasizes:
 
 [ \text{persistent mismatch} \rightarrow \text{opening of slow retention} ]
-
-persistent mismatch
-→
-opening of slow retention
-.
 
 A synthesis could distinguish three regimes:
 
 [ D<\theta_1: \quad \text{resonate and proceed}, ]
 
-D
-<
-θ
-1
-:
-resonate and proceed
-,
-
 [ \theta_1\leq D<\theta_2: \quad \text{veto and search again}, ]
 
-θ
-1
-≤
-D
-<
-θ
-2
-:
-veto and search again
-,
-
 [ D\geq\theta_2 \text{ persistently}: \quad \text{revise or create retained structure}. ]
-
-D
-≥
-θ
-2
- persistently
-:
-revise or create retained structure
-.
 
 ART may therefore supply the search-and-reset grammar that Chevron Attention currently lacks, while IDL supplies a temporal criterion for deciding when repeated mismatch should change what is retained.
 
@@ -1141,15 +480,6 @@ Breakout: A Taxonomy of Chevron Attention
 
 [ X = (A,N). ]
 
-X
-=
-(
-A
-,
-N
-)
-.
-
 The variants differ in how queries, keys, and values are assigned to the two channels, and in where cross-channel mixing occurs.
 
 1. Full Chevron Attention
@@ -1157,39 +487,7 @@ Each channel has its own attention mechanism:
 
 [ Y_A = \operatorname{Attn}(Q_A,K_A,V_A), ]
 
-Y
-A
-=
-Attn
-(
-Q
-A
-,
-K
-A
-,
-V
-A
-)
-,
-
 [ Y_N = \operatorname{Attn}(Q_N,K_N,V_N). ]
-
-Y
-N
-=
-Attn
-(
-Q
-N
-,
-K
-N
-,
-V
-N
-)
-.
 
 The two outputs are then mixed through a Chevron operator or Chevron MLP:
 
@@ -1198,37 +496,9 @@ The two outputs are then mixed through a Chevron operator or Chevron MLP:
   
   
  
-[
-A
-′
  
-N
-′
-]
-[
-F
-A
-A
-F
-A
-N
  
-F
-N
-A
-F
-N
-N
-]
-[
-Y
-A
  
-Y
-N
-]
-.
-
 This is the most general dual-stream form. It gives both channels full contextual capacity, but requires additional structure to prevent them from becoming interchangeable.
 
 2. Cross-Chevron Attention
@@ -1236,77 +506,18 @@ One channel queries the other:
 
 [ Y_{A\leftarrow N} \operatorname{Attn}(Q_A,K_N,V_N), ]
 
-Y
-A
-←
-N
-Attn
-(
-Q
-A
-,
-K
-N
-,
-V
-N
-)
-,
-
 [ Y_{N\leftarrow A} \operatorname{Attn}(Q_N,K_A,V_A). ]
-
-Y
-N
-←
-A
-Attn
-(
-Q
-N
-,
-K
-A
-,
-V
-A
-)
-.
 
 These cross-attention paths correspond naturally to the off-diagonal terms of the original Chevron operator:
 
 [ W_{AN}, \qquad W_{NA}. ]
-
-W
-A
-N
-,
-W
-N
-A
-.
 
 This form makes the interaction between current adaptation and retained structure explicit.
 
 3. ART-Chevron Attention
 The present (A)-state queries retained (N)-templates:
 
-[ Y_N= \operatorname{Attn}(Q_A,K_N,V_N). ]
-
-Y
-N
-=
-Attn
-(
-Q
-A
-,
-K
-N
-,
-V
-N
-)
-.
+[ Y_N = \operatorname{Attn}(Q_A,K_N,V_N). ]
 
 Here:
 
@@ -1318,31 +529,13 @@ attention selects the retained template that best matches the current input.
 
 The retrieved template can then be compared with the current state:
 
-[ D = A-Y_N. ]
-
-D
-=
-A
-−
-Y
-N
-.
+[ D = A - Y_N. ]
 
 Low mismatch produces resonance. High mismatch can trigger veto, reset, renewed search, or category formation.
 
 A related subclass uses:
 
 [ Q_A,\quad K_A,\quad V_N. ]
-
-Q
-A
-,
-K
-A
-,
-V
-N
-.
 
 In this form, (A) determines which relation or category is selected, while (N) supplies the retained content associated with that selection.
 
@@ -1351,49 +544,11 @@ The (A)-channel performs semantic retrieval:
 
 [ Q,K,V\leftarrow A, ]
 
-Q
-,
-K
-,
-V
-←
-A
-,
-
 while the (N)-channel controls whether retrieved values participate:
 
 [ g_j = \sigma(F_G(N_j)), ]
 
 [ Y_i = \sum_j \alpha_{ij}g_jV_j. ]
-
-g
-j
-=
-σ
-(
-F
-G
-(
-N
-j
-)
-)
-,
-
- 
-Y
-i
-=
-∑
-j
-α
-i
-j
-g
-j
-V
-j
-.
 
 This is the simplest experimentally testable subclass. It separates retrieval from permission and supports revocation, abstention, and reopening.
 
@@ -1401,115 +556,26 @@ Its defining state is:
 
 [ \alpha_{ij}\approx1, \qquad g_j\approx0, ]
 
-α
-i
-j
-≈
-1
-,
-g
-j
-≈
-0
-,
-
 meaning that information has been retrieved but suppressed.
 
 5. Alternating Chevron Attention
 Different layers perform different functions.
 
-An adaptive layer may update (A): 
+An adaptive layer may update (A):
 
 [ A^{l+1} \operatorname{Attn}_A(A^l), ]
-
-A
-l
-+
-1
-Attn
-A
-(
-A
-l
-)
-,
 
 followed by a retained-comparison layer:
 
 [ N^{l+1} \operatorname{Attn}(Q_{A^{l+1}},K_{N^l},V_{N^l}), ]
 
-N
-l
-+
-1
-Attn
-(
-Q
-A
-l
-+
-1
-,
-K
-N
-l
-,
-V
-N
-l
-)
-,
-
 and then a reconciliation layer:
 
 [ (A^{l+2},N^{l+2}) F_{\text{Chevron}} \left( A^{l+1}, N^{l+1}, A^{l+1}-N^{l+1} \right). ]
 
-(
-A
-l
-+
-2
-,
-N
-l
-+
-2
-)
-F
-Chevron
-(
-A
-l
-+
-1
-,
-N
-l
-+
-1
-,
-A
-l
-+
-1
-−
-N
-l
-+
-1
-)
-.
-
 The stack therefore cycles through:
 
 [ \text{adapt} \rightarrow \text{compare} \rightarrow \text{reconcile}. ]
-
-adapt
-→
-compare
-→
-reconcile
-.
 
 6. Hierarchical Chevron Attention
 Different layers or scales may assign different meanings to (A) and (N).
@@ -1535,73 +601,13 @@ A practical architecture may use separate attention mechanisms to contextualize 
 
 [ Y_A=\operatorname{Attn}_A(A), ]
 
-Y
-A
-=
-Attn
-A
-(
-A
-)
-,
-
 [ Y_N=\operatorname{Attn}_N(N), ]
-
-Y
-N
-=
-Attn
-N
-(
-N
-)
-,
 
 followed by a structured MLP:
 
 [ A’=F_{AA}(Y_A)+F_{AN}(Y_N), ]
 
-A
-′
-=
-F
-A
-A
-(
-Y
-A
-)
-+
-F
-A
-N
-(
-Y
-N
-)
-,
-
 [ A’ = F_{AA}(Y_A)+F_{AN}(Y_N), ]
-
-A
-′
-=
-F
-A
-A
-(
-Y
-A
-)
-+
-F
-A
-N
-(
-Y
-N
-)
-,
 
 Attention then performs relational integration, while the Chevron MLP performs local cross-channel reconciliation.
 
@@ -1609,26 +615,9 @@ Across all these variants, IDL supplies the temporal principle:
 
 [ A=\text{fast adaptation}, ]
 
-A
-=
-fast adaptation
-,
-
 [ N=\text{slower retained organization}, ]
 
-N
-=
-slower retained organization
-,
-
 [ A-N=\text{difference that regulates consolidation}. ]
-
-A
-−
-N
-=
-difference that regulates consolidation
-.
 
 The gated model is therefore not the whole of Chevron Attention. It is the smallest subclass with which to test the broader hypothesis.
 
@@ -1657,17 +646,7 @@ In this interpretation:
 
 [ A \approx \text{adaptive activation or present pressure}, ]
 
-A
-≈
-adaptive activation or present pressure
-,
-
 [ N \approx \text{constraint, inhibition, timing, or stabilization}. ]
-
-N
-≈
-constraint, inhibition, timing, or stabilization
-.
 
 Too much (A) produces instability. Too much (N) produces rigidity or suppression. Useful behaviour emerges from their regulated relation.
 
@@ -1684,31 +663,13 @@ Chevron Attention could represent:
 
 [ \text{knowledge retained} = 1, ]
 
-knowledge retained
-=
-1
-,
-
 [ \text{current permission} = 0. ]
-
-current permission
-=
-0.
 
 Later:
 
 [ \text{knowledge retained} = 1, ]
 
-knowledge retained
-=
-1
-,
-
 [ \text{current permission} = 1. ]
-
-current permission
-=
-1.
 
 This supports:
 
@@ -1728,31 +689,9 @@ One could separately inspect:
 
 [ \alpha_{ij}: \text{what the system retrieved}, ]
 
-α
-i
-j
-:
-what the system retrieved
-,
-
 [ g_j: \text{what the system permitted}, ]
 
-g
-j
-:
-what the system permitted
-,
-
 [ \alpha_{ij}g_j: \text{what actually participated}. ]
-
-α
-i
-j
-g
-j
-:
-what actually participated
-.
 
 This might improve traceability and make conflicts more visible.
 
@@ -1773,19 +712,9 @@ If:
 
 [ A = \text{present proposal or impression}, ]
 
-A
-=
-present proposal or impression
-,
-
 and:
 
 [ N = \text{retained disposition or continuity}, ]
-
-N
-=
-retained disposition or continuity
-,
 
 then the self is not simply either channel.
 
@@ -1798,16 +727,6 @@ Chevron Attention adds a particularly suggestive distinction.
 A proposition may be retrieved without being admitted:
 
 [ \alpha_{\text{proposition}}\approx1, \qquad g_{\text{proposition}}\approx0. ]
-
-α
-proposition
-≈
-1
-,
-g
-proposition
-≈
-0.
 
 This resembles the distinction between an impression and assent.
 
@@ -1856,35 +775,11 @@ The (A)-stream should continue to retrieve the correct fact:
 
 [ \alpha_{ij^\ast}\approx1, ]
 
-α
-i
-j
-∗
-≈
-1
-,
-
 while the contextual (N)-stream controls whether its value participates:
 
 [ g_{j^\ast}\approx0 \quad\text{when revoked}, ]
 
-g
-j
-∗
-≈
-0
-when revoked
-,
-
 [ g_{j^\ast}\approx1 \quad\text{when active or restored}. ]
-
-g
-j
-∗
-≈
-1
-when active or restored
-.
 
 For the first implementation, (g_j) should be a scalar gate per memory item, shared across attention heads.
 
@@ -1892,67 +787,15 @@ Both channels must be contextual. (A) performs semantic retrieval, while (N) use
 
 [ Y_i = \sum_j \alpha_{ij}g_jV_j + (1-m_i)V_{\varnothing}, ]
 
- 
-Y
-i
-=
-∑
-j
-α
-i
-j
-g
-j
-V
-j
-+
-(
-1
-−
-m
-i
-)
-V
-∅
-,
-
 where:
 
 [ m_i=\sum_j\alpha_{ij}g_j ]
-
- 
-m
-i
-=
-∑
-j
-α
-i
-j
-g
-j
 
 is the admitted attention mass and (V_{\varnothing}) is an explicit abstention value.
 
 To prevent a closed gate from starving the semantic stream of gradients, retrieval and permission should be trained separately:
 
 [ L = L_{\text{answer}} + \lambda_rL_{\text{retrieval}} + \lambda_gL_{\text{permission}}. ]
-
-L
-=
-L
-answer
-+
-λ
-r
-L
-retrieval
-+
-λ
-g
-L
-permission
-.
 
 The retrieval loss continues to train (A) to find the correct fact even while it is revoked. The permission loss trains (N) to close and reopen the gate.
 
@@ -1990,35 +833,9 @@ The defining result is:
 
 [ \alpha_{ij^\ast}\approx1, \qquad g_{j^\ast}\approx0 ]
 
-α
-i
-j
-∗
-≈
-1
-,
-g
-j
-∗
-≈
-0
-
 during revocation, followed by:
 
 [ \alpha_{ij^\ast}\approx1, \qquad g_{j^\ast}\approx1 ]
-
-α
-i
-j
-∗
-≈
-1
-,
-g
-j
-∗
-≈
-1
 
 after restoration.
 
@@ -2072,6 +889,8 @@ Those are small experimental questions.
 Together, they address a much larger one:
 
 How does a system remain itself while changing?
+
+
 
 
 Andre with ChatGPT-5.5, July 2026
