@@ -1,0 +1,297 @@
+Chevron Attention Phase 6: What Survived the Search for Categories
+Category formation, contextual matching, and why the next Chevron should be ART-inspired rather than full ART
+
+
+
+Phase 5 left Chevron Attention at an interesting boundary.
+
+We had a complete small neural network in which the adaptive A channel learned Q/K retrieval, the retained N channel supplied values, and a learned contextual path decided whether retrieved information should currently participate. Inertial Difference Learning then determined whether a temporary permission change should become retained policy.
+
+That system completed the desired stability–plasticity cycle. It responded immediately to short contextual changes without retaining them, consolidated sustained changes, and later consolidated restoration.
+
+But one obvious mechanism was still missing.
+
+What happens when the current memory is not merely revoked or changed, but no existing category adequately explains the input?
+
+Adaptive Resonance Theory (ART) answers with matching, vigilance, reset, and category search. A bottom-up candidate activates. A top-down expectation tests the candidate. If the match is insufficient, the candidate is reset and the system searches for another category. If no category resonates, a new one may be created.
+
+This seemed close to the Chevron intuition. A moves with present evidence. N carries retained structure. Their difference could signal whether the current interpretation should resonate, be rejected, or initiate a new category.
+
+Phase 6 tested that idea directly.
+
+
+The result is useful, but not because full ART won.
+
+Category formation helped. Separate fast and retained traces helped. Normalized A/N matching helped. Persistence-controlled writes helped.
+
+Hard ART-style reset and search did not prove necessary. Standard attention could express the successful soft mechanisms just as well, and fixed vigilance thresholds were among the least robust parts of the system.
+
+The strongest conclusion from Phase 6 is therefore not “Chevron Attention should become ART.”
+
+It is this:
+
+Chevron Attention should remain a differentiable attention architecture, informed by ART’s stability–plasticity and matching principles, without inheriting the full hard reset/search procedure unless a task genuinely requires it.
+
+The question behind Phase 6
+The central stability–plasticity problem can be expressed as three possible responses to novelty.
+
+First, the system may recognize the input as a variation of something it already knows.
+
+Second, it may treat the input as a temporary disturbance and respond to it without rewriting retained structure.
+
+Third, it may decide that the difference is persistent and consequential enough to alter or create retained structure.
+
+These cases cannot be distinguished by difference alone. A system that creates a category for every deviation will fragment its memory. A system that rejects every mismatch will never learn anything genuinely new.
+
+The proposed refinement used total engagement and normalized contrast:
+
+E = A + N
+
+C = (A - N) / (A + N + epsilon)
+
+E measures how much activity is present. C measures which side is ahead relative to their combined activity.
+
+For matching, the useful scalar is the engagement-weighted magnitude of contrast:
+
+M = sum(E times absolute C) / sum(E)
+
+Low M means that current evidence and the retained template agree. High M means that they differ substantially.
+
+We also considered a complementarity signal. With symmetric smoothing,
+
+p = (A + epsilon/2) / (A + N + epsilon)
+
+and
+
+G = 2 sqrt(p(1-p))
+
+G is high when the two sides remain balanced and jointly available. It is low when one side dominates completely.
+
+At first it was tempting to use high G as the vigilance trigger. Phase 6 showed why that is mathematically wrong. G is highest at balance, including exact agreement. It is not a mismatch detector.
+
+That distinction became one of the clearest results of the phase.
+
+Experiment 1: When should a new category be retained?
+The first experiment constructed an online category stream.
+
+The system initially learned three recurring categories. It then encountered eight different coherent but brief categories, each lasting five observations. After a read-only probe of the original categories, it encountered one genuinely persistent new category. A final read-only probe tested the three originals and the persistent newcomer.
+
+Every method predicted before seeing the label. Labels were revealed during learning phases, but the probes could not modify memory.
+
+The memory budget was chosen carefully. Chevron had four retained A/N category slots and one fast candidate. Immediate-write standard attention received nine single-vector slots, approximately matching the feature-state budget of the paired Chevron memory.
+
+The Chevron mechanism worked as follows.
+
+Current A evidence attended to stored A keys. The associated N template was then checked using normalized mismatch. If an existing category resonated, it was updated. If none resonated, a fast candidate tracked the new pattern. Only a coherent candidate whose difference persisted long enough became a retained category.
+
+This produced the intended behavior.
+
+The system missed the first prediction of each brief category, then its fast candidate followed the temporary category with 80 percent online accuracy across the five-observation block. None of the eight brief categories entered retained memory. The three old categories remained intact. The sustained new category crossed the persistence threshold, occupied the fourth retained slot, and appeared correctly in the final probe.
+
+Across the initial five-seed comparison, Chevron achieved 100 percent old-category retention and 100 percent final accuracy.
+
+Immediate-write standard attention reacted just as quickly to brief novelty, but wrote every brief category into memory. It displaced old categories, retained all eight temporary categories, preserved only one of the three originals after the disturbances, and ended at 25 percent final accuracy.
+
+That looked like a strong Chevron result until we added the decisive ablation.
+
+Single-template persistent attention used ordinary attention, a fast candidate, the same persistence threshold, and no distinct A/N templates. It also achieved 100 percent old-category retention and 100 percent final accuracy.
+
+The category experiment therefore established the value of persistence-controlled allocation. It did not establish the value of the Chevron split.
+
+This negative result mattered. Without that baseline, we could easily have attributed the success to A/N structure when the persistence rule alone was sufficient.
+
+The duration sweep also revealed exactly how calibrated the result was.
+
+Brief categories lasting between two and six observations were rejected on all twenty robustness seeds. At seven observations, they crossed the fixed creation threshold and became retained categories. The system was not discovering an intrinsic boundary between temporary and permanent events. We had given it a temporal operating point.
+
+Noise revealed a second boundary. With the frozen parameters, category performance remained perfect through observation noise of 0.06. At noise 0.08, old-category accuracy fell to approximately 8 percent and final accuracy to approximately 17 percent.
+
+Persistent attention and Chevron failed together.
+
+This was the first warning that manually calibrated vigilance would not be a satisfactory mechanism for a deeper network.
+
+Experiment 2: A category that moves and returns
+The first task did not require separate A and N traces. The second task was designed to require them.
+
+A learned category began with a stable form. It then moved temporarily to a new surface form, returned to its original form, and later made the same move persistently.
+
+A fast representation should follow the current surface. A retained representation should preserve the original through the temporary movement. When the movement persists, the retained representation should eventually consolidate it.
+
+One fast template could follow the temporary shift, but then failed to recover the original category. One persistence-gated retained template preserved the original, but initially failed to express the current shifted form.
+
+Two traces solved the tradeoff.
+
+The fast A trace adapted to the current category surface. The retained N trace preserved the earlier form. Persistent A/N difference later opened the N update, allowing the sustained form to become retained.
+
+Soft-contrast Chevron achieved 100 percent accuracy on both the current and recovered forms. It adapted to the sustained shift in one observation and finished with 100 percent retained accuracy.
+
+This survived the twenty-seed noise sweep. At observation noise 0.07, the minimum current/recovered accuracy was approximately 98.8 percent, long-shift online accuracy was approximately 98.6 percent, and retained final accuracy remained 100 percent.
+
+This is good evidence for separate fast and retained traces.
+
+It is not yet evidence that those traces need Chevron routing.
+
+Standard attention over the same fast and retained memory tokens tied soft Chevron on every reported metric, across duration, displacement, noise, and retention-threshold sweeps.
+
+Hard vigilance and ordered search performed worse. In the default condition it needed about four observations to adapt instead of one. At noise 0.07, its minimum current/recovered accuracy fell to approximately 75.6 percent, long-shift accuracy fell to approximately 86.3 percent, and adaptation took approximately seven observations.
+
+The drift experiment therefore supported dual timescales but argued against hard reset/search as the default implementation.
+
+Experiment 3: When the most similar memory is wrong
+The third experiment finally gave ordered search a task on which it had somewhere meaningful to go.
+
+Every episode contained one target memory and several bottom-up decoys. Each decoy was more similar to the A query than the target. If the system followed bottom-up similarity alone, it would choose the wrong memory.
+
+Only the target N template matched the top-down context.
+
+The decoys all carried the same wrong value. This meant that ordinary softmax attention could fail not only because one decoy was stronger, but because many individually weak wrong memories could accumulate enough total value mass to outvote the target.
+
+Hard ART-like search behaved exactly as intended.
+
+It selected the strongest A candidate, detected an N mismatch, reset it, and moved to the next candidate. With 31 decoys, the correct memory was ranked thirty-second by A. Hard search performed 31 resets and still selected the target with 100 percent accuracy.
+
+It remained perfect with 63 decoys.
+
+Ordinary joint A/N softmax attention was perfect through 15 decoys, fell to approximately 92 percent at 31 decoys, and fell to zero at 63. The combined wrong value mass eventually dominated.
+
+This is a real benefit of strong conditional filtering.
+
+But once again, the benefit did not uniquely belong to procedural search.
+
+Joint A/N top-one retrieval achieved 100 percent. Vigilance-masked standard attention achieved 100 percent. A sufficiently sharp differentiable vigilance gate also achieved 100 percent.
+
+Hard search was one successful implementation of the N constraint, not the only one.
+
+It also had a characteristic weakness. When noise was added to the true N template, hard search and hard masking fell to approximately 69 percent. The fixed threshold sometimes rejected the correct memory. Joint top-one retrieval and sharp soft matching remained at 100 percent.
+
+The apparent advantage of hard search under distractor multiplicity became a disadvantage under uncertainty about the target template.
+
+Soft vigilance had its own calibration problem. At the 31-decoy condition, a sharpness of 40 failed completely. A sharpness of 120 succeeded perfectly. Raising the vigilance threshold from 0.06 to 0.08 also made the default soft gate fail, although its sharper version remained successful.
+
+The issue is therefore not simply hard versus soft. Any explicit gate needs a sensible scale. The difference is that a soft gate can be learned, normalized, and adjusted continuously inside a deep network, while a hard reset threshold commits the system to a discrete decision.
+
+Why complementarity was not enough
+The ambiguity experiment also gave us a direct test of G.
+
+For the correct target, complementarity averaged 0.9997. For deliberately conflicting decoys, it still averaged 0.9496.
+
+A complementarity-only gate failed almost completely, even with one decoy.
+
+This makes the mathematical interpretation clearer.
+
+Difference tells us direction.
+
+Normalized mismatch tells us how strongly current evidence conflicts with a retained template.
+
+Complementarity tells us whether both sides remain jointly active or balanced.
+
+These are related signals, but they are not interchangeable.
+
+G may still be useful as a measure of reciprocal possibility or transformability. It should not be used by itself as the signal that says “this template is wrong; reset it.”
+
+What survived the robustness tests
+Phase 6 began with the possibility that category learning and full ART-like search were the missing pieces of Chevron Attention.
+
+The twenty-seed robustness study produced a narrower and, I think, more useful answer.
+
+Separate fast and retained traces survived.
+
+Persistence-controlled writes and category allocation survived.
+
+Normalized absolute contrast survived as a meaningful mismatch signal.
+
+Conditional use of both A and N survived.
+
+Full hard reset/search did not emerge as the preferred implementation.
+
+Fixed vigilance did not survive changes in observation and template noise.
+
+Chevron routing did not outperform standard attention when standard attention received the same two traces and conditional gate.
+
+The strongest defensible Phase 6 claim is therefore:
+
+Across controlled category-allocation, drift, and contextual-ambiguity tasks, paired fast and retained traces with persistence-controlled writes achieve a useful stability–plasticity tradeoff. Normalized A/N matching prevents misleading bottom-up memories from controlling retrieval. 
+
+These benefits do not require full ART reset/search and are equally expressible by suitably structured standard attention in the tested regimes.
+
+Phase 6 supports Chevron Attention as a research direction, but not yet as a performance advantage over a strong standard-attention baseline.
+
+What Chevron currently provides is a disciplined architectural interpretation.
+
+A has a defined role as current, adaptive selection.
+
+N has a defined role as retained content, constraint, or expectation.
+
+Their difference has a defined role in conditional admission and retained change.
+
+IDL has a defined role in deciding when current difference becomes memory.
+
+A standard attention implementation can express the same computation. That is not a defect. It means the idea can be tested and scaled using modern deep-learning machinery rather than requiring a separate dynamical system.
+
+ART-inspired, not full ART
+
+The Phase 6 result changes how I would describe the next architecture.
+
+It should not be presented as an implementation of Adaptive Resonance Theory.
+
+It should be described as ART-inspired Chevron Attention: a differentiable attention system borrowing the principles of top-down matching, stability–plasticity, and resonance-gated learning, while leaving hard reset/search as an optional ablation.
+
+The likely core is:
+
+Q_A and K_A perform fast retrieval.
+
+V_N supplies retained content.
+
+Normalized M(A,N) estimates mismatch.
+
+A learned soft gate controls whether retrieved N content is admitted.
+
+IDL controls whether persistent mismatch changes N or allocates retained structure.
+
+A null value preserves retrieval without assent when no memory should participate.
+
+In compact form:
+
+alpha = softmax(Q_A K_A^T)
+
+r = sigmoid(k(theta - M(A,N)))
+
+y = sum(alpha times r times V_N) + remaining mass times V_null
+
+The important Phase 7 change is that theta, k, and the relevant projections should be learned, normalized, or adaptive rather than hand fixed.
+
+The comparison also needs to become harder.
+
+The principal baselines should be ordinary Q/K/V attention, standard dual-trace attention, and a replay-equipped MLP under an explicit memory and update-compute budget. Hard ART-like search should remain in the comparison, but it should no longer be assumed to be the destination.
+
+The deeper question
+The original motivation for Chevron Networks was not to replace one standard operation with a more elaborate one.
+
+It was to give a learning system an internal distinction between what is active now and what has been retained, then make the relation between those states consequential.
+
+Phase 6 strengthens that motivation while narrowing the implementation.
+
+The useful part of ART was not the requirement to reproduce its complete machinery. It was the insistence that learning needs more than bottom-up similarity. Present evidence must meet retained expectation. Mismatch must sometimes stop learning. Persistence must sometimes reopen it. New structure should be created because difference has remained meaningful, not simply because difference occurred once.
+
+Modern attention can express those ideas softly and learnably.
+
+That now looks like the more promising route.
+
+Phase 6 began by asking whether Chevron Attention needed full category search.
+
+It ends with a simpler answer.
+
+Keep the fast and retained channels.
+
+Keep normalized matching.
+
+Keep persistence-controlled memory.
+
+Keep retrieval separate from assent.
+
+But let attention remain attention.
+
+The code is here: https://github.com/andrekramer/chevron-networks/tree/main/chevron-attention/phase6_category_learning
+
+Andre with Codex/ChatGPT-5.6
+
