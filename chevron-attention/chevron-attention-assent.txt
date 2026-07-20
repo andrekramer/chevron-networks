@@ -1,0 +1,333 @@
+Andre's Baccalaureus in Arte Ingeniaria
+
+
+Chevron Attention Phase 7: When Assent Becomes Memory
+Learned matching, consequential writes, and a modest but important stability–plasticity result
+Andre Kramer
+Jul 20, 2026
+
+
+Phase 6 ended by making Chevron Attention simpler.
+
+The experiments supported separate fast and retained traces, normalized matching, and persistence-controlled memory. They did not support rebuilding the full procedural machinery of Adaptive Resonance Theory (Grossberg/ART). Hard vigilance, reset, and ordered category search were often more difficult to calibrate than soft attention, and suitably structured standard attention could reproduce many of their successes.
+
+The direction for Phase 7 was therefore clear.
+
+Keep the ART-inspired distinction between present evidence and retained expectation. Keep retrieval separate from assent. But implement the whole mechanism as a differentiable attention network and learn it from data.
+
+The resulting architecture is small enough to state in three lines:
+
+alpha = softmax(Q_A K_A^T)
+
+r = sigmoid(k(theta - M(A,N)))
+
+y = sum(alpha times r times V_N) + remaining mass times V_null
+
+The first line retrieves memories using the adaptive A channel.
+
+The second compares current A evidence with each retained N template. M(A,N) is normalized mismatch. The learned value r is an assent signal: high when the retrieved template is compatible with current evidence and low when it is not.
+
+The third line admits only the value mass that has both been retrieved and assented to. Mass removed by the gate is not redistributed to another memory. It flows to an explicit null value.
+
+This creates an important distinction.
+
+A memory can be relevant enough to retrieve without being compatible enough to use.
+
+Phase 7 asked whether that distinction could be learned, whether it survived comparison with ordinary attention, and whether it became functionally useful once attention was allowed to alter persistent memory.
+
+The short answer is:
+
+Yes, the mechanism can be learned.
+
+Yes, it produces much cleaner memory writes.
+
+No, it does not generally outperform a strong learned attention controller.
+
+Its clearest advantage appears under the condition it was designed for: a genuinely new category that closely resembles something already retained.
+
+Learning retrieval and assent
+The first experiment used fresh episodic category memories.
+
+Each memory contained three A-address groups with three members in each group. The A query could identify the relevant group, but it could not identify the correct member. Current match evidence had to agree with one retained N template before that member’s value could participate.
+
+In 75 percent of examples, one template matched. In the remaining 25 percent, no template matched and the correct answer was IDK.
+
+The categories, addresses, and values were regenerated for every batch. The model could not solve the task by memorizing a fixed category table.
+
+The first five-seed result was encouraging.
+
+Soft Chevron reached 99.98 percent accuracy. A strong joint A/N attention baseline reached 99.76 percent. A-only attention reached only 25.7 percent, confirming that the retained matching signal was necessary.
+
+More important than the small accuracy difference was the learned internal operation.
+
+The correct template received an average admission of 92.1 percent. Non-target templates received approximately 0.55 percent. When no template matched, 99.44 percent of the mass flowed to the null value.
+
+The model had learned the intended sequence:
+
+retrieve a plausible group;
+
+compare present evidence with retained templates;
+
+admit the compatible value;
+
+route rejected mass to null.
+
+But the first training run included auxiliary retrieval and gate losses. That left open an obvious objection. Perhaps we had supervised the mechanism into existence.
+
+We therefore removed the auxiliary losses.
+
+With answer supervision alone, Soft Chevron reached 100 percent accuracy across all five seeds. Its target admission remained high at 93.3 percent, non-target admission remained low at 2.1 percent, and unmatched queries still sent 97.9 percent of their mass to null.
+
+The mechanism was not merely copying an explicit gate target.
+
+Standard joint attention also reached 100 percent answer accuracy.
+
+Internally, however, it found a very different solution. On no-match examples, it sent only 0.67 percent of its mass to the learned null slot. Its answer head learned to classify a mixture of unmatched values as IDK.
+
+This was the first central Phase 7 result.
+
+Soft Chevron made retrieval without assent and explicit null routing the easy solution. Standard attention could produce the same labels while bypassing the intended memory-control mechanism downstream.
+
+That was an architectural distinction, not yet a performance advantage.
+
+Could the comparison space itself be learned?
+
+The first models still began with a favorable A/N comparison geometry. Both matching projections were initialized as the same centered identity transform.
+
+We tested poor threshold and sharpness initializations first. Answer-only Chevron recovered successful solutions from overly open, overly closed, soft, sharp, and saturated gates. Accuracy remained effectively perfect.
+
+The learned calibrations were not unique. A soft gate could admit more incorrect mass and allow the downstream value system to compensate. A very sharp gate could implement a much cleaner boundary. Task accuracy alone did not identify one canonical theta or k.
+
+The harder test removed the shared coordinate system.
+
+The A and N matching projections were initialized independently at random, then trained using answer labels only.
+
+Clean accuracy remained 100 percent across five seeds. The learned target mismatch averaged 0.0315 while decoy mismatch averaged 0.1573. Correct templates received an average admission of 81.3 percent and decoys 9.2 percent.
+
+The network did not need to be handed an identity metric between A and N. It learned a useful comparison space.
+
+When both current evidence and templates received noise 0.05 during training, accuracy remained 99.98 percent.
+
+The surprising result came under an unseen shift. Models trained on the original clean representations were evaluated with noise 0.08 in both channels.
+
+The independently initialized matcher retained 98.87 percent accuracy. The identity-initialized matcher fell to 91.58 percent.
+
+Learning the comparison space was not merely a difficult way to recover the supplied identity transform. In this task it produced a representation that tolerated drift better.
+
+The standard-attention litmus test
+
+At this point it would have been easy to describe the noise result as a Chevron advantage.
+
+The necessary comparison removed that interpretation.
+
+We trained independently initialized Soft Chevron and the strong joint A/N attention baseline under exactly the same clean, trained-noise, and unseen-noise conditions.
+
+Both systems reached 100 percent on clean data.
+
+Both reached 99.98 percent when trained and tested with noise 0.05.
+
+Under unseen noise 0.08, Soft Chevron reached 98.87 percent and joint attention reached 98.88 percent.
+
+They were tied on final answers.
+
+The internal distinction remained striking. Chevron selected the correct A group on 99.55 percent of unseen-noise queries and routed approximately 89.9 percent of unmatched mass to null. Joint attention’s group selection fell to 95.62 percent and its unmatched null mass remained only 0.67 percent.
+
+Its downstream classifier compensated.
+
+This established the boundary of the read-only result.
+
+Chevron preserved a more explicit and inspectable retrieval, assent, and null-routing decomposition. But when no persistent state could be damaged, standard attention could repair a less orderly internal route at the output head.
+
+To make the architecture consequential, attention had to write.
+
+Phase 7.5: when a wrong decision persists
+The next experiment placed the learned models in a continual category stream with nine persistent memory slots.
+
+Six related categories began as stable retained memories. They received 180 online adaptation observations. Three new categories then arrived during another 180 mixed observations. All nine categories continued for 270 observations under unseen noise 0.08. Final probes tested old and new categories with writes disabled.
+
+The labels were not used to decide whether to merge or allocate. A label was revealed only after the decision and became the stored value if a new slot was created.
+
+Chevron used the same mass that controlled its read as the weight of its write:
+
+w_j = alpha_j times r_j
+
+N_j at the next step = (1 - eta_N times w_j) times N_j + 
+                       eta_N times w_j times current evidence
+
+The A key used the same form with its own update rate.
+
+If little existing memory mass was admitted, the remaining mass could trigger a new category slot.
+
+This is where retrieval without assent becomes more than an interpretation.
+
+If an incorrect memory receives attention but low assent, it is protected from the update. If a standard attention distribution spreads mass over several plausible but wrong categories, all of those categories can drift.
+
+The first continual comparison used two joint-attention write policies.
+
+One used the baseline’s native null mass. The other was stronger: it converted the answer head’s downstream P(IDK) into a write veto.
+
+Across ten seeds, Soft Chevron finished at 86.64 percent clean accuracy. The downstream-IDK joint baseline finished at 74.03 percent. Chevron retained 7.8 of nine categories versus 6.7 and sent only 6.73 percent of its write mass to wrong-category slots versus 43.1 percent.
+
+The perfect-memory control was essential. When both trained architectures were given an uncontaminated nine-category memory, they read it at essentially 100 percent accuracy.
+
+The continual gap came from the write trajectory, not from an inability of joint attention to classify the categories.
+
+This appeared to be the first direct functional stability–plasticity advantage for learned Chevron Attention.
+
+Then we tested the stronger objection.
+
+Can ordinary attention learn a dedicated write controller?
+
+P(IDK) had been trained to answer a question, not to govern persistent memory. It was not the strongest write baseline standard attention could support.
+
+The closure experiment added a parameter-matched joint-attention controller trained explicitly to predict merge versus allocate. It received permutation-invariant statistics of the joint attention field, including its maxima, margin, dispersion, entropy, and active-memory size. During training, the number of visible slots varied from six to nine.
+
+The controller received direct no-match supervision. This was favorable compared with Chevron’s answer-only gate learning.
+
+The parameter comparison was close: 3,726 total parameters for joint attention and its controller versus 3,759 for Chevron.
+
+This baseline changed the conclusion.
+
+Across ten seeds, Soft Chevron finished at 87.75 percent clean accuracy. The learned joint controller finished at 84.39 percent.
+
+The mean favored Chevron, but the paired result did not. Chevron won four seeds, lost four, and tied two. The variation was too large to claim a reliable default accuracy advantage.
+
+The dedicated controller closed the earlier gap.
+
+Chevron’s write trajectory was still much cleaner.
+
+It sent 6.67 percent of write mass to wrong categories, compared with 34.23 percent for the controller. Its false-merge rate was 3.55 percent versus 37.12 percent. Its false-split rate was 3.84 percent versus 12.55 percent.
+
+Those are meaningful mechanistic differences. In this short, capacity-limited task, they did not reliably translate into different final accuracy.
+
+This negative result is important.
+
+The correct Phase 7 claim is not that standard attention cannot learn safe writes. It can, if it is given a dedicated controller and direct training for the decision.
+
+The Chevron claim is that the decision is already localized in a simple attention rule with a defined fast/retained interpretation.
+
+Did r actually protect memory?
+
+The next ablations tested whether the assent term itself caused the clean writes.
+
+The alpha-only variant retained Chevron’s learned novelty and allocation decision but removed r from the per-slot write weights. It therefore knew when a query looked novel but did not use assent to protect individual retrieved templates.
+
+Wrong-category write mass rose from 6.67 percent to 78.52 percent. Template error almost doubled. Final clean accuracy fell from 87.75 to 81.0 percent.
+
+The final-accuracy difference remained noisy: Chevron won four seeds, tied five, and lost one. The contamination result was much clearer than the coarse category score.
+
+A fixed raw mismatch gate was more conservative. It sent very little mass to wrong categories, but it split familiar categories too often, filled memory with duplicates, and finished at 66.83 percent. Learned admission beat it by 20.9 points, winning eight seeds and tying two.
+
+A deliberately misaligned gate rotated the learned r values onto the wrong active slots. It finished at 72.33 percent. Learned slot-specific admission beat it by 15.4 points.
+
+An oracle write policy reached 100 percent.
+
+Together, these ablations support three parts of the mechanism.
+
+The gate must be learned rather than frozen at one raw threshold.
+
+Its assent must be attached to the correct retrieved slot.
+
+And using alpha times r for writes substantially reduces cross-category contamination compared with attention mass alone.
+
+Where Chevron helps most
+The final robustness matrix varied noise, category distance, capacity, stream order, and stream duration.
+
+While there was no general Chevron win, at shift noise 0.10, the learned joint controller was slightly better. It was also slightly better when new categories were farther from retained categories. Under an eight-slot capacity limit, the systems were effectively tied.
+
+Chevron performed better with blocked novel-category arrivals and over a doubled shifted stream, although those five-seed comparisons were not unanimous.
+
+The clearest result occurred when a novel category differed from a retained category by only one feature bit.
+
+Soft Chevron reached 89.50 percent. The parameter-matched learned joint controller reached 66.83 percent. Chevron won all five seeds, by an average of 22.67 percentage points.
+
+This is the most important positive result of Phase 7.
+
+Chevron does not appear to be a universally better attention mechanism. Its inductive bias becomes useful under a particular difficult condition: present evidence is close enough to retrieve an established memory, but different enough that writing into that memory would damage it.
+
+That is the stability–plasticity problem in its sharpest form.
+
+If the new category is obviously different, many mechanisms can separate it.
+
+If the input is simply noisy, a flexible learned controller can be as good or better.
+
+But when novelty lies immediately beside retained structure, retrieval and assent should not be the same operation.
+
+A modest but important result
+Phase 7 began with a simple differentiable rule and ended with a narrower claim than the first experiments seemed to support.
+
+That narrowing is a strength.
+
+Soft Chevron can learn retrieval, normalized A/N comparison, admission, and null routing from answer labels alone.
+
+It can learn the A/N comparison space from independently initialized projections.
+
+Its read-only accuracy matches strong joint attention under clean and noisy conditions.
+
+When reads become persistent writes, alpha times r sharply reduces cross-category contamination.
+
+Fixed, alpha-only, and slot-misaligned write rules perform worse.
+
+A parameter-matched standard-attention controller trained specifically for writes can match Chevron’s average default performance.
+
+Chevron’s clearest performance advantage occurs when new categories closely resemble retained categories.
+
+The strongest defensible Phase 7 claim is therefore:
+
+Learned, slot-specific A/N admission strongly reduces cross-category memory writes and is especially useful when novel categories closely resemble retained ones. It provides a simple ART-inspired stability–plasticity inductive bias, but it does not establish general superiority over a parameter-matched learned attention controller.
+
+This is modest compared with claiming a replacement for standard attention.
+
+It is important because it identifies a condition under which the architecture’s conceptual distinction becomes operationally useful.
+
+The biological inspiration also remains disciplined.
+
+Chevron Attention is not an implementation of full Adaptive Resonance Theory. It borrows the idea that bottom-up activation should meet retained expectation before learning proceeds. It replaces hard vigilance and reset with a learned differentiable assent signal. The result remains compatible with ordinary deep networks.
+
+The point is not biological imitation.
+
+The point is to give a modern network an explicit answer to a question that standard attention normally leaves implicit:
+
+This information is relevant. But should it be allowed to change me?
+
+Toward Phase 8
+The immediate architectural extension concerns the remaining mass.
+
+Phase 7 used remaining mass to route a read to null and, above a learned threshold, to allocate a new category. A safer persistent agent should probably not turn every rejected observation directly into durable structure.
+
+The remaining mass can instead enter a fast provisional or quarantine memory.
+
+One contradictory observation would remain temporary. A short incoherent burst would decay. A sustained and internally coherent candidate would accumulate persistence and eventually earn a retained category or a justified revision.
+
+This would add a temporal question to the existing spatial gate.
+
+Chevron currently asks:
+
+Which retrieved memory assents to this observation?
+
+The next mechanism should also ask:
+
+Has the rejected alternative remained coherent and consequential for long enough to become part of retained state?
+
+That is the natural bridge from category learning to the longer-term motivation: a coherently evolving computational self for agency and safety.
+
+Such a self should preserve goals, commitments, learned capabilities, autobiographical state, and safety constraints without becoming rigid. It should reject transient or adversarial contradictions, accept compatible evidence, quarantine uncertain changes, and still permit justified revision.
+
+Recent architectures such as Kimi’s Attention Residuals and Kimi Linear, and DeepSeek’s compressed and sparse attention systems, make useful future comparisons. Their primary aim is efficient information flow through depth or long context. Chevron’s proposed role is different: deciding what retrieved information may become persistent state. These mechanisms may ultimately be complementary rather than mutually exclusive.
+
+That broader comparison belongs to future research.
+
+Phase 8 should begin with the smaller test that follows directly from the evidence: route rejected mass into a provisional candidate, require coherent persistence before consolidation, and compare the result with the parameter-matched learned attention controller.
+
+Phase 7 established that assent can be learned.
+
+Phase 7.5 established that assent matters when attention writes.
+
+The closure tests established where the advantage does and does not survive.
+
+The next question is whether uncertainty can remain provisional without either contaminating the past or preventing the future from being learned.
+
+The code is available on GitHub: https://github.com/andrekramer/chevron-networks/tree/main/chevron-attention/phase7_soft_chevron
+
+Andre with Codex/ChatGPT-5.6, July 2026
+
