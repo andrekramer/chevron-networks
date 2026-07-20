@@ -1,0 +1,24 @@
+{
+  "status": "frozen_for_confirmation",
+  "selection_seeds": [107, 117, 127, 137, 147],
+  "train_steps": 700,
+  "controller_steps": 350,
+  "provisional_memory": {
+    "capacity": 3,
+    "top_a_candidates": 3,
+    "coherence_threshold": 0.75,
+    "coherence_mismatch_threshold": 0.15,
+    "coherence_sharpness": 30.0,
+    "candidate_update_rate": 0.25,
+    "persistence_beta": 0.8,
+    "consolidation_threshold": 0.2,
+    "minimum_support": 5,
+    "minimum_eligible_mass": 0.1,
+    "minimum_distinct_mismatch": 0.04,
+    "prune_threshold": 0.02,
+    "reject_retained_matches_on_entry": true
+  },
+  "joint_evidence_calibration": "min(score_odds / calibrated_threshold_odds, 1)",
+  "mature_retained_match_action": "reject_and_clear",
+  "confirmation_rule": "No parameter or evidence-calibration changes after confirmation begins"
+}

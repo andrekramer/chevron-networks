@@ -103,3 +103,6 @@ The closure result and revised claim are recorded in
 
 The plain-text Phase 7 and 7.5 Substack draft is in
 `substack-phase-seven-result.txt`.
+
+The locked-conclusion plan for provisional memory and the final synthetic
+benchmark is in `../phase8_consolidation/phase8-plan.md`.
