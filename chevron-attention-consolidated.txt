@@ -1,0 +1,408 @@
+Andre's Baccalaureus in Arte Ingeniaria
+
+
+Chevron Attention: A Memory Should Not Change Its Mind Too Easily
+Eight experimental phases, a locked confirmation, and a modest result about attention, assent, and persistent memory
+Andre Kramer
+Jul 21, 2026
+
+The Chevron Attention experiments began with a simple question.
+
+Should information be allowed to change a system merely because it is relevant?
+
+Standard attention is very good at relevance. A query meets a set of keys, their similarities produce attention weights, and those weights retrieve values.
+
+In compact form:
+
+alpha = softmax(Q K transpose)
+
+y = sum(alpha times V)
+
+This already contains two mappings.
+
+The query–key operation decides where to attend. The value operation determines what content is obtained there. Matching and readout do not need to use the same representation.
+
+But a persistent system faces another decision.
+
+A retrieved memory may be relevant without being trustworthy enough to use. It may be useful to read without being safe to rewrite. A new observation may contradict retained structure without yet deserving to replace it.
+
+Chevron Attention adds an explicit operation between retrieval and value use:
+
+assent.
+
+The final experiments support a limited but meaningful conclusion.
+
+In a locked synthetic continual-memory benchmark, separating retrieval from assent produced cleaner writes, protected retained categories, and substantially improved learning when new categories closely resembled old ones. Adding a provisional memory then allowed the network to distinguish brief contradiction from persistent novelty.
+
+The result did not show that Chevron Attention is universally superior to standard attention. It did not reproduce every predeclared hypothesis. And it did not establish a computational theory of agency, consciousness, or safety.
+
+What it did establish is more specific:
+
+A simple differentiable attention architecture can learn to ask not only “is this relevant?” but also “does the retained memory assent to its use?” and “has the alternative persisted long enough to become part of memory?”
+
+That is the result of the eight-phase programme.
+
+The architecture
+
+
+
+Chevron Attention separates a fast adaptive channel, A, from a slower retained channel, N.
+
+The A channel addresses the present situation. The N channel supplies retained structure and values.
+
+The simplified learned architecture used in the final phases was:
+
+alpha = softmax(Q_A K_A transpose)
+
+r = sigmoid(k times (theta minus M(A,N)))
+
+w = alpha times r
+
+y = sum(w times V_N) plus q times V_null
+
+q = 1 minus sum(w)
+
+The first line retrieves plausible memories using the adaptive A channel.
+
+The second compares current evidence with each retained N template. M(A,N) is normalized mismatch. The learned variable r is an assent signal. It is high when current evidence and the retained template are compatible, and low when they are not.
+
+The third line multiplies relevance by assent. A value participates only to the extent that it was both retrieved and admitted.
+
+Mass removed by the assent gate is not automatically redistributed to another memory. It becomes remaining mass, q, and flows to an explicit null value.
+
+The key architectural distinction is therefore:
+
+A memory can be relevant enough to retrieve without being compatible enough to use or update.
+
+This is where Chevron differs from simply adding another attention head or a downstream classifier. The gate is attached to each retrieved slot. The same admitted mass that controls the read can control the persistent write:
+
+N_j at the next step = (1 minus eta times w_j) times N_j 
+
+                                       plus eta times w_j times current evidence
+
+If an incorrect memory attracts attention but receives little assent, it is protected from the update.
+
+Why this needed persistent memory
+The read-only experiments were deliberately inconclusive about performance superiority.
+
+Soft Chevron and a strong joint A/N attention baseline both learned the category-matching task. Both could reach essentially perfect answer accuracy. Both tolerated representation noise when trained appropriately.
+
+Their internal solutions differed.
+
+Chevron learned an explicit sequence: retrieve a plausible group, compare current evidence with retained templates, admit the compatible value, and route rejected mass to null.
+
+Standard joint attention often bypassed explicit null routing. Its downstream answer head learned to classify a mixture of unmatched values as IDK.
+
+This made Chevron easier to interpret, but it was not yet a performance advantage. When a read had no lasting consequences, the downstream network could compensate for a disorderly internal route.
+
+The distinction became consequential when attention was allowed to write into persistent memory.
+
+Across the Phase 7 closure experiments, learned slot-specific alpha times r writes sent far less mass to incorrect categories than alpha-only writes, a fixed raw mismatch gate, or a gate deliberately attached to the wrong slots.
+
+Removing r increased wrong-category write mass by almost twelve times. A fixed gate was often too conservative and created duplicate categories. A misaligned gate protected the wrong memories.
+
+A parameter-matched joint-attention controller trained specifically for writing could match Chevron’s default final accuracy. That negative result narrowed the claim correctly. Standard attention can learn a competent write decision if given a dedicated controller and direct supervision.
+
+Chevron’s clearest Phase 7 advantage occurred under the condition it was designed for: a new category differing from a retained category by only one feature component.
+
+When novelty is obviously different, many systems can separate it. When it lies immediately beside retained structure, retrieval and assent should not be the same operation.
+
+The remaining problem
+Phase 7 still made one decision too quickly.
+
+If the network withdrew assent from retained memory, the remaining mass could trigger immediate allocation of a new category.
+
+That is unsafe as a general memory rule.
+
+One contradictory observation may be noise. A short coherent disturbance may be temporary. A repeated observation may be adversarial. A genuinely new category should eventually be learned, but not necessarily after appearing once.
+
+The first temptation was to interpret q as novelty.
+
+That turned out to be wrong.
+
+Remaining mass can be high even on a correct matched read. The A channel may retrieve several plausible members of a group. Assent removes the decoys, and their unused attention becomes q. One template may still match perfectly.
+
+So:
+
+q = conserved unused mass
+
+does not mean:
+
+q = probability of novelty
+
+Phase 8 separated the two.
+
+Let r_best be the strongest assent among the candidates actually retrieved by A attention.
+
+nu = 1 minus r_best
+
+u = q times nu
+
+The quantity nu measures non-assent. The quantity u is the part of the remaining mass eligible to enter provisional memory.
+
+This matters because unused capacity and contradiction are not the same thing.
+
+A medium-term provisional layer
+Eligible evidence enters a small bank of candidate memories.
+
+Each candidate contains provisional content, C, and a persistence state, P. Coherent observations update the candidate. Unselected candidates decay. A candidate is consolidated only when it has enough persistence, enough supporting observations, and remains distinct from every retained template.
+
+The final locked experiment used three candidate slots and required five supporting observations before consolidation.
+
+Observations already matching retained memory were rejected before they could occupy provisional state. A mature candidate that merely reproduced an existing retained template was also cleared rather than allowed to churn in the bank.
+
+The three timescales can be described as:
+
+current activation;
+
+provisional candidate state;
+
+retained category memory.
+
+This has a close functional relationship to ideas in Stephen Grossberg’s work on Adaptive Resonance Theory.
+
+Grossberg distinguishes short-term activation, medium-term habituative or transmitter-gating states, and long-term learned structure. Medium-term memory helps recent activity alter the gain of signals and supports reset or shifts of attention without immediately rewriting long-term weights.
+
+Chevron’s provisional persistence is inspired by that separation, but it is not an implementation of Grossberg’s canonical equations.
+
+Our persistence variable accumulates coherent evidence for consolidation. Grossberg’s canonical medium-term gates often habituate or deplete with activity and later recover. One asks whether evidence has persisted long enough to learn. The other often asks whether a currently active pathway should weaken enough for attention to move on.
+
+They may eventually be complementary, but they should not be conflated.
+
+Chevron Attention is similarly ART-inspired rather than a differentiable implementation of full ART. It retains the idea that bottom-up activation should meet retained expectation before learning proceeds. It does not reproduce hard vigilance, ordered reset, or category search.
+
+The locked experiment
+The Phase 8 mechanism was developed on five seeds, revised in response to a pre-lock robustness matrix, and then frozen.
+
+The final configuration, thresholds, evidence calibration, candidate rules, training procedure, and confirmation seeds were written down before confirmation began.
+
+The primary confirmation used 20 completely new paired seeds.
+
+Each stream began with six retained categories and introduced three new categories. The default condition used ordinary related novelty. The difficult near condition changed only one N feature component relative to a retained category.
+
+The principal methods were:
+
+Chevron immediate, which could allocate after one observation;
+
+Chevron quarantine, which used provisional memory;
+
+joint immediate, using the parameter-matched learned attention controller;
+
+joint quarantine, using the same candidate bank;
+
+alpha quarantine, which retained temporal quarantine but removed assent from individual retained writes;
+
+and a temporal oracle.
+
+The first ten confirmation seeds also tested interleaved novelty, higher noise, greater category distance, transient durations, retained-memory pressure, longer streams, and insufficient candidate capacity.
+
+The confirmation results were not used to change the system or repeat a run.
+
+The primary result
+On default sustained novelty, immediate Chevron reached 70.0 percent new-category accuracy.
+
+Chevron quarantine reached 96.7 percent.
+
+The paired improvement was 26.7 percentage points, with a bootstrap 95 percent interval from 11.7 to 41.7 points.
+
+Joint immediate reached 48.3 percent. Joint quarantine reached 73.3 percent.
+
+Chevron quarantine’s advantage over joint quarantine was 23.4 points, with interval 11.7 to 35.1.
+
+All six old categories remained correct under Chevron quarantine. It retained an average of 2.9 of the three novel categories and produced no false category splits.
+
+The difficult near-category condition was clearer.
+
+Immediate Chevron reached 63.3 percent new-category accuracy.
+
+Chevron quarantine again reached 96.7 percent.
+
+Joint immediate reached 3.3 percent. Joint quarantine reached 26.7 percent.
+
+Chevron quarantine improved over immediate Chevron by 33.3 points, with interval 18.3 to 50.0. It won 13 seeds, tied six, and lost one.
+
+It improved over joint quarantine by 70.0 points, with interval 56.9 to 81.9. It won 19 seeds and tied one.
+
+The near-category advantage replicated strongly.
+
+The temporal boundary
+The quarantine rule was designed to distinguish short contradiction from persistent novelty.
+
+Immediate Chevron falsely consolidated the transient category on 90 percent of one-observation streams and every three- and four-observation stream.
+
+Chevron quarantine produced no false consolidation at durations one, three, or four across the ten robustness seeds.
+
+At duration five, it consolidated in every stream.
+
+The rule therefore created the intended operational boundary exactly.
+
+This does not mean that five observations is universally correct. It means the architecture can implement a visible and testable temporal criterion rather than hiding the decision inside an unconstrained downstream state.
+
+The joint quarantine system produced one false consolidation among the ten duration-four streams.
+
+That failure is instructive.
+
+A provisional candidate initialized by the transient novel pattern was later updated by familiar recovery observations that appeared coherent enough to join it. The candidate crossed the support threshold with mixed evidence.
+
+Observation count is not always the same thing as category-coherent support.
+
+The strict cross-method temporal hypothesis therefore failed, even though the Chevron version passed.
+
+Assent was still necessary
+
+Temporal quarantine decides when a new category may be created. It does not by itself protect existing memories during ordinary writes.
+
+The alpha quarantine ablation received the same candidate system but removed r from the per-slot write weights.
+
+In the near condition, Chevron quarantine preserved 99.1 percent old accuracy. Alpha quarantine preserved only 41.8 percent.
+
+The paired old-accuracy advantage was 57.3 points, with interval 48.6 to 66.4. Chevron won all 20 seeds.
+
+Cross-category write mass was lower by 71.8 points, again on all 20 seeds. Template error was approximately 42 times smaller.
+
+The two mechanisms therefore do different jobs.
+
+Quarantine controls when new persistent structure is admitted.
+
+Slot-specific assent controls which existing structures may be changed.
+
+Both were required.
+
+What did not work
+The final result is stronger because the failed hypotheses remain visible.
+
+The same provisional layer did not preserve enough plasticity for the joint-attention controller.
+
+Chevron quarantine acquired 96.7 percent of blocked categories and 93.3 percent of interleaved categories.
+
+Joint quarantine acquired 73.3 percent blocked and 43.3 percent interleaved. These fell below the predeclared confirmation thresholds.
+
+Provisional memory is therefore not a universally effective component that can be placed behind any novelty score.
+
+Its plasticity depends on the quality and temporal consistency of the upstream signal. Chevron’s slot-specific decomposition provided a better signal in these streams.
+
+The system also had clear capacity limits.
+
+When three novel categories were interleaved through a two-slot candidate bank, Chevron quarantine learned only 23.3 percent of them. A provisional memory cannot preserve more concurrent alternatives than it has state to represent.
+
+Noise exposed the expected stability–plasticity tradeoff.
+
+At observation noise 0.06, 0.08, and 0.10, Chevron quarantine preserved essentially all old memory. New-category accuracy declined from 86.7 to 76.7 to 59.8 percent.
+
+The system became conservative rather than destructive.
+
+That may be the desirable direction for some safety-sensitive memories, but it is still a loss of plasticity.
+
+The strongest claim
+The strongest claim supported by the locked experiments is:
+
+In this synthetic continual-category benchmark, a five-observation provisional consolidation layer combined with learned slot-specific Chevron assent sharply reduced transient allocation and retained-memory contamination while improving acquisition of both ordinary and near-category novelty. The near-category advantage replicated across 20 new paired seeds. The same provisional layer did not preserve sufficient plasticity for the learned joint-attention controller, so the result supports the combined Chevron mechanism rather than provisional memory as a universally effective add-on.
+
+That is narrower than claiming a replacement for standard attention.
+
+It is also more useful.
+
+The experiments identify the regime in which the architecture matters.
+
+Chevron is not primarily an efficiency mechanism. It does not compete directly with linear attention, latent attention, sparse retrieval, or attention residuals on their main objective.
+
+Its purpose is persistent-state control.
+
+It asks whether retrieved information is merely relevant, whether it is compatible with retained structure, and whether a rejected alternative has persisted long enough to deserve consolidation.
+
+Toward a coherently evolving self
+The larger motivation remains a computational system that can evolve without becoming either rigid or incoherent.
+
+An agent may need stable goals, commitments, learned capabilities, autobiographical memory, and safety constraints. It must also remain capable of correction.
+
+Pure plasticity makes such a system vulnerable to noise, transient pressure, and adversarial evidence.
+
+Pure stability prevents justified learning and revision.
+
+Chevron Attention does not solve this problem by itself. The experiments use synthetic categories, partly supervised values, short streams, and transparent memory slots. They do not demonstrate realistic language-model memory, prompt-injection resistance, agency, or safety.
+
+But they suggest a useful decomposition for future systems:
+
+retrieve broadly;
+
+require assent before use and write;
+
+route unresolved evidence into provisional state;
+
+consolidate only after coherent persistence;
+
+retain provenance and permit rollback when later evidence invalidates the change.
+
+The next research programme should leave the current synthetic benchmark behind.
+
+The frozen mechanism should be tested on episodic and persistent-agent memory, where observations have provenance, categories are not supplied, beliefs can be legitimately revised, and malicious evidence competes with genuine correction.
+
+Comparisons with standard attention, learned write controllers, Hopfield-style associative memory, ART-like category systems, attention residuals, and efficient long-context architectures will remain essential.
+
+The present result is not the end of that programme.
+
+It is a clean stopping point for the first one.
+
+The original question was whether attention could provide both plasticity and stability.
+
+The answer is now more precise.
+
+Attention alone can find what is relevant.
+
+Chevron assent can decide what retained memory is prepared to accept.
+
+Provisional consolidation can require a rejected alternative to persist before it becomes durable.
+
+Together, in the conditions tested here, those distinctions made a measurable difference.
+
+A coherent memory should be capable of changing its mind.
+
+It should not have to change it immediately.
+
+The code is available on github: https://github.com/andrekramer/chevron-networks/tree/main/chevron-attention/phase8_consolidation
+
+Andre with Codex/ChatGPT-5.6, July 2026
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
+
+Appendix: A shallow elastic candidate buffer
+The Candidate Bank should not be understood as a large medium-term memory interposed between A and N.
+
+The fast path remains direct:
+
+A meets N at the Assent Gate.
+
+Assented information can be read or written immediately. Only unresolved residual evidence branches into the candidate buffer.
+
+The buffer itself may require only two recurrent states:
+
+C = provisional content
+
+P = persistence or provisional trust
+
+Although this is only one or two computational layers deep, recurrence allows it to integrate evidence over many observations. Network depth is therefore different from temporal duration.
+
+Capacity is a separate question. A single candidate slot may be enough when novelty arrives serially. It is not enough when several unresolved alternatives are interleaved. In the confirmation experiment, reducing the bank from three slots to two while presenting three interleaved categories reduced Chevron’s new-category accuracy from 93.3 percent to 23.3 percent.
+
+Vigilance could regulate the buffer’s effective capacity.
+
+High vigilance requires a closer A/N match and therefore produces more residual evidence. Low vigilance permits broader assimilation into retained categories. But vigilance should not resize the bank by itself, because that could create a feedback loop in which strict matching continually produces more categories.
+
+A safer rule would combine vigilance with measured candidate pressure:
+
+vigilance controls how different evidence must be from N;
+
+pressure controls how many distinct unresolved alternatives need representation;
+
+persistence controls whether any alternative may consolidate into N.
+
+The system could begin with one active candidate slot, open additional slots only when residual patterns are persistent and mutually incoherent, and close unused slots slowly. A fixed maximum would keep the state budget bounded.
+
+Candidate information need not remain unusable while it waits. It may contribute to prediction or an explicitly provisional response, weighted by P, without being allowed to rewrite retained memory or override stable constraints.
+
+The resulting architecture is a side loop rather than a serial layer:
+
+A and N remain directly coupled through assent;
+
+q feeds a shallow C/P buffer;
+
