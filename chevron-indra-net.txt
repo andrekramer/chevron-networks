@@ -1,0 +1,845 @@
+
+From Indra’s Net to Chevron Attention
+Learning in a Field of Opposites
+
+
+
+In Indra’s Net, every jewel reflects every other jewel. No node is merely itself. Each contains a partial image of the whole, and each reflection changes as the others change.
+
+It is an ancient image, not a scientific theory. But it remains a powerful way to think about mind.
+
+A thought does not mean much in isolation. A perception acquires meaning through memory, expectation, value, bodily state, and possible action. A fear reflects an anticipated future. A colour is shaped by its surroundings. A word changes with its sentence. A belief changes when viewed through the beliefs that support or oppose it.
+
+Perhaps the mind is not best understood as a collection of independent representations. Perhaps it is better understood as a field of relations, contrasts, and tensions in which each part partly reflects the rest.
+
+Modern neural networks are also webs of relation. Attention mechanisms dynamically connect one representation with others. Memories are selected, combined, and transformed. But retrieval alone does not answer some of the most important questions.
+
+Is the retrieved information compatible with the present situation?
+
+Should it be used?
+
+Should it be allowed to change persistent memory?
+
+A system may retrieve something relevant without having sufficient reason to assent to it. It may encounter a difference without that difference deserving permanent retention. It may permit an action in one context without turning that permission into a general policy.
+
+These distinctions are central to the experiments I have been carrying out with Chevron Networks and Chevron Attention.
+
+They also return to a broader philosophical intuition that I have called the Hypercube of Opposites.
+
+Breakout: The Legend of Indra’s Net
+In the Buddhist and later Vedantic imagination, Indra’s Net is a vast cosmic web stretching in all directions without end. At every intersection of the net hangs a jewel. Each jewel reflects every other jewel, and within each reflection are the reflections of all the others again, endlessly.
+
+The image is simple, but its meaning is profound.
+
+No jewel stands alone. Each is itself, yet each also contains the whole in reflected form. Every part depends on every other part. Every local change subtly alters the total pattern of reflections across the net.
+
+Indra’s Net is therefore a metaphor for a world of radical interconnectedness. It suggests that nothing is fully isolated, that identity is relational, and that what something is cannot be understood apart from the web of relations in which it appears.
+
+For this post, the image is useful because it offers a philosophical picture of mind. A thought is not merely a self-contained object. A memory reflects other memories. A perception is shaped by expectation, value, context, and action. Meaning emerges not from isolated units alone, but from the living web of relations among them.
+
+In that sense, Indra’s Net is not just an ancient legend. It is an enduring image of a world — and perhaps a mind — in which each part partly contains the whole.
+
+A field of opposites
+The Hypercube of Opposites began as an attempt to think of mind as a field of many oppositional dimensions.
+
+Not merely:
+
+A
+↔
+N
+
+but:
+
+(
+O
+1
++
+,
+O
+1
+−
+)
+,
+;
+(
+O
+2
++
+,
+O
+2
+−
+)
+,
+;
+…
+,
+;
+(
+O
+k
++
+,
+O
+k
+−
+)
+
+Each pair defines a possible tension:
+
+D
+i
+=
+O
+i
++
+−
+O
+i
+−
+
+or, when scale matters, a normalized contrast:
+
+ 
+C
+i
+=
+O
+i
++
+−
+O
+i
+−
+O
+i
++
++
+O
+i
+−
++
+ϵ
+
+The whole system occupies not one opposition, but a field of oppositions:
+
+C
+=
+(
+C
+1
+,
+C
+2
+,
+…
+,
+C
+k
+)
+
+These oppositions need not be fixed moral or logical binaries. They may include:
+
+novelty and familiarity;
+
+exploration and consumption;
+
+sensation and expectation;
+
+cooperation and competition;
+
+identity and location;
+
+present evidence and retained belief;
+
+freedom and constraint;
+
+continuity and revision.
+
+Nor does one side have to remain permanently dominant. What acts as a constraint at one level may become a proposal at another. What is retained locally may become variation globally. Figure may become ground.
+
+The channels may switch. The duality remains.
+
+This is why I increasingly think of the Hypercube not as a static geometry but as an N-oppositional field: a space in which many tensions coexist, interact, settle, reopen, and sometimes become new forms of knowledge.
+
+The ideal may be minimum error and maximum knowledge. But no living or learning system begins with that ideal. What it actually has to work with is difference.
+
+Difference is what becomes attention.
+
+Difference is what initiates action.
+
+Difference is what may be rehearsed in imagination.
+
+Difference is what may eventually deserve retention.
+
+The challenge is not simply to eliminate tension. It is to regulate tension until some differences become useful without allowing every disturbance to overwrite the system.
+
+Chevron Networks: from field to cell
+The Hypercube is a broad philosophical picture. Chevron Networks are an attempt to reduce part of that picture to a small, trainable mechanism.
+
+A basic Chevron contains two coupled channels:
+
+A
+=
+adaptive, active, or proposing
+
+N
+=
+normative, retained, or constraining
+
+Their interaction is represented by a (2 times 2) transformation:
+
+  
+  
+ 
+[
+A
+′
+ 
+N
+′
+]
+[
+W
+A
+A
+W
+A
+N
+ 
+W
+N
+A
+W
+N
+N
+]
+[
+A
+ 
+N
+]
+
+This is not merely a network with two activations. The four paths form a small grammar:
+
+W
+A
+A
+:
+how A develops or cooperates with itself
+
+W
+N
+N
+:
+how N persists or stabilises itself
+
+W
+A
+N
+:
+how N constrains, gates, or reshapes A
+
+W
+N
+A
+:
+how A recruits, perturbs, or updates N
+
+The interpretation of A and N can change with the problem.
+
+A may be fast activity and N slower memory.
+
+A may be current sensory evidence and N a retained category.
+
+A may be a dynamic synaptic field and N a neuronal integrator.
+
+A may be an object representation and N a drive or value field.
+
+At a higher level, the roles may reverse. A retained category can become the active proposal examined by a broader contextual norm.
+
+The point is not that A and N correspond to fixed biological substances. The point is the duality: one side opens or presents a possibility; the other gives it form, constraint, continuity, or consequence.
+
+A useful shorthand is:
+
+The Hypercube is the field. The Chevron is the cell.
+
+Grossberg as an unexpected neighbour
+While developing these ideas, I began working through Stephen Grossberg’s very large body of research on Adaptive Resonance Theory, complementary computing, gated dipoles, instar and outstar learning, boundary and surface processing, and the stability–plasticity problem.
+
+There is a striking overlap of intuitions.
+
+Grossberg repeatedly describes neural systems in terms of complementary streams. Boundaries and surfaces compute different properties and repair one another’s weaknesses. “What” and “where” processing preserve different kinds of information. On-centre/off-surround networks enhance contrast and control saturation. Long-range cooperation can bind compatible fragments while short-range competition suppresses incompatible alternatives.
+
+The polarity is not fixed merely by distance. It is shaped by function.
+
+What cooperates is what can jointly support a coherent pattern.
+
+What competes is what cannot be simultaneously retained without ambiguity or saturation.
+
+Grossberg’s gated dipole networks add explicit opponent processes, habituative gates, rebound, and reset-like behaviour. Instar and outstar rules provide bottom-up learning of categories and top-down learning of expectations. ART adds vigilance, match, recurrence, category search, and the attempt to solve the stability–plasticity problem: how to learn something new without destroying what has already been learned.
+
+This is a much richer picture than the simplified idea that intelligence is merely prediction-error minimisation.
+
+But it is also difficult machinery to manage.
+
+My experiments did not support reconstructing the full procedural structure of ART. Hard vigilance, reset, and ordered category search were often harder to calibrate than soft differentiable attention, and suitably structured standard attention could reproduce many of the same successful outputs.
+
+The useful lesson therefore became narrower.
+
+Present evidence should meet retained expectation before learning proceeds.
+
+To capture the essence of this stability-plasticity dynamic without the procedural overhead of ART, we can reduce the interaction to a simpler mathematical gating. That led to Chevron Attention. 
+
+Retrieval is not assent
+The current Chevron Attention mechanism can be stated in three lines:
+
+α
+=
+softmax
+(
+Q
+A
+K
+A
+⊤
+)
+
+r
+=
+σ
+(
+k
+(
+θ
+−
+M
+(
+A
+,
+N
+)
+)
+)
+
+ 
+y
+=
+∑
+j
+α
+j
+r
+j
+V
+N
+j
++
+remaining mass
+,
+V
+null
+
+The first line retrieves memories using the adaptive A channel.
+
+The second compares current A evidence with each retained N template. The normalized mismatch (M(A,N)) is transformed into an assent value (r). Assent is high when the retained template is compatible with the present evidence and low when it is not.
+
+The third line admits only value mass that has both been retrieved and assented to. Rejected mass is not redistributed among the remaining memories. This mass is effectively zeroed out and ignored by the forward pass. It flows to an explicit null value. This creates a simple but important distinction:
+
+A memory can be relevant enough to retrieve without being compatible enough to use.
+
+That distinction can be expressed in three forms:
+
+retrieval
+≠
+permission
+
+difference
+≠
+retained change
+
+contextual permission
+≠
+retained policy
+
+These may sound like philosophical statements, but they can be made operational.
+
+Standard attention asks which information is relevant enough to retrieve.
+
+Chevron Attention asks an additional question:
+
+This information is relevant — but does retained structure assent to its use?
+
+When attention writes to persistent memory, the question becomes stronger:
+
+This information is relevant — but should it be allowed to change me?
+
+What the read-only experiments showed
+The first experiments used freshly generated episodic category memories.
+
+An A query could identify the relevant group of memories but could not identify the correct member. Current evidence then had to agree with a retained N template before that member’s value could participate. Some queries deliberately had no matching template, in which case the correct answer was IDK.
+
+The categories, addresses, and values were regenerated for every batch, so the model could not solve the task by memorising a fixed table.
+
+Soft Chevron learned the intended sequence:
+
+retrieve a plausible group
+
+compare present evidence with retained templates
+
+admit the compatible value
+
+route rejected mass to null
+
+Importantly, this mechanism emerged even after auxiliary retrieval and gate losses were removed. With answer supervision alone, the model still achieved effectively perfect accuracy, admitted the correct target strongly, suppressed decoys, and sent unmatched queries predominantly to null.
+
+But a strong joint A/N attention baseline also reached perfect answer accuracy.
+
+Internally, however, it found a different solution. On no-match examples it sent almost none of its attention mass to the null slot. Its downstream answer head learned to classify a mixture of unmatched values as IDK.
+
+This established an important boundary.
+
+In read-only tasks, Chevron Attention was not generally a better answer machine. It was a cleaner mechanism.
+
+Chevron preserved an explicit decomposition:
+
+retrieval
+→
+comparison
+→
+assent
+→
+null or use
+
+Standard attention could produce the same labels while bypassing that decomposition downstream. Yet the explicit separation of impression, retrieval, and assent has a strong philosophical resonance with the Stoic idea that what appears to the mind need not automatically be accepted as true or acted upon.
+
+When no persistent state can be damaged, a sufficiently flexible network can repair a disorderly internal route at the output head.
+
+The distinction became consequential only when attention was allowed to write.
+
+When attention changes memory
+The write rule used the same mass that controlled reading:
+
+w
+j
+=
+α
+j
+r
+j
+
+The retained N memory was then updated as:
+
+N
+j
+,
+t
++
+1
+(
+1
+−
+η
+N
+w
+j
+)
+N
+j
++
+η
+N
+w
+j
+,
+A
+t
+
+A similar update was used for the A address trace.
+
+This is the essential point:
+
+If an incorrect memory receives attention but low assent, its write weight is strongly reduced, protecting it from most of the update.
+
+Ordinary attention may spread mass across several plausible memories. If that same mass controls writing, each of those memories can drift.
+
+Chevron Attention separates relevance from write permission.
+
+In the first continual-learning comparison, Soft Chevron finished with higher clean accuracy than a joint-attention baseline whose downstream IDK probability was used as a write veto. It also retained more categories and sent far less write mass into incorrect category slots.
+
+This initially looked like a strong Chevron advantage.
+
+A more demanding comparison narrowed the claim.
+
+The stronger baseline gave standard joint attention a dedicated, parameter-matched controller trained specifically to decide whether to merge an observation into an existing category or allocate a new one. The controller received statistics of the attention field and direct no-match supervision.
+
+That baseline closed much of the final accuracy gap.
+
+Across ten seeds, the mean still favoured Chevron, but the paired results were too variable to claim a reliable default accuracy advantage. Chevron nevertheless retained a much cleaner write trajectory: lower wrong-category write mass, lower false-merge rates, and lower false-split rates.
+
+The correct conclusion is therefore not:
+
+Standard attention cannot learn safe memory writes.
+
+It can, when given a dedicated controller and direct training.
+
+The Chevron claim is narrower:
+
+The read/write decision is already localised in a simple attention rule with a defined fast/retained interpretation.
+
+That architectural distinction may matter most where the system cannot rely on a large external controller to repair every mistake.
+
+The hard case: novelty beside memory
+The clearest positive result appeared under a particular condition.
+
+A new category differed from an existing retained category by only one feature.
+
+The new category was therefore close enough to retrieve the old memory but different enough that writing into the old memory would damage it.
+
+Under this condition, Soft Chevron reached 89.50 percent accuracy. The parameter-matched learned joint controller reached 66.83 percent. Chevron won all five seeds, by an average of 22.67 percentage points.
+
+The model won by retrieving the nearby established category through (alpha), but assigning it low assent (r); this kept the write weight (alpha r) small, protected the old memory from contamination, and left enough unadmitted mass to allocate a new category slot for the adjacent novelty.
+
+This is the stability–plasticity problem in its sharpest form.
+
+If the new category is obviously different, many mechanisms can separate it.
+
+If the input is merely noisy, a flexible controller can often compensate.
+
+The difficult case is adjacent novelty:
+
+the new thing that almost fits the old thing.
+
+Chevron’s inductive bias became useful precisely when current evidence was close enough to activate an established memory but different enough that allowing that memory to absorb the evidence would corrupt it.
+
+This result is modest. It does not establish Chevron Attention as a general replacement for standard attention.
+
+But it identifies a condition in which the conceptual distinction becomes operationally useful:
+
+when novelty lies beside retained structure, retrieval and assent should not be identical
+
+Engagement, contrast, and transformability
+The A/N interpretation also suggests a richer view of attention.
+
+Define:
+
+E
+=
+A
++
+N
+
+ 
+C
+=
+A
+−
+N
+A
++
+N
++
+ϵ
+
+and:
+
+ 
+p
+=
+A
+A
++
+N
++
+ϵ
+
+g
+=
+p
+(
+1
+−
+p
+)
+
+These three quantities play different roles.
+
+E
+=
+total engagement
+
+C
+=
+signed contrast or directional tension
+
+g
+=
+complementarity or transformability
+
+The contrast (C) tells us which side of the A/N relation is dominant.
+
+The gate (g) is largest when both remain active. It falls toward zero when one side completely dominates.
+
+So:
+
+(E) says whether the relation matters.
+(C) says which way it leans.
+(g) says whether the opposition remains alive enough to transform.
+
+This connects Chevron Attention back to the R-rule and to the Hypercube of Opposites.
+
+Each oppositional axis can have both a direction:
+
+C
+i
+
+and an openness to transformation:
+
+g
+i
+
+The mind-like field is therefore not just a vector of selected poles. It is a field of tensions, intensities, and remaining possibilities.
+
+Possible applications
+The experiments so far concern small synthetic category memories. Broader applications remain extrapolated possibilities.
+
+Still, the distinctions suggest several useful directions.
+
+Stability and plasticity
+This is the clearest result.
+
+A system should preserve retained structure without becoming unable to learn. Chevron Attention protects a memory that is relevant enough to retrieve but not compatible enough to update.
+
+Hallucinations
+A hallucination might be understood, speculatively, as retrieval being mistaken for assent.
+
+A language model retrieves fluent continuations, associations, and memorised fragments. But relevance and fluency do not guarantee compatibility with the present evidence.
+
+Chevron-style gating could provide a distinction between:
+
+what became available
+
+and:
+
+what should be admitted
+
+The current experiments do not demonstrate reduced hallucination in a large language model. They demonstrate only that retrieval and assent can be separated and learned.
+
+Continual learning
+Attention should not be allowed to rewrite memory merely because it attended to something.
+
+This seems obvious when stated in words, but standard attention does not naturally distinguish read relevance from write permission.
+
+Policy and safety
+A system may be permitted to take an action in one context without turning that permission into a lasting policy:
+
+contextual permission
+≠
+retained policy
+
+A persistent agent may need to preserve commitments, learned capabilities, autobiographical state, and safety constraints while remaining capable of justified revision.
+
+Creativity
+Not every unresolved difference should be suppressed or routed to null.
+
+Some differences may deserve to remain active without immediate resolution. Creativity may require holding incompatible possibilities long enough for a new form to emerge.
+
+In that setting, rejection is not necessarily failure. It may be the beginning of imagination.
+
+Provisional memory
+The most immediate extension is therefore not a more complicated category search. It is a provisional memory.
+
+At present, rejected attention mass is routed to null and can contribute to allocating a new category. But a safer persistent system should probably not turn every rejected observation directly into durable structure.
+
+Instead:
+
+rejected
+≠
+false
+
+rejected
+≠
+retained
+
+rejected
+candidate awaiting persistence
+
+Rejected or uncertain evidence could enter a fast quarantine memory.
+
+One contradictory observation would remain temporary.
+
+An incoherent burst would decay.
+
+A sustained and internally coherent candidate would accumulate persistence until it deserved either a new retained category or a justified revision of an existing one.
+
+The current Chevron mechanism asks:
+
+Which retrieved memory assents to this observation?
+
+A provisional extension would also ask:
+
+Has the rejected alternative remained coherent and consequential for long enough to become part of retained state?
+
+This follows directly from the experimental results and is the next practical direction suggested by them.
+
+Sleep, dreams, and offline consolidation
+A further possibility is that not every change to N should happen while the system is acting.
+
+Living systems do not learn only in the moment. They replay, consolidate, compress, reorganise, and forget.
+
+Sleep and dreaming may be biological hints of a general computational need: experience sometimes needs to be reprocessed away from immediate action.
+
+During waking operation, the system protects continuity. It acts using what has already been retained and places uncertain experience into provisional form.
+
+During sleep-like operation, provisional traces could be replayed against one another and against longer-term N structures.
+
+Some would decay.
+
+Some would combine.
+
+Some would expose contradictions within existing memory.
+
+Some would eventually be consolidated.
+
+The question would no longer be only:
+
+Should this observation change memory now?
+
+It would become:
+
+What should experience become after it has been dreamed over?
+
+Dreaming, in this speculative computational sense, would not merely produce fantasy. It would create a protected space in which unresolved tensions could be recombined without immediately controlling action.
+
+Wake protects continuity.
+
+Dream reopens possibility.
+
+Consolidation decides what the system will become.
+
+Many Chevron fields
+A still larger architectural possibility would be to distribute Chevron Attention across multiple semi-specialised shards, somewhat like a mixture-of-experts model.
+
+A standard mixture-of-experts router asks:
+
+Which expert should process this input?
+
+A mixture of Chevron fields would ask several additional questions:
+
+Which retained field is relevant?
+
+Which field assents to the current evidence?
+
+Which field is allowed to change?
+
+Where should rejected experience remain provisional?
+
+Instead of one retained field:
+
+A
+→
+N
+
+there might be many:
+
+A
+→
+N
+1
+,
+N
+2
+,
+…
+,
+N
+k
+
+Each shard could possess its own retrieval distribution, comparison space, assent signal, null route, and provisional memory.
+
+This is beyond the scale of the current experiments and may require resources I cannot reasonably bring to a prototype. But it is a natural extension of the architecture, especially where safety requires partitioning. Different Chevron shards could hold distinct capabilities, memories, policies, or domains of authority, while routing and assent determine not only which shard may contribute to an answer, but which shard—if any—is permitted to change.
+
+It also returns us to Indra’s Net.
+
+Each shard would be a jewel: partial, specialised, and shaped by its own history. None would contain the whole. Intelligence would live in the routed, gated, and revisable relationships among them.
+
+Building brains or minds
+None of this demonstrates how to build a conscious mind.
+
+Grossberg’s resonances, my A/N tensions, and modern attention mechanisms describe organisations and functions. They do not by themselves explain why anything should be felt from within.
+
+I remain more inclined to think of consciousness as associated with a field of tensions than with resonance alone.
+
+Resonance may stabilise a content. It may represent a temporary comfort or coherence between present activity and retained expectation.
+
+But experience often appears as directed tension:
+
+something draws attention;
+
+something resists;
+
+something is unfinished;
+
+something threatens;
+
+something promises;
+
+something does not fit.
+
+Perhaps:
+
+A
++
+N
+
+is nearer to engagement or temporary coherence, while:
+
+A
+−
+N
+
+is nearer to the directional pressure that makes something matter.
+
+This remains speculation. The Upanishads speak of levels of Self, but the final identification — “That is It” — remains a metaphysical affirmation, not something an architecture can prove.
+
+A more cautious claim is possible.
+
+Minds may consist of many levels at which present activity encounters retained structure. At each level, differences become attention, action, inhibition, imagination, or learning. Some tensions settle. Some persist. Some become objects for a higher level. Some alter the very process by which the system makes and retains distinctions.
+
+A brain-like machine may therefore require more than a larger prediction engine.
+
+It may need:
+
+complementary fields rather than one undifferentiated representation;
+
+fast activity and slower retained expectation;
+
+retrieval separated from assent;
+
+attention separated from write permission;
+
+provisional memory for unresolved experience;
+
+offline consolidation;
+
+and many semi-specialised fields capable of constraining and revising one another.
+
+The deeper question may therefore be not how to eliminate tension, but how tensions evolve dynamically and recursively under constraints of safety, consistency, contradiction, and self-continuity. That returns to the R-rule: the attempt to describe how a system might move through oppositions without collapsing into either rigidity or incoherence. But this remains a vast open question. Unfortunately, much of our technological future may depend on the answer—unless we pause long enough to study how such systems evolve before deploying them at scale. At present, however, deployment appears likely to outrun understanding.
+
+Indra’s Net remains only an image.
+
+The Hypercube of Opposites remains only a geometry.
+
+Chevron Networks remain only experiments.
+
+But together they suggest a direction.
+
+Build systems not merely from activations and weights, but from oppositions, contrasts, gates, nulls, provisional memories, and retained tensions.
+
+If minds are fields of consequential difference, then perhaps the route to more brain-like machines is not to eliminate tension, but to learn how to hold it, route it, dream it, and transform it.
+
+
+Andre with ChatGPT-5.6Sol
+
+August 2026
+
