@@ -535,6 +535,7 @@ C
 A
 −
 N
+/
 A
 +
 N
@@ -547,6 +548,7 @@ and:
 p
 =
 A
+/
 A
 +
 N
@@ -555,12 +557,13 @@ N
 
 g
 =
+sqrt(
 p
 (
 1
 −
 p
-)
+))
 
 These three quantities play different roles.
 
@@ -681,6 +684,8 @@ A provisional extension would also ask:
 Has the rejected alternative remained coherent and consequential for long enough to become part of retained state?
 
 This follows directly from the experimental results and is the next practical direction suggested by them.
+
+UPDATE: A first experiment with this idea routed rejected mass into a small candidate bank and required repeated coherent evidence before consolidation. In the locked confirmation, this protected established memories from transient contradictions while still learning sustained adjacent novelty. The result supports provisional memory as a principle, but not any single implementation. Consolidation might be periodic, event-triggered, replay-based, learned, or organised into wake-and-rest cycles.
 
 Sleep, dreams, and offline consolidation
 A further possibility is that not every change to N should happen while the system is acting.
