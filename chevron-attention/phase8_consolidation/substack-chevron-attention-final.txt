@@ -360,3 +360,50 @@ A coherent memory should be capable of changing its mind.
 
 It should not have to change it immediately.
 
+Appendix: A shallow elastic candidate buffer
+
+The Candidate Bank should not be understood as a large medium-term memory interposed between A and N.
+
+The fast path remains direct:
+
+A meets N at the Assent Gate.
+
+Assented information can be read or written immediately. Only unresolved residual evidence branches into the candidate buffer.
+
+The buffer itself may require only two recurrent states:
+
+C = provisional content
+
+P = persistence or provisional trust
+
+Although this is only one or two computational layers deep, recurrence allows it to integrate evidence over many observations. Network depth is therefore different from temporal duration.
+
+Capacity is a separate question. A single candidate slot may be enough when novelty arrives serially. It is not enough when several unresolved alternatives are interleaved. In the confirmation experiment, reducing the bank from three slots to two while presenting three interleaved categories reduced Chevron’s new-category accuracy from 93.3 percent to 23.3 percent.
+
+Vigilance could regulate the buffer’s effective capacity.
+
+High vigilance requires a closer A/N match and therefore produces more residual evidence. Low vigilance permits broader assimilation into retained categories. But vigilance should not resize the bank by itself, because that could create a feedback loop in which strict matching continually produces more categories.
+
+A safer rule would combine vigilance with measured candidate pressure:
+
+vigilance controls how different evidence must be from N;
+
+pressure controls how many distinct unresolved alternatives need representation;
+
+persistence controls whether any alternative may consolidate into N.
+
+The system could begin with one active candidate slot, open additional slots only when residual patterns are persistent and mutually incoherent, and close unused slots slowly. A fixed maximum would keep the state budget bounded.
+
+Candidate information need not remain unusable while it waits. It may contribute to prediction or an explicitly provisional response, weighted by P, without being allowed to rewrite retained memory or override stable constraints.
+
+The resulting architecture is a side loop rather than a serial layer:
+
+A and N remain directly coupled through assent;
+
+q feeds a shallow C/P buffer;
+
+the buffer may support confidence-weighted provisional use;
+
+only coherent persistence permits consolidation into N.
+
+This preserves the useful intuition of medium-term state without requiring every bottom-up and top-down signal to pass through an additional memory system.
