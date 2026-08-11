@@ -14,6 +14,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", required=True)
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--episodes", type=int, default=None)
+    parser.add_argument("--seed-offset", type=int, default=None)
     return parser.parse_args()
 
 
@@ -27,7 +28,13 @@ def main() -> None:
     agent = build_agent(config, action_dim=6, in_channels=observation_channels).to(device)
     agent.load_state_dict(checkpoint["model_state_dict"])
     agent.eval()
-    metrics = evaluate(agent, config, device, episodes=args.episodes or config.eval_episodes)
+    metrics = evaluate(
+        agent,
+        config,
+        device,
+        episodes=args.episodes or config.eval_episodes,
+        seed_offset=args.seed_offset,
+    )
     print(json.dumps(metrics, indent=2))
 
 

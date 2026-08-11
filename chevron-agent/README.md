@@ -38,37 +38,57 @@ Stable early stages:
 - Stage 1: baseline, Chevron, and gated Chevron all reach `eval/success_rate = 1.0`
 - Stage 2: baseline, Chevron, and gated Chevron all reach `eval/success_rate = 1.0`
 
-Initial stage-3 comparison:
+Stage 3 is not solved. An independent audit found that the original evaluation
+counted a positive progress-shaped reward on the last step of a timeout as
+success. It also selected and reported checkpoints on the same 50 deterministic
+episodes.
 
-- gated Chevron is not helping on the current stage-3 task
-- plain Chevron is the strongest of the three on peak success
-- baseline is still competitive, but weaker on average than plain Chevron
+After correcting success to require a positively rewarded terminal interaction
+and evaluating every saved checkpoint on 200 fresh shared episodes:
 
-Stage-3 best-checkpoint results with `50` eval episodes:
+- final GRU success: `0.033 +/- 0.047`
+- final Chevron success: `0.000 +/- 0.000`
+- held-out curve-mean GRU success: `0.003 +/- 0.004`
+- held-out curve-mean Chevron success: `0.000 +/- 0.000`
 
-- Seed 0
-  baseline: success `0.44`, return `0.0712`
-  Chevron: success `0.56`, return `0.0322`
-- Seed 1
-  baseline: success `0.0`, return `-0.0106`
-  Chevron: success `0.26`, return `0.0258`
-- Seed 2
-  baseline: success `0.12`, return `0.0164`
-  Chevron: success `0.46`, return `0.0610`
-
-3-seed summary over best checkpoints:
-
-- baseline mean best success: `0.187`
-- Chevron mean best success: `0.427`
-- baseline mean best return: `0.0257`
-- Chevron mean best return: `0.0397`
+The earlier apparent Chevron advantage is therefore superseded. The saved
+models learned progress shaping but almost never completed the task. See the
+[independent audit](experiments/results/stage3_existing_checkpoint_results.md)
+and its [predeclared protocol](experiments/stage3_confirmation_protocol.md).
 
 Interpretation:
 
-- the repo already supports the proof-of-existence claim
-- the early ladder is solid
-- the first nontrivial comparison currently favors plain Chevron over the matched GRU baseline on the shaped stage-3 task
-- stage 3 is still not fully stable, so best-checkpoint comparison is more meaningful than final-update comparison
+- the easy stages remain proof-of-trainability checks;
+- Stage 3 provides no current Chevron-over-GRU result;
+- increasing navigation difficulty is not justified until a task directly
+  testing delayed memory and consolidation succeeds.
+
+## Delayed-context memory experiment
+
+A mechanism-first contextual-bandit experiment now isolates delayed
+eligibility, old/new context learning, unresolved evidence, and protected
+consolidation. Thresholds were frozen after five development seeds and tested
+on twenty untouched confirmation seeds.
+
+- Chevron + buffer: return `0.944 +/- 0.048`, final old accuracy
+  `0.991 +/- 0.008`, final new accuracy `0.979 +/- 0.051`.
+- Standard attention: return `0.948 +/- 0.051`, final old accuracy
+  `0.984 +/- 0.031`, final new accuracy `0.980 +/- 0.038`.
+- The paired Chevron-minus-standard return interval crosses zero; there is no
+  evidence of Chevron superiority on this task.
+- Within Chevron, buffering beats immediate write by `+0.035` mean return, and
+  separate stricter write permission beats a read/write-coupled gate by
+  `+0.054`; both paired approximate 95% intervals exclude zero.
+- Novel-context q falls from `0.869` on early encounters to `0.209` after
+  learning. Per-slot residual signatures add no clear benefit over scalar q.
+
+See the [full findings](experiments/results/delayed_context_findings.md),
+[frozen protocol](experiments/delayed_context_protocol.md), and generated
+[confirmation table](experiments/results/delayed_context_confirmation.md).
+
+This experiment uses fixed online prototype memories, not yet an end-to-end
+learned deep network. The next step is to learn the projections and policy with
+small matched PyTorch models while retaining the verified memory mechanics.
 
 ## Checkpoints
 

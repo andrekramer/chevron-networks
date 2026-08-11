@@ -125,7 +125,20 @@ def save_named_checkpoint(
     return ckpt_path
 
 
-def evaluate(agent, config: Config, device: torch.device, episodes: int) -> dict[str, float]:
+def is_successful_terminal(terminated: bool, reward: float) -> bool:
+    """Return true only for a positively rewarded terminal outcome."""
+
+    return bool(terminated and reward > 0.0)
+
+
+def evaluate(
+    agent,
+    config: Config,
+    device: torch.device,
+    episodes: int,
+    *,
+    seed_offset: int | None = None,
+) -> dict[str, float]:
     reward_spec = RewardSpec(
         correct=config.reward_correct,
         wrong=config.reward_wrong,
@@ -154,8 +167,9 @@ def evaluate(agent, config: Config, device: torch.device, episodes: int) -> dict
     )()
     returns = []
     successes = 0.0
+    evaluation_seed = config.seed if seed_offset is None else seed_offset
     for episode in range(episodes):
-        obs, _ = env.reset(seed=config.seed + episode)
+        obs, _ = env.reset(seed=evaluation_seed + episode)
         hidden = initial_hidden(agent, 1, device)
         done = False
         truncated = False
@@ -169,7 +183,9 @@ def evaluate(agent, config: Config, device: torch.device, episodes: int) -> dict
                 hidden = outputs["hidden"]
             obs, reward, done, truncated, info = env.step(action)
             total_reward += reward
-        successes += float(reward > 0)
+        # A positive shaped reward on the final step of a timeout is not task
+        # success. Only a positively rewarded terminal interaction counts.
+        successes += float(is_successful_terminal(done, reward))
         returns.append(total_reward)
     return {
         "return_mean": float(np.mean(returns)),

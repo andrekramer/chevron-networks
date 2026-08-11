@@ -1,0 +1,3660 @@
+{
+  "spec": {
+    "old_contexts": 8,
+    "new_contexts": 4,
+    "families": 4,
+    "address_dim": 8,
+    "diagnostic_dim": 8,
+    "establishment_steps": 600,
+    "introduction_steps": 600,
+    "outcome_delay": 3,
+    "observation_noise": 0.12,
+    "reward_correct": 1.0,
+    "reward_wrong": -1.0
+  },
+  "seeds": 100,
+  "summary": {
+    "memoryless/delay_0": {
+      "return_per_decision_mean": 0.0011166666666666666,
+      "return_per_decision_std": 0.026886775732976532,
+      "old_retention_mean": 0.5043227243472281,
+      "old_retention_std": 0.04232563645028652,
+      "new_acquisition_mean": 0.5076480153293218,
+      "new_acquisition_std": 0.061910275036085864,
+      "overall_accuracy_mean": 0.5005583333333334,
+      "overall_accuracy_std": 0.013443387866488268
+    },
+    "memoryless/delay_3": {
+      "return_per_decision_mean": 0.0011166666666666666,
+      "return_per_decision_std": 0.026886775732976532,
+      "old_retention_mean": 0.5043227243472281,
+      "old_retention_std": 0.04232563645028652,
+      "new_acquisition_mean": 0.5076480153293218,
+      "new_acquisition_std": 0.061910275036085864,
+      "overall_accuracy_mean": 0.5005583333333334,
+      "overall_accuracy_std": 0.013443387866488268
+    },
+    "oracle_context_memory/delay_0": {
+      "return_per_decision_mean": 0.9895833333333333,
+      "return_per_decision_std": 0.003064724535071598,
+      "old_retention_mean": 1.0,
+      "old_retention_std": 0.0,
+      "new_acquisition_mean": 1.0,
+      "new_acquisition_std": 0.0,
+      "overall_accuracy_mean": 0.9947916666666665,
+      "overall_accuracy_std": 0.0015323622675358132
+    },
+    "oracle_context_memory/delay_3": {
+      "return_per_decision_mean": 0.9863666666666666,
+      "return_per_decision_std": 0.003468472723015571,
+      "old_retention_mean": 1.0,
+      "old_retention_std": 0.0,
+      "new_acquisition_mean": 1.0,
+      "new_acquisition_std": 0.0,
+      "overall_accuracy_mean": 0.9931833333333334,
+      "overall_accuracy_std": 0.0017342363615077802
+    }
+  },
+  "individual": [
+    {
+      "seed": 0,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.03,
+      "old_retention": 0.46099290780141844,
+      "new_acquisition": 0.5084745762711864,
+      "overall_accuracy": 0.485
+    },
+    {
+      "seed": 1,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.015,
+      "old_retention": 0.4067796610169492,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.4925
+    },
+    {
+      "seed": 2,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.04,
+      "old_retention": 0.5,
+      "new_acquisition": 0.5972222222222222,
+      "overall_accuracy": 0.52
+    },
+    {
+      "seed": 3,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.045,
+      "old_retention": 0.5,
+      "new_acquisition": 0.5333333333333333,
+      "overall_accuracy": 0.4775
+    },
+    {
+      "seed": 4,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.011666666666666667,
+      "old_retention": 0.5118110236220472,
+      "new_acquisition": 0.4657534246575342,
+      "overall_accuracy": 0.49416666666666664
+    },
+    {
+      "seed": 5,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.011666666666666667,
+      "old_retention": 0.456,
+      "new_acquisition": 0.44,
+      "overall_accuracy": 0.49416666666666664
+    },
+    {
+      "seed": 6,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.04833333333333333,
+      "old_retention": 0.4198473282442748,
+      "new_acquisition": 0.43478260869565216,
+      "overall_accuracy": 0.47583333333333333
+    },
+    {
+      "seed": 7,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.06333333333333334,
+      "old_retention": 0.5483870967741935,
+      "new_acquisition": 0.5394736842105263,
+      "overall_accuracy": 0.5316666666666666
+    },
+    {
+      "seed": 8,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.5227272727272727,
+      "new_acquisition": 0.4411764705882353,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 9,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.011666666666666667,
+      "old_retention": 0.4772727272727273,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.49416666666666664
+    },
+    {
+      "seed": 10,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.5606060606060606,
+      "new_acquisition": 0.45588235294117646,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 11,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.005,
+      "old_retention": 0.4676258992805755,
+      "new_acquisition": 0.45901639344262296,
+      "overall_accuracy": 0.5025
+    },
+    {
+      "seed": 12,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.051666666666666666,
+      "old_retention": 0.4609375,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.4741666666666667
+    },
+    {
+      "seed": 13,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.05,
+      "old_retention": 0.4251968503937008,
+      "new_acquisition": 0.5753424657534246,
+      "overall_accuracy": 0.475
+    },
+    {
+      "seed": 14,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.5076923076923077,
+      "new_acquisition": 0.4857142857142857,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 15,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.04833333333333333,
+      "old_retention": 0.4921875,
+      "new_acquisition": 0.6388888888888888,
+      "overall_accuracy": 0.5241666666666667
+    },
+    {
+      "seed": 16,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.023333333333333334,
+      "old_retention": 0.49606299212598426,
+      "new_acquisition": 0.5342465753424658,
+      "overall_accuracy": 0.48833333333333334
+    },
+    {
+      "seed": 17,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.03,
+      "old_retention": 0.578125,
+      "new_acquisition": 0.4444444444444444,
+      "overall_accuracy": 0.515
+    },
+    {
+      "seed": 18,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.018333333333333333,
+      "old_retention": 0.4925373134328358,
+      "new_acquisition": 0.48484848484848486,
+      "overall_accuracy": 0.5091666666666667
+    },
+    {
+      "seed": 19,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.018333333333333333,
+      "old_retention": 0.45864661654135336,
+      "new_acquisition": 0.5373134328358209,
+      "overall_accuracy": 0.49083333333333334
+    },
+    {
+      "seed": 20,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.005,
+      "old_retention": 0.553030303030303,
+      "new_acquisition": 0.5882352941176471,
+      "overall_accuracy": 0.5025
+    },
+    {
+      "seed": 21,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.4626865671641791,
+      "new_acquisition": 0.45454545454545453,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 22,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.015,
+      "old_retention": 0.4645669291338583,
+      "new_acquisition": 0.5753424657534246,
+      "overall_accuracy": 0.5075
+    },
+    {
+      "seed": 23,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.5755395683453237,
+      "new_acquisition": 0.5409836065573771,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 24,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.006666666666666667,
+      "old_retention": 0.512,
+      "new_acquisition": 0.48,
+      "overall_accuracy": 0.49666666666666665
+    },
+    {
+      "seed": 25,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.03166666666666667,
+      "old_retention": 0.4632352941176471,
+      "new_acquisition": 0.421875,
+      "overall_accuracy": 0.4841666666666667
+    },
+    {
+      "seed": 26,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.4859154929577465,
+      "new_acquisition": 0.5344827586206896,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 27,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.5507246376811594,
+      "new_acquisition": 0.4838709677419355,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 28,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.03833333333333333,
+      "old_retention": 0.5390070921985816,
+      "new_acquisition": 0.4067796610169492,
+      "overall_accuracy": 0.48083333333333333
+    },
+    {
+      "seed": 29,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.01,
+      "old_retention": 0.460431654676259,
+      "new_acquisition": 0.5901639344262295,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 30,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.041666666666666664,
+      "old_retention": 0.5555555555555556,
+      "new_acquisition": 0.5846153846153846,
+      "overall_accuracy": 0.5208333333333334
+    },
+    {
+      "seed": 31,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.0033333333333333335,
+      "old_retention": 0.4961832061068702,
+      "new_acquisition": 0.4492753623188406,
+      "overall_accuracy": 0.5016666666666667
+    },
+    {
+      "seed": 32,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.023333333333333334,
+      "old_retention": 0.5196850393700787,
+      "new_acquisition": 0.547945205479452,
+      "overall_accuracy": 0.5116666666666667
+    },
+    {
+      "seed": 33,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.01,
+      "old_retention": 0.5147058823529411,
+      "new_acquisition": 0.484375,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 34,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0016666666666666668,
+      "old_retention": 0.5112781954887218,
+      "new_acquisition": 0.4925373134328358,
+      "overall_accuracy": 0.49916666666666665
+    },
+    {
+      "seed": 35,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.0016666666666666668,
+      "old_retention": 0.5039370078740157,
+      "new_acquisition": 0.4794520547945205,
+      "overall_accuracy": 0.5008333333333334
+    },
+    {
+      "seed": 36,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.016666666666666666,
+      "old_retention": 0.4765625,
+      "new_acquisition": 0.4583333333333333,
+      "overall_accuracy": 0.5083333333333333
+    },
+    {
+      "seed": 37,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.03833333333333333,
+      "old_retention": 0.536,
+      "new_acquisition": 0.49333333333333335,
+      "overall_accuracy": 0.5191666666666667
+    },
+    {
+      "seed": 38,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.023333333333333334,
+      "old_retention": 0.562962962962963,
+      "new_acquisition": 0.4307692307692308,
+      "overall_accuracy": 0.48833333333333334
+    },
+    {
+      "seed": 39,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.023333333333333334,
+      "old_retention": 0.5078125,
+      "new_acquisition": 0.5416666666666666,
+      "overall_accuracy": 0.5116666666666667
+    },
+    {
+      "seed": 40,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.023333333333333334,
+      "old_retention": 0.528,
+      "new_acquisition": 0.4533333333333333,
+      "overall_accuracy": 0.48833333333333334
+    },
+    {
+      "seed": 41,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.035,
+      "old_retention": 0.48,
+      "new_acquisition": 0.5333333333333333,
+      "overall_accuracy": 0.5175
+    },
+    {
+      "seed": 42,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.0,
+      "old_retention": 0.48091603053435117,
+      "new_acquisition": 0.5217391304347826,
+      "overall_accuracy": 0.5
+    },
+    {
+      "seed": 43,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.5426356589147286,
+      "new_acquisition": 0.5774647887323944,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 44,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.03,
+      "old_retention": 0.5362318840579711,
+      "new_acquisition": 0.43548387096774194,
+      "overall_accuracy": 0.515
+    },
+    {
+      "seed": 45,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.5664335664335665,
+      "new_acquisition": 0.42105263157894735,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 46,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.03166666666666667,
+      "old_retention": 0.5037037037037037,
+      "new_acquisition": 0.5692307692307692,
+      "overall_accuracy": 0.5158333333333334
+    },
+    {
+      "seed": 47,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.02,
+      "old_retention": 0.45588235294117646,
+      "new_acquisition": 0.53125,
+      "overall_accuracy": 0.49
+    },
+    {
+      "seed": 48,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.02666666666666667,
+      "old_retention": 0.484375,
+      "new_acquisition": 0.5138888888888888,
+      "overall_accuracy": 0.5133333333333333
+    },
+    {
+      "seed": 49,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.03,
+      "old_retention": 0.5882352941176471,
+      "new_acquisition": 0.59375,
+      "overall_accuracy": 0.515
+    },
+    {
+      "seed": 50,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.065,
+      "old_retention": 0.472,
+      "new_acquisition": 0.52,
+      "overall_accuracy": 0.5325
+    },
+    {
+      "seed": 51,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.04,
+      "old_retention": 0.5107913669064749,
+      "new_acquisition": 0.5901639344262295,
+      "overall_accuracy": 0.48
+    },
+    {
+      "seed": 52,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.01,
+      "old_retention": 0.5214285714285715,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.495
+    },
+    {
+      "seed": 53,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.4881889763779528,
+      "new_acquisition": 0.6027397260273972,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 54,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.48175182481751827,
+      "new_acquisition": 0.49206349206349204,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 55,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.041666666666666664,
+      "old_retention": 0.562962962962963,
+      "new_acquisition": 0.47692307692307695,
+      "overall_accuracy": 0.5208333333333334
+    },
+    {
+      "seed": 56,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.0,
+      "old_retention": 0.5528455284552846,
+      "new_acquisition": 0.5584415584415584,
+      "overall_accuracy": 0.5
+    },
+    {
+      "seed": 57,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.0033333333333333335,
+      "old_retention": 0.4580152671755725,
+      "new_acquisition": 0.4927536231884058,
+      "overall_accuracy": 0.5016666666666667
+    },
+    {
+      "seed": 58,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.035,
+      "old_retention": 0.5683453237410072,
+      "new_acquisition": 0.4426229508196721,
+      "overall_accuracy": 0.5175
+    },
+    {
+      "seed": 59,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.4172661870503597,
+      "new_acquisition": 0.5573770491803278,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 60,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.018333333333333333,
+      "old_retention": 0.5177304964539007,
+      "new_acquisition": 0.4406779661016949,
+      "overall_accuracy": 0.49083333333333334
+    },
+    {
+      "seed": 61,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.021666666666666667,
+      "old_retention": 0.556390977443609,
+      "new_acquisition": 0.43283582089552236,
+      "overall_accuracy": 0.4891666666666667
+    },
+    {
+      "seed": 62,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.02666666666666667,
+      "old_retention": 0.6058394160583942,
+      "new_acquisition": 0.47619047619047616,
+      "overall_accuracy": 0.5133333333333333
+    },
+    {
+      "seed": 63,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.013333333333333334,
+      "old_retention": 0.4626865671641791,
+      "new_acquisition": 0.5606060606060606,
+      "overall_accuracy": 0.5066666666666667
+    },
+    {
+      "seed": 64,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.008333333333333333,
+      "old_retention": 0.4928571428571429,
+      "new_acquisition": 0.5333333333333333,
+      "overall_accuracy": 0.49583333333333335
+    },
+    {
+      "seed": 65,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.01,
+      "old_retention": 0.472,
+      "new_acquisition": 0.4533333333333333,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 66,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.01,
+      "old_retention": 0.5038759689922481,
+      "new_acquisition": 0.5352112676056338,
+      "overall_accuracy": 0.495
+    },
+    {
+      "seed": 67,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.023333333333333334,
+      "old_retention": 0.49242424242424243,
+      "new_acquisition": 0.39705882352941174,
+      "overall_accuracy": 0.48833333333333334
+    },
+    {
+      "seed": 68,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.03833333333333333,
+      "old_retention": 0.5671641791044776,
+      "new_acquisition": 0.5757575757575758,
+      "overall_accuracy": 0.5191666666666667
+    },
+    {
+      "seed": 69,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.018333333333333333,
+      "old_retention": 0.5227272727272727,
+      "new_acquisition": 0.38235294117647056,
+      "overall_accuracy": 0.49083333333333334
+    },
+    {
+      "seed": 70,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.03,
+      "old_retention": 0.5039370078740157,
+      "new_acquisition": 0.5342465753424658,
+      "overall_accuracy": 0.485
+    },
+    {
+      "seed": 71,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.5785714285714286,
+      "new_acquisition": 0.38333333333333336,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 72,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.45652173913043476,
+      "new_acquisition": 0.4838709677419355,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 73,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.01,
+      "old_retention": 0.5573770491803278,
+      "new_acquisition": 0.5769230769230769,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 74,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.5193798449612403,
+      "new_acquisition": 0.5070422535211268,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 75,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.011666666666666667,
+      "old_retention": 0.49640287769784175,
+      "new_acquisition": 0.6065573770491803,
+      "overall_accuracy": 0.5058333333333334
+    },
+    {
+      "seed": 76,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.015,
+      "old_retention": 0.5174825174825175,
+      "new_acquisition": 0.5263157894736842,
+      "overall_accuracy": 0.4925
+    },
+    {
+      "seed": 77,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.5275590551181102,
+      "new_acquisition": 0.5205479452054794,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 78,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.021666666666666667,
+      "old_retention": 0.5298507462686567,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.5108333333333334
+    },
+    {
+      "seed": 79,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.023333333333333334,
+      "old_retention": 0.48091603053435117,
+      "new_acquisition": 0.5652173913043478,
+      "overall_accuracy": 0.5116666666666667
+    },
+    {
+      "seed": 80,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.03,
+      "old_retention": 0.49206349206349204,
+      "new_acquisition": 0.6081081081081081,
+      "overall_accuracy": 0.485
+    },
+    {
+      "seed": 81,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.03166666666666667,
+      "old_retention": 0.5109489051094891,
+      "new_acquisition": 0.5238095238095238,
+      "overall_accuracy": 0.4841666666666667
+    },
+    {
+      "seed": 82,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.016666666666666666,
+      "old_retention": 0.48854961832061067,
+      "new_acquisition": 0.5652173913043478,
+      "overall_accuracy": 0.5083333333333333
+    },
+    {
+      "seed": 83,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.023333333333333334,
+      "old_retention": 0.5419847328244275,
+      "new_acquisition": 0.4927536231884058,
+      "overall_accuracy": 0.5116666666666667
+    },
+    {
+      "seed": 84,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.01,
+      "old_retention": 0.45185185185185184,
+      "new_acquisition": 0.5384615384615384,
+      "overall_accuracy": 0.495
+    },
+    {
+      "seed": 85,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.015,
+      "old_retention": 0.5352112676056338,
+      "new_acquisition": 0.5517241379310345,
+      "overall_accuracy": 0.5075
+    },
+    {
+      "seed": 86,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.02666666666666667,
+      "old_retention": 0.5034965034965035,
+      "new_acquisition": 0.3508771929824561,
+      "overall_accuracy": 0.4866666666666667
+    },
+    {
+      "seed": 87,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.04666666666666667,
+      "old_retention": 0.5537190082644629,
+      "new_acquisition": 0.5443037974683544,
+      "overall_accuracy": 0.5233333333333333
+    },
+    {
+      "seed": 88,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.4728682170542636,
+      "new_acquisition": 0.5211267605633803,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 89,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.03,
+      "old_retention": 0.5116279069767442,
+      "new_acquisition": 0.38028169014084506,
+      "overall_accuracy": 0.515
+    },
+    {
+      "seed": 90,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0016666666666666668,
+      "old_retention": 0.43283582089552236,
+      "new_acquisition": 0.5909090909090909,
+      "overall_accuracy": 0.49916666666666665
+    },
+    {
+      "seed": 91,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.025,
+      "old_retention": 0.4925373134328358,
+      "new_acquisition": 0.5909090909090909,
+      "overall_accuracy": 0.4875
+    },
+    {
+      "seed": 92,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.035,
+      "old_retention": 0.4244604316546763,
+      "new_acquisition": 0.4426229508196721,
+      "overall_accuracy": 0.4825
+    },
+    {
+      "seed": 93,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.03833333333333333,
+      "old_retention": 0.5303030303030303,
+      "new_acquisition": 0.6470588235294118,
+      "overall_accuracy": 0.48083333333333333
+    },
+    {
+      "seed": 94,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.04,
+      "old_retention": 0.4015748031496063,
+      "new_acquisition": 0.5342465753424658,
+      "overall_accuracy": 0.48
+    },
+    {
+      "seed": 95,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.0016666666666666668,
+      "old_retention": 0.48,
+      "new_acquisition": 0.52,
+      "overall_accuracy": 0.49916666666666665
+    },
+    {
+      "seed": 96,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.011666666666666667,
+      "old_retention": 0.5255474452554745,
+      "new_acquisition": 0.3968253968253968,
+      "overall_accuracy": 0.5058333333333334
+    },
+    {
+      "seed": 97,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": -0.011666666666666667,
+      "old_retention": 0.504,
+      "new_acquisition": 0.49333333333333335,
+      "overall_accuracy": 0.49416666666666664
+    },
+    {
+      "seed": 98,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.011666666666666667,
+      "old_retention": 0.5251798561151079,
+      "new_acquisition": 0.4918032786885246,
+      "overall_accuracy": 0.5058333333333334
+    },
+    {
+      "seed": 99,
+      "condition": "memoryless",
+      "delay": 0,
+      "return_per_decision": 0.01,
+      "old_retention": 0.496551724137931,
+      "new_acquisition": 0.4909090909090909,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 0,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.03,
+      "old_retention": 0.46099290780141844,
+      "new_acquisition": 0.5084745762711864,
+      "overall_accuracy": 0.485
+    },
+    {
+      "seed": 1,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.015,
+      "old_retention": 0.4067796610169492,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.4925
+    },
+    {
+      "seed": 2,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.04,
+      "old_retention": 0.5,
+      "new_acquisition": 0.5972222222222222,
+      "overall_accuracy": 0.52
+    },
+    {
+      "seed": 3,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.045,
+      "old_retention": 0.5,
+      "new_acquisition": 0.5333333333333333,
+      "overall_accuracy": 0.4775
+    },
+    {
+      "seed": 4,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.011666666666666667,
+      "old_retention": 0.5118110236220472,
+      "new_acquisition": 0.4657534246575342,
+      "overall_accuracy": 0.49416666666666664
+    },
+    {
+      "seed": 5,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.011666666666666667,
+      "old_retention": 0.456,
+      "new_acquisition": 0.44,
+      "overall_accuracy": 0.49416666666666664
+    },
+    {
+      "seed": 6,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.04833333333333333,
+      "old_retention": 0.4198473282442748,
+      "new_acquisition": 0.43478260869565216,
+      "overall_accuracy": 0.47583333333333333
+    },
+    {
+      "seed": 7,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.06333333333333334,
+      "old_retention": 0.5483870967741935,
+      "new_acquisition": 0.5394736842105263,
+      "overall_accuracy": 0.5316666666666666
+    },
+    {
+      "seed": 8,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.5227272727272727,
+      "new_acquisition": 0.4411764705882353,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 9,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.011666666666666667,
+      "old_retention": 0.4772727272727273,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.49416666666666664
+    },
+    {
+      "seed": 10,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.5606060606060606,
+      "new_acquisition": 0.45588235294117646,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 11,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.005,
+      "old_retention": 0.4676258992805755,
+      "new_acquisition": 0.45901639344262296,
+      "overall_accuracy": 0.5025
+    },
+    {
+      "seed": 12,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.051666666666666666,
+      "old_retention": 0.4609375,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.4741666666666667
+    },
+    {
+      "seed": 13,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.05,
+      "old_retention": 0.4251968503937008,
+      "new_acquisition": 0.5753424657534246,
+      "overall_accuracy": 0.475
+    },
+    {
+      "seed": 14,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.5076923076923077,
+      "new_acquisition": 0.4857142857142857,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 15,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.04833333333333333,
+      "old_retention": 0.4921875,
+      "new_acquisition": 0.6388888888888888,
+      "overall_accuracy": 0.5241666666666667
+    },
+    {
+      "seed": 16,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.023333333333333334,
+      "old_retention": 0.49606299212598426,
+      "new_acquisition": 0.5342465753424658,
+      "overall_accuracy": 0.48833333333333334
+    },
+    {
+      "seed": 17,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.03,
+      "old_retention": 0.578125,
+      "new_acquisition": 0.4444444444444444,
+      "overall_accuracy": 0.515
+    },
+    {
+      "seed": 18,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.018333333333333333,
+      "old_retention": 0.4925373134328358,
+      "new_acquisition": 0.48484848484848486,
+      "overall_accuracy": 0.5091666666666667
+    },
+    {
+      "seed": 19,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.018333333333333333,
+      "old_retention": 0.45864661654135336,
+      "new_acquisition": 0.5373134328358209,
+      "overall_accuracy": 0.49083333333333334
+    },
+    {
+      "seed": 20,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.005,
+      "old_retention": 0.553030303030303,
+      "new_acquisition": 0.5882352941176471,
+      "overall_accuracy": 0.5025
+    },
+    {
+      "seed": 21,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.4626865671641791,
+      "new_acquisition": 0.45454545454545453,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 22,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.015,
+      "old_retention": 0.4645669291338583,
+      "new_acquisition": 0.5753424657534246,
+      "overall_accuracy": 0.5075
+    },
+    {
+      "seed": 23,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.5755395683453237,
+      "new_acquisition": 0.5409836065573771,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 24,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.006666666666666667,
+      "old_retention": 0.512,
+      "new_acquisition": 0.48,
+      "overall_accuracy": 0.49666666666666665
+    },
+    {
+      "seed": 25,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.03166666666666667,
+      "old_retention": 0.4632352941176471,
+      "new_acquisition": 0.421875,
+      "overall_accuracy": 0.4841666666666667
+    },
+    {
+      "seed": 26,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.4859154929577465,
+      "new_acquisition": 0.5344827586206896,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 27,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.5507246376811594,
+      "new_acquisition": 0.4838709677419355,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 28,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.03833333333333333,
+      "old_retention": 0.5390070921985816,
+      "new_acquisition": 0.4067796610169492,
+      "overall_accuracy": 0.48083333333333333
+    },
+    {
+      "seed": 29,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.01,
+      "old_retention": 0.460431654676259,
+      "new_acquisition": 0.5901639344262295,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 30,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.041666666666666664,
+      "old_retention": 0.5555555555555556,
+      "new_acquisition": 0.5846153846153846,
+      "overall_accuracy": 0.5208333333333334
+    },
+    {
+      "seed": 31,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.0033333333333333335,
+      "old_retention": 0.4961832061068702,
+      "new_acquisition": 0.4492753623188406,
+      "overall_accuracy": 0.5016666666666667
+    },
+    {
+      "seed": 32,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.023333333333333334,
+      "old_retention": 0.5196850393700787,
+      "new_acquisition": 0.547945205479452,
+      "overall_accuracy": 0.5116666666666667
+    },
+    {
+      "seed": 33,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.01,
+      "old_retention": 0.5147058823529411,
+      "new_acquisition": 0.484375,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 34,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0016666666666666668,
+      "old_retention": 0.5112781954887218,
+      "new_acquisition": 0.4925373134328358,
+      "overall_accuracy": 0.49916666666666665
+    },
+    {
+      "seed": 35,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.0016666666666666668,
+      "old_retention": 0.5039370078740157,
+      "new_acquisition": 0.4794520547945205,
+      "overall_accuracy": 0.5008333333333334
+    },
+    {
+      "seed": 36,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.016666666666666666,
+      "old_retention": 0.4765625,
+      "new_acquisition": 0.4583333333333333,
+      "overall_accuracy": 0.5083333333333333
+    },
+    {
+      "seed": 37,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.03833333333333333,
+      "old_retention": 0.536,
+      "new_acquisition": 0.49333333333333335,
+      "overall_accuracy": 0.5191666666666667
+    },
+    {
+      "seed": 38,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.023333333333333334,
+      "old_retention": 0.562962962962963,
+      "new_acquisition": 0.4307692307692308,
+      "overall_accuracy": 0.48833333333333334
+    },
+    {
+      "seed": 39,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.023333333333333334,
+      "old_retention": 0.5078125,
+      "new_acquisition": 0.5416666666666666,
+      "overall_accuracy": 0.5116666666666667
+    },
+    {
+      "seed": 40,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.023333333333333334,
+      "old_retention": 0.528,
+      "new_acquisition": 0.4533333333333333,
+      "overall_accuracy": 0.48833333333333334
+    },
+    {
+      "seed": 41,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.035,
+      "old_retention": 0.48,
+      "new_acquisition": 0.5333333333333333,
+      "overall_accuracy": 0.5175
+    },
+    {
+      "seed": 42,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.0,
+      "old_retention": 0.48091603053435117,
+      "new_acquisition": 0.5217391304347826,
+      "overall_accuracy": 0.5
+    },
+    {
+      "seed": 43,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.5426356589147286,
+      "new_acquisition": 0.5774647887323944,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 44,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.03,
+      "old_retention": 0.5362318840579711,
+      "new_acquisition": 0.43548387096774194,
+      "overall_accuracy": 0.515
+    },
+    {
+      "seed": 45,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.5664335664335665,
+      "new_acquisition": 0.42105263157894735,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 46,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.03166666666666667,
+      "old_retention": 0.5037037037037037,
+      "new_acquisition": 0.5692307692307692,
+      "overall_accuracy": 0.5158333333333334
+    },
+    {
+      "seed": 47,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.02,
+      "old_retention": 0.45588235294117646,
+      "new_acquisition": 0.53125,
+      "overall_accuracy": 0.49
+    },
+    {
+      "seed": 48,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.02666666666666667,
+      "old_retention": 0.484375,
+      "new_acquisition": 0.5138888888888888,
+      "overall_accuracy": 0.5133333333333333
+    },
+    {
+      "seed": 49,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.03,
+      "old_retention": 0.5882352941176471,
+      "new_acquisition": 0.59375,
+      "overall_accuracy": 0.515
+    },
+    {
+      "seed": 50,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.065,
+      "old_retention": 0.472,
+      "new_acquisition": 0.52,
+      "overall_accuracy": 0.5325
+    },
+    {
+      "seed": 51,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.04,
+      "old_retention": 0.5107913669064749,
+      "new_acquisition": 0.5901639344262295,
+      "overall_accuracy": 0.48
+    },
+    {
+      "seed": 52,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.01,
+      "old_retention": 0.5214285714285715,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.495
+    },
+    {
+      "seed": 53,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.4881889763779528,
+      "new_acquisition": 0.6027397260273972,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 54,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.48175182481751827,
+      "new_acquisition": 0.49206349206349204,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 55,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.041666666666666664,
+      "old_retention": 0.562962962962963,
+      "new_acquisition": 0.47692307692307695,
+      "overall_accuracy": 0.5208333333333334
+    },
+    {
+      "seed": 56,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.0,
+      "old_retention": 0.5528455284552846,
+      "new_acquisition": 0.5584415584415584,
+      "overall_accuracy": 0.5
+    },
+    {
+      "seed": 57,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.0033333333333333335,
+      "old_retention": 0.4580152671755725,
+      "new_acquisition": 0.4927536231884058,
+      "overall_accuracy": 0.5016666666666667
+    },
+    {
+      "seed": 58,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.035,
+      "old_retention": 0.5683453237410072,
+      "new_acquisition": 0.4426229508196721,
+      "overall_accuracy": 0.5175
+    },
+    {
+      "seed": 59,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.4172661870503597,
+      "new_acquisition": 0.5573770491803278,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 60,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.018333333333333333,
+      "old_retention": 0.5177304964539007,
+      "new_acquisition": 0.4406779661016949,
+      "overall_accuracy": 0.49083333333333334
+    },
+    {
+      "seed": 61,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.021666666666666667,
+      "old_retention": 0.556390977443609,
+      "new_acquisition": 0.43283582089552236,
+      "overall_accuracy": 0.4891666666666667
+    },
+    {
+      "seed": 62,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.02666666666666667,
+      "old_retention": 0.6058394160583942,
+      "new_acquisition": 0.47619047619047616,
+      "overall_accuracy": 0.5133333333333333
+    },
+    {
+      "seed": 63,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.013333333333333334,
+      "old_retention": 0.4626865671641791,
+      "new_acquisition": 0.5606060606060606,
+      "overall_accuracy": 0.5066666666666667
+    },
+    {
+      "seed": 64,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.008333333333333333,
+      "old_retention": 0.4928571428571429,
+      "new_acquisition": 0.5333333333333333,
+      "overall_accuracy": 0.49583333333333335
+    },
+    {
+      "seed": 65,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.01,
+      "old_retention": 0.472,
+      "new_acquisition": 0.4533333333333333,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 66,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.01,
+      "old_retention": 0.5038759689922481,
+      "new_acquisition": 0.5352112676056338,
+      "overall_accuracy": 0.495
+    },
+    {
+      "seed": 67,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.023333333333333334,
+      "old_retention": 0.49242424242424243,
+      "new_acquisition": 0.39705882352941174,
+      "overall_accuracy": 0.48833333333333334
+    },
+    {
+      "seed": 68,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.03833333333333333,
+      "old_retention": 0.5671641791044776,
+      "new_acquisition": 0.5757575757575758,
+      "overall_accuracy": 0.5191666666666667
+    },
+    {
+      "seed": 69,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.018333333333333333,
+      "old_retention": 0.5227272727272727,
+      "new_acquisition": 0.38235294117647056,
+      "overall_accuracy": 0.49083333333333334
+    },
+    {
+      "seed": 70,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.03,
+      "old_retention": 0.5039370078740157,
+      "new_acquisition": 0.5342465753424658,
+      "overall_accuracy": 0.485
+    },
+    {
+      "seed": 71,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.5785714285714286,
+      "new_acquisition": 0.38333333333333336,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 72,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0033333333333333335,
+      "old_retention": 0.45652173913043476,
+      "new_acquisition": 0.4838709677419355,
+      "overall_accuracy": 0.49833333333333335
+    },
+    {
+      "seed": 73,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.01,
+      "old_retention": 0.5573770491803278,
+      "new_acquisition": 0.5769230769230769,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 74,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.028333333333333332,
+      "old_retention": 0.5193798449612403,
+      "new_acquisition": 0.5070422535211268,
+      "overall_accuracy": 0.5141666666666667
+    },
+    {
+      "seed": 75,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.011666666666666667,
+      "old_retention": 0.49640287769784175,
+      "new_acquisition": 0.6065573770491803,
+      "overall_accuracy": 0.5058333333333334
+    },
+    {
+      "seed": 76,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.015,
+      "old_retention": 0.5174825174825175,
+      "new_acquisition": 0.5263157894736842,
+      "overall_accuracy": 0.4925
+    },
+    {
+      "seed": 77,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.5275590551181102,
+      "new_acquisition": 0.5205479452054794,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 78,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.021666666666666667,
+      "old_retention": 0.5298507462686567,
+      "new_acquisition": 0.5,
+      "overall_accuracy": 0.5108333333333334
+    },
+    {
+      "seed": 79,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.023333333333333334,
+      "old_retention": 0.48091603053435117,
+      "new_acquisition": 0.5652173913043478,
+      "overall_accuracy": 0.5116666666666667
+    },
+    {
+      "seed": 80,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.03,
+      "old_retention": 0.49206349206349204,
+      "new_acquisition": 0.6081081081081081,
+      "overall_accuracy": 0.485
+    },
+    {
+      "seed": 81,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.03166666666666667,
+      "old_retention": 0.5109489051094891,
+      "new_acquisition": 0.5238095238095238,
+      "overall_accuracy": 0.4841666666666667
+    },
+    {
+      "seed": 82,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.016666666666666666,
+      "old_retention": 0.48854961832061067,
+      "new_acquisition": 0.5652173913043478,
+      "overall_accuracy": 0.5083333333333333
+    },
+    {
+      "seed": 83,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.023333333333333334,
+      "old_retention": 0.5419847328244275,
+      "new_acquisition": 0.4927536231884058,
+      "overall_accuracy": 0.5116666666666667
+    },
+    {
+      "seed": 84,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.01,
+      "old_retention": 0.45185185185185184,
+      "new_acquisition": 0.5384615384615384,
+      "overall_accuracy": 0.495
+    },
+    {
+      "seed": 85,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.015,
+      "old_retention": 0.5352112676056338,
+      "new_acquisition": 0.5517241379310345,
+      "overall_accuracy": 0.5075
+    },
+    {
+      "seed": 86,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.02666666666666667,
+      "old_retention": 0.5034965034965035,
+      "new_acquisition": 0.3508771929824561,
+      "overall_accuracy": 0.4866666666666667
+    },
+    {
+      "seed": 87,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.04666666666666667,
+      "old_retention": 0.5537190082644629,
+      "new_acquisition": 0.5443037974683544,
+      "overall_accuracy": 0.5233333333333333
+    },
+    {
+      "seed": 88,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.028333333333333332,
+      "old_retention": 0.4728682170542636,
+      "new_acquisition": 0.5211267605633803,
+      "overall_accuracy": 0.48583333333333334
+    },
+    {
+      "seed": 89,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.03,
+      "old_retention": 0.5116279069767442,
+      "new_acquisition": 0.38028169014084506,
+      "overall_accuracy": 0.515
+    },
+    {
+      "seed": 90,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0016666666666666668,
+      "old_retention": 0.43283582089552236,
+      "new_acquisition": 0.5909090909090909,
+      "overall_accuracy": 0.49916666666666665
+    },
+    {
+      "seed": 91,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.025,
+      "old_retention": 0.4925373134328358,
+      "new_acquisition": 0.5909090909090909,
+      "overall_accuracy": 0.4875
+    },
+    {
+      "seed": 92,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.035,
+      "old_retention": 0.4244604316546763,
+      "new_acquisition": 0.4426229508196721,
+      "overall_accuracy": 0.4825
+    },
+    {
+      "seed": 93,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.03833333333333333,
+      "old_retention": 0.5303030303030303,
+      "new_acquisition": 0.6470588235294118,
+      "overall_accuracy": 0.48083333333333333
+    },
+    {
+      "seed": 94,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.04,
+      "old_retention": 0.4015748031496063,
+      "new_acquisition": 0.5342465753424658,
+      "overall_accuracy": 0.48
+    },
+    {
+      "seed": 95,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.0016666666666666668,
+      "old_retention": 0.48,
+      "new_acquisition": 0.52,
+      "overall_accuracy": 0.49916666666666665
+    },
+    {
+      "seed": 96,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.011666666666666667,
+      "old_retention": 0.5255474452554745,
+      "new_acquisition": 0.3968253968253968,
+      "overall_accuracy": 0.5058333333333334
+    },
+    {
+      "seed": 97,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": -0.011666666666666667,
+      "old_retention": 0.504,
+      "new_acquisition": 0.49333333333333335,
+      "overall_accuracy": 0.49416666666666664
+    },
+    {
+      "seed": 98,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.011666666666666667,
+      "old_retention": 0.5251798561151079,
+      "new_acquisition": 0.4918032786885246,
+      "overall_accuracy": 0.5058333333333334
+    },
+    {
+      "seed": 99,
+      "condition": "memoryless",
+      "delay": 3,
+      "return_per_decision": 0.01,
+      "old_retention": 0.496551724137931,
+      "new_acquisition": 0.4909090909090909,
+      "overall_accuracy": 0.505
+    },
+    {
+      "seed": 0,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 1,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 2,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 3,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 4,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 5,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 6,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 7,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 8,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 9,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 10,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 11,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9966666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9983333333333333
+    },
+    {
+      "seed": 12,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 13,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 14,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 15,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 16,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.995,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9975
+    },
+    {
+      "seed": 17,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.98,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.99
+    },
+    {
+      "seed": 18,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 19,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 20,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 21,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 22,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 23,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 24,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 25,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 26,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 27,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 28,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 29,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 30,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 31,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 32,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 33,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 34,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 35,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 36,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 37,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 38,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 39,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 40,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 41,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 42,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 43,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.995,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9975
+    },
+    {
+      "seed": 44,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 45,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 46,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 47,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 48,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 49,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 50,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 51,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.995,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9975
+    },
+    {
+      "seed": 52,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 53,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 54,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 55,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.995,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9975
+    },
+    {
+      "seed": 56,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 57,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 58,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 59,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 60,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 61,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 62,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 63,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 64,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.995,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9975
+    },
+    {
+      "seed": 65,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 66,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 67,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 68,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 69,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 70,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 71,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 72,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 73,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 74,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 75,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 76,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 77,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 78,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 79,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 80,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 81,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 82,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 83,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 84,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 85,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 86,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 87,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 88,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 89,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 90,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 91,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 92,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 93,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 94,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 95,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 96,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 97,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 98,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 99,
+      "condition": "oracle_context_memory",
+      "delay": 0,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 0,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 1,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 2,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 3,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 4,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 5,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 6,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 7,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 8,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9816666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9908333333333333
+    },
+    {
+      "seed": 9,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 10,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 11,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 12,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 13,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 14,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 15,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 16,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 17,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.98,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.99
+    },
+    {
+      "seed": 18,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 19,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 20,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 21,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 22,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 23,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 24,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.98,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.99
+    },
+    {
+      "seed": 25,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 26,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 27,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 28,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 29,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 30,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 31,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 32,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 33,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 34,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9816666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9908333333333333
+    },
+    {
+      "seed": 35,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 36,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 37,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 38,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 39,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.98,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.99
+    },
+    {
+      "seed": 40,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 41,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 42,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 43,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9816666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9908333333333333
+    },
+    {
+      "seed": 44,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 45,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 46,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 47,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 48,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 49,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 50,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 51,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 52,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 53,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 54,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 55,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.98,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.99
+    },
+    {
+      "seed": 56,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 57,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9816666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9908333333333333
+    },
+    {
+      "seed": 58,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 59,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9783333333333334,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9891666666666666
+    },
+    {
+      "seed": 60,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9816666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9908333333333333
+    },
+    {
+      "seed": 61,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 62,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 63,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 64,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 65,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 66,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9933333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9966666666666667
+    },
+    {
+      "seed": 67,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.98,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.99
+    },
+    {
+      "seed": 68,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 69,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 70,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 71,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 72,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9816666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9908333333333333
+    },
+    {
+      "seed": 73,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 74,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 75,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 76,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 77,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 78,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 79,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.98,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.99
+    },
+    {
+      "seed": 80,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 81,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 82,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.985,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9925
+    },
+    {
+      "seed": 83,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 84,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 85,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 86,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 87,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 88,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 89,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 90,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.99,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.995
+    },
+    {
+      "seed": 91,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9833333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9916666666666667
+    },
+    {
+      "seed": 92,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 93,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9816666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9908333333333333
+    },
+    {
+      "seed": 94,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9883333333333333,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9941666666666666
+    },
+    {
+      "seed": 95,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 96,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9916666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9958333333333333
+    },
+    {
+      "seed": 97,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9816666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9908333333333333
+    },
+    {
+      "seed": 98,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    },
+    {
+      "seed": 99,
+      "condition": "oracle_context_memory",
+      "delay": 3,
+      "return_per_decision": 0.9866666666666667,
+      "old_retention": 1.0,
+      "new_acquisition": 1.0,
+      "overall_accuracy": 0.9933333333333333
+    }
+  ]
+}

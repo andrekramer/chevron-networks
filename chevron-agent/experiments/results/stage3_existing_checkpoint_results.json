@@ -1,0 +1,553 @@
+{
+  "experiment": "stage3_existing_checkpoint_evaluation",
+  "episodes_per_checkpoint": 200,
+  "evaluation_seed_offset": 1000000,
+  "strict_success": "positively rewarded terminal interaction",
+  "parameter_counts": {
+    "baseline": 208455,
+    "chevron": 141831
+  },
+  "seed_results": [
+    {
+      "seed": 0,
+      "models": {
+        "baseline": {
+          "final_update": 120,
+          "final": {
+            "return_mean": 0.06615000000000004,
+            "success_rate": 0.0
+          },
+          "development_selected_update": 90,
+          "development_selected": {
+            "return_mean": 0.02485000000000002,
+            "success_rate": 0.0
+          },
+          "heldout_curve": [
+            {
+              "update": 10,
+              "return_mean": -0.03840000000000002,
+              "success_rate": 0.0
+            },
+            {
+              "update": 20,
+              "return_mean": -0.05100000000000004,
+              "success_rate": 0.0
+            },
+            {
+              "update": 30,
+              "return_mean": -0.04100000000000003,
+              "success_rate": 0.0
+            },
+            {
+              "update": 40,
+              "return_mean": -0.05100000000000004,
+              "success_rate": 0.0
+            },
+            {
+              "update": 50,
+              "return_mean": -0.024800000000000023,
+              "success_rate": 0.0
+            },
+            {
+              "update": 60,
+              "return_mean": -0.04100000000000003,
+              "success_rate": 0.0
+            },
+            {
+              "update": 70,
+              "return_mean": -0.032700000000000035,
+              "success_rate": 0.0
+            },
+            {
+              "update": 80,
+              "return_mean": -0.030850000000000023,
+              "success_rate": 0.0
+            },
+            {
+              "update": 90,
+              "return_mean": 0.02485000000000002,
+              "success_rate": 0.0
+            },
+            {
+              "update": 100,
+              "return_mean": 0.05265000000000003,
+              "success_rate": 0.0
+            },
+            {
+              "update": 110,
+              "return_mean": 0.05655000000000004,
+              "success_rate": 0.0
+            },
+            {
+              "update": 120,
+              "return_mean": 0.06615000000000004,
+              "success_rate": 0.0
+            }
+          ],
+          "curve_mean_success": 0.0,
+          "curve_mean_return": -0.009212500000000009
+        },
+        "chevron": {
+          "final_update": 120,
+          "final": {
+            "return_mean": -0.021900000000000013,
+            "success_rate": 0.0
+          },
+          "development_selected_update": 60,
+          "development_selected": {
+            "return_mean": 0.029500000000000012,
+            "success_rate": 0.0
+          },
+          "heldout_curve": [
+            {
+              "update": 10,
+              "return_mean": -0.02382499999999999,
+              "success_rate": 0.0
+            },
+            {
+              "update": 20,
+              "return_mean": -0.0032499999999999964,
+              "success_rate": 0.0
+            },
+            {
+              "update": 30,
+              "return_mean": 0.008150000000000001,
+              "success_rate": 0.0
+            },
+            {
+              "update": 40,
+              "return_mean": -0.00685,
+              "success_rate": 0.0
+            },
+            {
+              "update": 50,
+              "return_mean": -0.011900000000000011,
+              "success_rate": 0.0
+            },
+            {
+              "update": 60,
+              "return_mean": 0.029500000000000012,
+              "success_rate": 0.0
+            },
+            {
+              "update": 70,
+              "return_mean": 0.008150000000000001,
+              "success_rate": 0.0
+            },
+            {
+              "update": 80,
+              "return_mean": -0.00770000000000001,
+              "success_rate": 0.0
+            },
+            {
+              "update": 90,
+              "return_mean": -0.018300000000000004,
+              "success_rate": 0.0
+            },
+            {
+              "update": 100,
+              "return_mean": -0.026650000000000017,
+              "success_rate": 0.0
+            },
+            {
+              "update": 110,
+              "return_mean": -0.023350000000000017,
+              "success_rate": 0.0
+            },
+            {
+              "update": 120,
+              "return_mean": -0.021900000000000013,
+              "success_rate": 0.0
+            }
+          ],
+          "curve_mean_success": 0.0,
+          "curve_mean_return": -0.00816041666666667
+        }
+      }
+    },
+    {
+      "seed": 1,
+      "models": {
+        "baseline": {
+          "final_update": 120,
+          "final": {
+            "return_mean": 0.08604999999999999,
+            "success_rate": 0.1
+          },
+          "development_selected_update": 60,
+          "development_selected": {
+            "return_mean": 0.036200000000000024,
+            "success_rate": 0.0
+          },
+          "heldout_curve": [
+            {
+              "update": 10,
+              "return_mean": -0.035400000000000036,
+              "success_rate": 0.0
+            },
+            {
+              "update": 20,
+              "return_mean": -0.012850000000000006,
+              "success_rate": 0.0
+            },
+            {
+              "update": 30,
+              "return_mean": -0.030900000000000025,
+              "success_rate": 0.0
+            },
+            {
+              "update": 40,
+              "return_mean": -0.035400000000000036,
+              "success_rate": 0.0
+            },
+            {
+              "update": 50,
+              "return_mean": 0.018200000000000008,
+              "success_rate": 0.0
+            },
+            {
+              "update": 60,
+              "return_mean": 0.036200000000000024,
+              "success_rate": 0.0
+            },
+            {
+              "update": 70,
+              "return_mean": 0.05655000000000004,
+              "success_rate": 0.0
+            },
+            {
+              "update": 80,
+              "return_mean": 0.014300000000000005,
+              "success_rate": 0.0
+            },
+            {
+              "update": 90,
+              "return_mean": 0.040150000000000026,
+              "success_rate": 0.0
+            },
+            {
+              "update": 100,
+              "return_mean": 0.040150000000000026,
+              "success_rate": 0.0
+            },
+            {
+              "update": 110,
+              "return_mean": 0.0008499999999999895,
+              "success_rate": 0.0
+            },
+            {
+              "update": 120,
+              "return_mean": 0.08604999999999999,
+              "success_rate": 0.1
+            }
+          ],
+          "curve_mean_success": 0.008333333333333333,
+          "curve_mean_return": 0.014825
+        },
+        "chevron": {
+          "final_update": 120,
+          "final": {
+            "return_mean": 0.05310000000000002,
+            "success_rate": 0.0
+          },
+          "development_selected_update": 110,
+          "development_selected": {
+            "return_mean": 0.05910000000000003,
+            "success_rate": 0.0
+          },
+          "heldout_curve": [
+            {
+              "update": 10,
+              "return_mean": -0.02785000000000002,
+              "success_rate": 0.0
+            },
+            {
+              "update": 20,
+              "return_mean": -0.010050000000000003,
+              "success_rate": 0.0
+            },
+            {
+              "update": 30,
+              "return_mean": -0.008350000000000007,
+              "success_rate": 0.0
+            },
+            {
+              "update": 40,
+              "return_mean": 0.0037499999999999973,
+              "success_rate": 0.0
+            },
+            {
+              "update": 50,
+              "return_mean": -0.006000000000000001,
+              "success_rate": 0.0
+            },
+            {
+              "update": 60,
+              "return_mean": -0.017450000000000014,
+              "success_rate": 0.0
+            },
+            {
+              "update": 70,
+              "return_mean": -0.004300000000000003,
+              "success_rate": 0.0
+            },
+            {
+              "update": 80,
+              "return_mean": -0.0016000000000000085,
+              "success_rate": 0.0
+            },
+            {
+              "update": 90,
+              "return_mean": -0.00690000000000001,
+              "success_rate": 0.0
+            },
+            {
+              "update": 100,
+              "return_mean": 0.00745,
+              "success_rate": 0.0
+            },
+            {
+              "update": 110,
+              "return_mean": 0.05910000000000003,
+              "success_rate": 0.0
+            },
+            {
+              "update": 120,
+              "return_mean": 0.05310000000000002,
+              "success_rate": 0.0
+            }
+          ],
+          "curve_mean_success": 0.0,
+          "curve_mean_return": 0.0034083333333333314
+        }
+      }
+    },
+    {
+      "seed": 2,
+      "models": {
+        "baseline": {
+          "final_update": 120,
+          "final": {
+            "return_mean": 0.020650000000000012,
+            "success_rate": 0.0
+          },
+          "development_selected_update": 120,
+          "development_selected": {
+            "return_mean": 0.020650000000000012,
+            "success_rate": 0.0
+          },
+          "heldout_curve": [
+            {
+              "update": 10,
+              "return_mean": -0.04000000000000003,
+              "success_rate": 0.0
+            },
+            {
+              "update": 20,
+              "return_mean": -0.028700000000000014,
+              "success_rate": 0.0
+            },
+            {
+              "update": 30,
+              "return_mean": -0.02650000000000002,
+              "success_rate": 0.0
+            },
+            {
+              "update": 40,
+              "return_mean": -0.02650000000000002,
+              "success_rate": 0.0
+            },
+            {
+              "update": 50,
+              "return_mean": -0.02650000000000002,
+              "success_rate": 0.0
+            },
+            {
+              "update": 60,
+              "return_mean": -0.03460000000000001,
+              "success_rate": 0.0
+            },
+            {
+              "update": 70,
+              "return_mean": -0.029650000000000017,
+              "success_rate": 0.0
+            },
+            {
+              "update": 80,
+              "return_mean": 0.011299999999999994,
+              "success_rate": 0.0
+            },
+            {
+              "update": 90,
+              "return_mean": -0.004150000000000008,
+              "success_rate": 0.0
+            },
+            {
+              "update": 100,
+              "return_mean": -0.004850000000000014,
+              "success_rate": 0.0
+            },
+            {
+              "update": 110,
+              "return_mean": 0.01810000000000001,
+              "success_rate": 0.0
+            },
+            {
+              "update": 120,
+              "return_mean": 0.020650000000000012,
+              "success_rate": 0.0
+            }
+          ],
+          "curve_mean_success": 0.0,
+          "curve_mean_return": -0.014283333333333344
+        },
+        "chevron": {
+          "final_update": 120,
+          "final": {
+            "return_mean": 0.07920000000000005,
+            "success_rate": 0.0
+          },
+          "development_selected_update": 120,
+          "development_selected": {
+            "return_mean": 0.07920000000000005,
+            "success_rate": 0.0
+          },
+          "heldout_curve": [
+            {
+              "update": 10,
+              "return_mean": 0.005449999999999997,
+              "success_rate": 0.0
+            },
+            {
+              "update": 20,
+              "return_mean": -0.012300000000000004,
+              "success_rate": 0.0
+            },
+            {
+              "update": 30,
+              "return_mean": -0.02650000000000002,
+              "success_rate": 0.0
+            },
+            {
+              "update": 40,
+              "return_mean": 0.013499999999999998,
+              "success_rate": 0.0
+            },
+            {
+              "update": 50,
+              "return_mean": -0.0010000000000000078,
+              "success_rate": 0.0
+            },
+            {
+              "update": 60,
+              "return_mean": -0.02650000000000002,
+              "success_rate": 0.0
+            },
+            {
+              "update": 70,
+              "return_mean": -0.0010000000000000078,
+              "success_rate": 0.0
+            },
+            {
+              "update": 80,
+              "return_mean": -0.013900000000000015,
+              "success_rate": 0.0
+            },
+            {
+              "update": 90,
+              "return_mean": 0.023999999999999994,
+              "success_rate": 0.0
+            },
+            {
+              "update": 100,
+              "return_mean": 0.030750000000000006,
+              "success_rate": 0.0
+            },
+            {
+              "update": 110,
+              "return_mean": 0.07565000000000005,
+              "success_rate": 0.0
+            },
+            {
+              "update": 120,
+              "return_mean": 0.07920000000000005,
+              "success_rate": 0.0
+            }
+          ],
+          "curve_mean_success": 0.0,
+          "curve_mean_return": 0.012279166666666667
+        }
+      }
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "final_success": {
+        "mean": 0.03333333333333333,
+        "population_sd": 0.04714045207910317,
+        "minimum": 0.0,
+        "maximum": 0.1
+      },
+      "final_return": {
+        "mean": 0.05761666666666668,
+        "population_sd": 0.027372776419079023,
+        "minimum": 0.020650000000000012,
+        "maximum": 0.08604999999999999
+      },
+      "curve_mean_success": {
+        "mean": 0.002777777777777778,
+        "population_sd": 0.003928371006591931,
+        "minimum": 0.0,
+        "maximum": 0.008333333333333333
+      },
+      "selected_success": {
+        "mean": 0.0,
+        "population_sd": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      }
+    },
+    "chevron": {
+      "final_success": {
+        "mean": 0.0,
+        "population_sd": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "final_return": {
+        "mean": 0.03680000000000002,
+        "population_sd": 0.04285300456210745,
+        "minimum": -0.021900000000000013,
+        "maximum": 0.07920000000000005
+      },
+      "curve_mean_success": {
+        "mean": 0.0,
+        "population_sd": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      },
+      "selected_success": {
+        "mean": 0.0,
+        "population_sd": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0
+      }
+    },
+    "paired": {
+      "final_success_difference": {
+        "mean": -0.03333333333333333,
+        "population_sd": 0.04714045207910317,
+        "minimum": -0.1,
+        "maximum": 0.0
+      },
+      "final_chevron_wins": 0,
+      "curve_success_difference": {
+        "mean": -0.002777777777777778,
+        "population_sd": 0.003928371006591931,
+        "minimum": -0.008333333333333333,
+        "maximum": 0.0
+      },
+      "curve_chevron_wins": 0
+    }
+  }
+}
