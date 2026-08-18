@@ -1,0 +1,537 @@
+Andre's Baccalaureus in Arte Ingeniaria
+
+
+Attention That Can Say Not Yet
+Chevron Attention as a guarded production system for continual learning
+Andre Kramer
+Aug 18, 2026
+
+
+One continuous line becoming a naming mark, a living form and a path of action..
+Modern Transformer attention can be interpreted as a soft production system.
+
+A production system contains rules of the form:
+
+IF this condition holds,
+THEN use this conclusion or perform this action.
+
+Attention performs something similar:
+
+Q matches Kᵢ → retrieve Vᵢ
+
+The query Q represents the current situation. Each key Kᵢ represents a condition that might match. Its associated value Vᵢ contains the information to retrieve if that condition applies.
+
+Standard attention calculates:
+
+alpha = softmax(QKᵀ)
+
+The resulting weights say how relevant each memory or rule is. The output is a weighted sum of their values:
+
+y = sum(alphaᵢ Vᵢ)
+
+This is powerful, simple and differentiable. It is one of the foundations of modern deep learning.
+
+But it has an awkward property: softmax must distribute all its mass somewhere.
+
+Even when none of the available memories is appropriate, one of them still wins—or several inappropriate memories are blended together.
+
+Standard attention asks:
+
+“Which available rule matches best?”
+
+It does not explicitly ask:
+
+“Is the best available rule actually good enough?”
+
+Chevron Attention adds that second question.
+
+Image preview
+
+
+A Chevron Attention head. Retrieval proposes relevant memories; identity and policy assent determine what may pass. Unresolved mass is preserved as typed evidence in a shared provisional bank.
+
+Retrieval is not assent
+Chevron separates retrieval from acceptance.
+
+First, ordinary attention retrieves potentially relevant memories:
+
+alphaᵢ = softmax(QKᵢᵀ)
+
+Then a second computation measures the mismatch between current evidence A and the retained content Nᵢ:
+
+Mᵢ = mismatch(A, Nᵢ)
+
+This produces an assent gate:
+
+rᵢ = sigmoid(k(theta − Mᵢ))
+
+When mismatch is small, assent approaches one. When mismatch is large, assent approaches zero.
+
+The mass actually allowed to read from memory is:
+
+wᵢ = alphaᵢ rᵢ
+
+The output becomes:
+
+y = sum(wᵢ Vᵢ) + q V_null
+
+where:
+
+q = 1 − sum(wᵢ)
+
+The quantity q is residual mass: attention that retrieved possible memories but could not assent to them.
+
+It is an explicit, measurable “none of the above.”
+
+Importantly, q does not automatically mean novelty. High residual mass could indicate:
+
+a genuinely new situation;
+
+contradictory evidence;
+
+ambiguity;
+
+an obsolete retained policy;
+
+insufficient information;
+
+a poor representation;
+
+or a badly calibrated gate.
+
+It means only that the current evidence has not justified an established interpretation.
+
+That distinction is central. Chevron Attention does not force every experience to agree with something already known.
+
+A soft production system with a veto
+In production-system terms, ordinary attention behaves approximately like this:
+
+IF Q resembles condition Kᵢ,
+THEN fire conclusion Vᵢ.
+
+Chevron Attention instead says:
+
+IF Q resembles condition Kᵢ,
+THEN consider rule i;
+IF current evidence also assents to its retained interpretation,
+THEN fire Vᵢ;
+OTHERWISE veto it and retain the unresolved evidence.
+
+This introduces several familiar production-system ideas into differentiable attention:
+
+retrieval proposes a rule;
+
+assent checks whether the rule is applicable;
+
+residual mass represents no acceptable rule;
+
+a provisional buffer holds unresolved cases;
+
+delayed evidence determines whether to revise an old rule or create a new one;
+
+write protection prevents uncertain evidence from corrupting established memory.
+
+It resembles the orienting and vigilance functions found in Adaptive Resonance Theory (ART), but expressed inside an attention-like architecture suitable for deep and reinforcement learning.
+
+Identity and policy are different questions
+Our later experiments exposed another important distinction.
+
+Suppose an agent recognises a familiar situation, but the action that used to work no longer works. Has the agent entered a new situation, or has the policy associated with an existing situation become obsolete?
+
+A single similarity gate tends to collapse these possibilities.
+
+Chevron can instead ask two successive questions.
+
+First, identity assent:
+
+“Is this the same situation?”
+
+Second, policy assent:
+
+“Given that it is the same situation, is the retained response still appropriate?”
+
+In simple form:
+
+w_identity = alpha × r_identity
+
+w_policy = w_identity × r_policy
+
+This produces two different unresolved signals (a dual-relation chevron network).
+
+High identity residual means:
+
+“No established identity adequately explains this experience.”
+
+High policy residual, after identity has been accepted, means:
+
+“I recognise the situation, but I no longer assent to its retained response.”
+
+The resulting production-system behaviour is:
+
+Identity accepted, policy accepted
+→ fire the established rule.
+
+Identity accepted, policy rejected
+→ preserve the category but evaluate a policy revision.
+
+Identity rejected
+→ evaluate a new category or rule.
+
+This matters because changing the consequence of a familiar rule should not require erasing its identity or creating a duplicate memory.
+
+Holding a thought without believing it
+Rejected evidence should not simply disappear.
+
+Chevron therefore uses a small provisional buffer. It can hold an unresolved observation while an outcome remains unknown.
+
+The provisional entry records whether it represents:
+
+a possible new identity; or
+
+a possible revision to an existing policy.
+
+Both types can share one flexible buffer, while retaining different consolidation destinations.
+
+When delayed evidence arrives, a supported new-identity candidate may create a permanent memory. A supported policy-revision candidate updates the policy of an existing memory without changing its identity.
+
+Unsupported candidates expire or are replaced without altering established memory.
+
+This creates a useful intermediate state:
+
+The agent can remember an experience before deciding what it means.
+
+That is a small architectural change with potentially large consequences for agents operating under delayed, ambiguous or adversarial feedback.
+
+Reading is not writing
+Ordinary learning systems often allow the same signal that retrieves a memory to influence how that memory is updated.
+
+Chevron makes another explicit separation:
+
+retrieval permission ≠ read permission ≠ write permission
+
+A memory may be relevant enough to inspect but not reliable enough to guide action. It may be reliable enough to guide action but still not safe to modify.
+
+Write permission can therefore use a stricter threshold than read admission.
+
+This is the main source of Chevron’s proposed stability. Current experience remains plastic in A and in the provisional buffer, while retained N memory changes only after stronger evidence.
+
+The cost of caution
+All of this adds complexity.
+
+Chevron (basic dual Attention as modified by our experiment) requires:
+
+an additional comparison;
+
+one or more assent gates;
+
+explicit residual signals;
+
+provisional storage;
+
+consolidation rules;
+
+and careful calibration.
+
+Its computational cost is not necessarily large. A second comparison has the same asymptotic order as ordinary attention, and the buffer can be small. The greater cost is conceptual and behavioural.
+
+
+
+
+A conservative agent may adapt too slowly.
+In one of our controlled experiments, full Chevron reached an overall return of 0.750, compared with 0.760 for a simpler identity-only learner. Chevron was slightly slower to reverse a deterministic policy:
+
+Chevron: 0.952
+Simpler learner: 0.972
+
+But it was better at acquiring genuinely new identities:
+
+Chevron: 0.906
+Simpler learner: 0.853
+
+It also made no premature permanent writes, established-memory overwrites or duplicate identity allocations.
+
+This is not evidence that Chevron should replace ordinary attention. It demonstrates the expected trade-off: slightly slower immediate revision in exchange for more conservative and structured memory formation.
+
+Is catastrophic forgetting the main use case?
+Catastrophic forgetting may be the strongest near-term use case, but the claim needs to be precise.
+
+Chevron does not automatically prevent catastrophic forgetting inside all the learned weights of a neural network. If the observation encoder is retrained destructively, its representations can still drift. Protecting external memory does not by itself solve interference throughout the model.
+
+What Chevron directly addresses is catastrophic memory revision during continual operation.
+
+An agent encounters a surprising event. Ordinary online learning may immediately update the nearest representation, even when the event is noisy, exceptional or adversarial. The new evidence can then damage something that was previously reliable.
+
+Chevron allows an agent to:
+
+continue using established knowledge;
+
+represent disagreement explicitly;
+
+hold the new evidence provisionally;
+
+wait for delayed consequences;
+
+and consolidate only if the disagreement persists.
+
+That makes it particularly relevant when learning is online, feedback is delayed and some memories are expensive to corrupt.
+
+Potential applications include:
+
+lifelong reinforcement-learning agents;
+
+robots adapting after deployment;
+
+game characters that learn without losing their established personality;
+
+personal agents with persistent preferences and commitments;
+
+systems learning from noisy user correction;
+
+safety-critical memory containing constraints or operating procedures;
+
+and continual learners facing rare distribution shifts.
+
+In a static batch-trained model, ordinary attention is probably preferable. Chevron becomes interesting when the system must keep learning after deployment while preserving something important.
+
+Could ordinary attention learn the same behaviour?
+Possibly.
+
+A sufficiently capable model could learn to use:
+
+a null token;
+
+slower memory updates;
+
+replay;
+
+regularisation;
+
+uncertainty estimates;
+
+a learned write controller;
+
+or its own temporary storage.
+
+That leads to the real experimental question.
+
+Chevron should not be compared only with unprotected attention. It should be compared with:
+
+ordinary attention;
+
+attention with a null token;
+
+attention with the same provisional buffer;
+
+attention with a separate write controller;
+
+Chevron with identity assent only;
+
+and full Chevron with identity and policy assent.
+
+The systems should receive comparable representations, parameter budgets, memory capacity and delayed feedback.
+
+If ordinary attention with a buffer and write controller learns the same behaviour just as reliably, the extra Chevron structure may not be justified.
+
+Chevron wins only if its inductive bias produces measurable advantages:
+
+faster learning under delayed feedback;
+
+lower variance across random seeds;
+
+less forgetting after distribution shift;
+
+fewer premature writes;
+
+fewer duplicate or fragmented memories;
+
+better calibration of unresolved evidence;
+
+or stronger guarantees around protected memory.
+
+The value may lie in constraints, not average return
+
+If every mistake has roughly the same cost, the simpler system may win.
+
+But persistent agents face asymmetric risks. Acting cautiously for several steps may be inexpensive. Corrupting a long-standing memory, commitment or safety constraint may be extremely expensive.
+
+The correct objective may therefore be:
+
+maximise task performance
+while keeping protected-memory violations below a specified bound.
+
+Ordinary attention can learn a preference not to overwrite. Chevron can make uncertain overwriting structurally difficult or impossible until declared evidence conditions are satisfied.
+
+That is far from general AI safety. It is a narrower form of memory-integrity safety. But a system that cannot protect what it has learned will struggle to maintain a coherent identity, policy or set of commitments over time.
+
+A guarded form of attention
+The simplest description of Chevron Attention is:
+
+Standard attention selects among available productions. Chevron Attention also represents whether any production deserves assent.
+
+Its residual mass creates an explicit alternative to forced matching. Its provisional buffer allows experience to be remembered before it is believed. Its separate write permission prevents immediate experience from silently rewriting retained structure.
+
+The architecture will not be worth its cost everywhere. It is unlikely to improve a static language model merely by replacing every attention layer.
+
+Its natural home is narrower and more consequential:
+
+systems that must remain plastic without allowing every new experience to redefine what they already are.
+
+That is where the ability to say “none of the above—not yet” may be worth paying for.
+
+Breakout: Name, Form, Action
+The Bṛhadāraṇyaka Upanishad offers a remarkably compact description of experience: name, form and action.
+
+We need not treat these as metaphysical substances or invoke a mythology around them. They can be read as three ways in which something becomes intelligible.
+
+Name is how something is recognised.
+
+It places the present encounter within a history. This is the person I met before, the kind of situation I understand, the memory I think applies. A name need not be a word. It can be any identity through which the unfamiliar becomes familiar.
+
+Form is how it presently appears.
+
+Form can confirm a name, but it can also resist it. The person has changed. The situation contains an unexpected feature. The remembered category no longer fits what is actually before us.
+
+Action is what follows.
+
+It is how the thing behaves, how we respond to it, and what consequences result. Even when name and form remain recognisable, the appropriate action may have changed.
+
+The three constrain one another.
+
+A name without attention to form becomes prejudice: the old category is imposed regardless of present evidence.
+
+Form without name becomes an endless sequence of disconnected impressions. Nothing persists long enough to be recognised or learned from.
+
+Action without either becomes reflex. The system responds without understanding what it is responding to or whether the response still belongs.
+
+Chevron Attention can be interpreted as maintaining this threefold relation.
+
+Retrieval proposes a name: “I think this is that kind of situation.”
+
+Assent compares the name with the present form: “Does what I encounter still justify that recognition?”
+
+Policy assent tests the action: “Even if I recognise the situation, does the old response remain appropriate?”
+
+When all three cohere, the established name+form+action rule can guide behaviour.
+
+When form no longer supports the name, the experience may become a candidate for a new identity.
+
+When name and form agree but action fails, the identity can be preserved while its policy is reconsidered.
+
+Most importantly, the system need not decide immediately. It can hold an experience provisionally: remembered, but not yet accepted as a new truth.
+
+The Stoic influence gives Chevron its discipline of assent. The Upanishadic triad gives it a richer account of what is being assented to.
+
+A persistent agent should not merely ask:
+
+Which memory is closest?
+
+It should ask:
+
+What do I call this?
+Is that still what stands before me?
+And what action now follows?
+
+Continuity then need not mean remaining unchanged. It means preserving names where they remain justified, attending to forms as they change, and revising actions when experience requires it.
+
+That may be a better starting point for an evolving artificial self: not an immutable core, but a disciplined relationship between recognition, appearance and conduct.
+
+The agent does not have to accept or discard an unfamiliar experience immediately. It can remember the experience while withholding judgement: not no, but not yet.
+
+Thanks for reading,
+
+Andre with ChatGPT-5.6/Codex
+
+August 2026
+
+Learning a Core That Can Change Without Disappearing
+Experiments 10 to 12 followed a simple progression.
+
+Could the agent discover that an old policy was no longer trustworthy? Could it learn the identity comparison used to recognise a familiar situation? And could it construct and protect its own memory core rather than receiving one ready-made?
+
+The results do not yet give us a general agent. They do take Chevron from a supplied-memory mechanism toward an agent that can form, question and preserve its own memories.
+
+Experiment 10: withdrawing assent from an old policy
+
+Earlier experiments supplied policy compatibility before the agent acted. Experiment 10 removed that signal. The agent chose an action and received the result three decisions later, with ten per cent of rewards deliberately reversed.
+
+One surprising failure created suspicion. Two supported failures triggered policy search. Two positive outcomes for an alternative action were required before permanent revision.
+
+The agent retained 94.8 per cent accuracy on stable contexts and recovered almost all four changed policies. It was slower than direct value adaptation, but made far fewer false revisions than immediate writing.
+
+The confirmation still failed one invariant. Two observations entered the provisional bank as apparently novel. After their evidence was averaged, they had become recognisable as existing identities, but the allocator did not check again before writing them permanently.
+
+Experiment 10a added that final recheck. Across 100 new lifetimes, the original path created one duplicate identity. The corrected path intercepted exactly that candidate and created none, with effectively no cost.
+
+The lesson was clear: novelty at first encounter is provisional. Evidence must still be novel after accumulation before it can change permanent memory.
+
+Experiment 11: learning identity assent
+
+The next oracle was the identity geometry itself. Experiment 11 placed a fixed nonlinear sensor between the situation and the agent. Raw sensor similarity admitted repeated views but rejected only 16 per cent of confusable identity changes.
+
+A small residual encoder was trained from temporal persistence. It received no task identities, actions, rewards, policies or correctness labels—only noisy observations paired because they persisted together.
+
+The proposed elaborate version used four-view windows and difficult negative examples. It repaired the geometry but did not outperform simple pairs. That negative result removed unnecessary machinery.
+
+Experiment 11a froze the simpler pairwise encoder and tested ten new encoder seeds across 200 untouched lifetimes. Every predeclared criterion passed.
+
+The learned encoder admitted 98.8 per cent of repeated identities and rejected 81.7 per cent of confusable changes. Learned Chevron improved return over the distorted raw sensor by 0.121 and final novel-memory probes by 0.625, with no duplicate identities, established overwrites or under-supported writes.
+
+Identity assent no longer had to be supplied as an oracle comparison. It could be learned from temporal pairing.
+
+Experiment 12: constructing the core
+
+The agent still began with eight established identities and policies already installed. Experiment 12 started permanent memory empty.
+
+Every initial identity had to enter the ordinary provisional bank, gather delayed positive evidence, pass revalidation and earn a permanent slot. There was no special bootstrap write.
+
+The agent constructed 7.5 of eight initial identities, reached a 90 per cent core-policy probe, retained 92.1 per cent stable accuracy, and later achieved 82.5 per cent reversed and 86.3 per cent novel probes. It decisively beat the raw-sensor cold-start control.
+
+It nevertheless missed three frozen return margins, so confirmation was not run. More importantly, five self-created core slots were later lost across three of twenty lifetimes.
+
+The learned geometry occasionally split a noisy familiar identity into an apparently new one. That false split consumed permanent capacity and could displace an older self-created memory. The architecture protected memories declared established at construction time, but did not say when an agent-created memory had earned the same protection.
+
+Experiment 12a: earning maturity
+
+This suggested another separation:
+
+Permission to create a new memory is not permission to destroy a mature memory.
+
+A newly promoted slot began immature. Four later successful, assented uses made it mature. Capacity pressure could replace an immature slot but not a mature one. If every slot was mature, the unresolved candidate stayed provisional rather than silently deleting permanent memory.
+
+The targeted result was clean. The unprotected baseline lost 0.30 core slots per lifetime on the new development seeds. Use-derived maturity lost none, evicted no mature slot, and matched baseline post-shift return, retention and novel learning.
+
+Protecting every memory immediately also prevented loss, but caused more allocation deferrals and slightly weaker novelty. Earned maturity preserved flexibility while protecting memories that had repeatedly supported successful behaviour.
+
+The broad gate still failed four criteria, so maturity remains a development result rather than a confirmed component.
+
+Where this leaves us
+
+The sequence now looks like this:
+
+Delayed outcomes can withdraw assent from an obsolete policy.
+
+Promotion-time revalidation can stop provisional uncertainty becoming a duplicate permanent memory.
+
+Temporal pairing can learn the identity geometry used by the assent gate.
+
+The provisional mechanism can construct most of an initial memory core from empty storage.
+
+Repeated successful use can let a self-created memory earn protection from eviction.
+
+The recurring principle is that retrieval, read assent, policy suspicion, permanent writing and eviction permission are related decisions, but not the same decision.
+
+The next phase: rooms and routes
+
+The next useful test is a small partially observable environment where these internal distinctions become visible behaviour.
+
+The proposed world contains familiar rooms and routes, a stable safe path, a tempting trap, a later shortcut, and a familiar route whose consequences change. The agent must decide whether it is seeing a known place, an obsolete policy or something genuinely new.
+
+We should compare Chevron with and without earned maturity, direct adaptation using the same encoder and buffer, and a matched recurrent or standard attention memory.
+
+The interesting output will not just be a percentage. It will be a trajectory. Does the agent remember the safe route? Does it resist one misleading event? Can it discover that a familiar route has changed? Can it learn a shortcut without forgetting the older world?
+
+That is still far from a general agent or a coherent artificial self. But the question is now concrete: can an agent build a working core, let experience challenge it, and avoid turning every new claim into an act of self-erasure?
+
+The experiments code is checked into GitHub here: https://github.com/andrekramer/chevron-agent
+
+
