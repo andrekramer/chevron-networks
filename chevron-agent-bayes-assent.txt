@@ -1,0 +1,440 @@
+
+Andre's Baccalaureus in Arte Ingeniaria
+Andre's Baccalaureus in Arte Ingeniaria
+
+
+
+
+We assert the Chevron Agent Is Built. Can It Learn?
+A checkpoint on Bayesian adaptation, protected memory and agency under volatile results
+Andre Kramer
+Sep 04, 2026
+
+
+
+
+An agent receives results it did not choose. It must decide what follows from them.
+
+Some results are noise. Some reveal a change in the world. Some expose an error in the agent itself. Treating them all alike is unsafe.
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
+
+A system that changes too readily loses continuity. A system that cannot change loses contact with the world. This is the stability–plasticity problem. In continual learning it appears as catastrophic forgetting. In safety it appears as the possibility that the process which improves competence may also weaken retained constraints.
+
+At the level of agency, the question is harder:
+
+How can an agent continue becoming without losing the basis from which it acts?
+
+Chevron Agent is one provisional answer. It is not a finished agent. Its components have clear precedents. It is an attempt to arrange them so that retrieval, assent, action, imagination and learning no longer have to be the same operation.
+
+The architecture
+The architecture has four forms of state.
+
+A is adaptive state. It represents the present observation, current context and recent volatile results. It changes continually.
+
+N is retained state. It contains consolidated knowledge, established meanings and protected preferences. It changes slowly and only through controlled writes.
+
+P is provisional state. It holds unresolved real evidence and Bayesian beliefs about competing explanations. It permits rapid response without requiring an immediate change to N.
+
+S is simulation scratch. It holds temporary hypothetical states used to evaluate possible actions. It may influence action. It cannot count as evidence and cannot write directly into N.
+
+In brief:
+
+A: what is happening now
+
+P: what the real results currently suggest
+
+S: what might happen next
+
+N: what the agent has retained and what it is committed to protect
+
+These are functional distinctions. They need not be separate substances or even separate physical modules. Their purpose is to keep permissions clear.
+
+
+
+
+Retrieval is not assent
+Ordinary attention retrieves values using query–key similarity:
+
+alpha = softmax(Q Kᵀ)
+
+Chevron adds a second operation:
+
+r = sigmoid(k(theta − mismatch))
+
+w = alpha × r
+
+Alpha asks whether a memory is relevant. The assent gate r asks whether its content is sufficiently consistent with the present state and the slower retained state to be admitted.
+
+The unresolved mass remains explicit:
+
+q = 1 − sum(w)
+
+This is not automatically novelty. It means that some retrieved evidence has not been admitted. Its interpretation remains open.
+
+The same distinction governs learning:
+
+retrieval relevance
+
+is not read or action permission
+
+is not write permission
+
+A memory may be relevant without being accepted. A hypothesis may guide an action without becoming knowledge. An imagined result may be useful without being believed.
+
+Bayes under volatile results
+P maintains probabilities over possible modes of the world.
+
+Before the next result, a hazard rate moves some probability away from the current mode. This represents the possibility that the world has changed:
+
+prior probability of mode m
+
+= persistence of the previous belief
+
++ probability of transition from other modes
+
+After the agent acts and observes a real result:
+
+new belief in mode m
+
+is proportional to
+
+likelihood of the result under m
+
+× prior belief in m
+
+Only real results perform this update. Simulated results in S do not.
+
+This is ordinary Bayesian inference. Its role in Chevron is specific: it keeps volatile belief in P while N retains slower knowledge and preferences.
+
+Deliberation follows probability
+The agent orders possible modes by posterior probability. It then instantiates the smallest set containing a declared amount of probability mass:
+
+choose the smallest K such that
+
+the top K probabilities sum to at least 0.90
+
+The omitted probability is preserved:
+
+q_tail = 1 − admitted posterior mass
+
+When the environment is stable, one hypothesis may be sufficient. After a contradictory result, several may deserve consideration. As evidence settles, deliberation contracts.
+
+This does not make search free. It makes the use of search responsive to uncertainty rather than to an arbitrary fixed branch count.
+
+Protection is a retained preference
+Early functional deliberation exposed a problem. Considering more possibilities prevented some traps, but also made the agent less goal-directed. Ordinary expected value did not say when a low-probability danger deserved authority over action.
+
+The next version placed a risk budget in N.
+
+For candidate action a:
+
+predicted risk(a)
+
+= admitted probability of a trap
+
++ q_tail × conservative unresolved-tail risk
+
+The agent chooses the highest-value action whose predicted risk is within the retained budget.
+
+If no action satisfies the budget, it chooses the predicted minimum-risk action. It does not pretend that an impossible constraint was met.
+
+This separates three questions:
+
+Bayesian belief: what might be true?
+
+Predicted utility: what might be gained?
+
+Risk budget: what degree of danger is permitted?
+
+Evidence may revise the first two. It does not casually rewrite the third.
+
+The R-rule and the self
+Chevron Networks began with two channels:
+
+A moves with the present.
+
+N carries slower structure.
+
+Their difference marks tension. Their complementarity marks whether that tension can still be transformed.
+
+The self proposed here is not identified with A or N alone. It is the maintained relation between them.
+
+Without A, the agent cannot respond. Without N, it cannot continue. If every volatile result enters N, continuity disappears. If N refuses every contradiction, learning stops.
+
+This is the practical meaning of the R-rule for the agent: preserve enough difference for evidence to matter, and enough complementarity for change to remain possible.
+
+What we inherited
+The components are not new.
+
+Transformer attention supplies query, key and value: a learned mechanism for retrieval by relevance. Chevron retains this machinery but factors relevance from content assent. Standard attention does not normally assign a separate unresolved mass to relevant content that fails a second consistency test.
+
+Adaptive Resonance Theory supplies the clearest conceptual ancestor. ART addresses stability and plasticity through bottom-up input, top-down expectation, matching, vigilance, reset and category search. Chevron’s assent gate and unresolved path are ART-inspired translations into attention and agent memory.
+
+Bayesian planners and POMDPs supply belief-state action under uncertainty. Chevron does not introduce Bayesian planning. It asks where volatile belief should live, how much computation it should receive and how it should interact with retained memory.
+
+Modern Hopfield networks connect attention with associative retrieval. Chevron adds a distinction between finding an associated pattern and granting that pattern authority.
+
+Complementary Learning Systems supplies the case for fast and slow memory, provisional storage and gradual consolidation. Continual-learning methods such as replay, Elastic Weight Consolidation and Synaptic Intelligence address catastrophic forgetting through other forms of preservation.
+
+Selective prediction supplies the option to abstain when confidence is inadequate. Constrained reinforcement learning separates reward from safety constraints. Chevron’s risk budget belongs to this family.
+
+None of these individual ideas is claimed as an invention of Chevron.
+
+The proposed contribution is their conjunction:
+
+retrieval separated from assent;
+
+read permission separated from write permission;
+
+volatile real evidence held apart from retained knowledge;
+
+simulation prevented from becoming evidence;
+
+unresolved mass preserved;
+
+Bayesian uncertainty used to allocate deliberation;
+
+and risk preference retained separately from empirical belief.
+
+The purpose of the combination is an agent that can continue learning without allowing every new result to redefine it.
+
+Whether this organization is useful must be decided experimentally.
+
+What survived the experiments
+The full protocols, implementations and numerical results are available in the GitHub repository. The sequence can be stated briefly.
+
+Experiment 016: repeated attention was not deliberation. A loop became useful only when each hypothesis advanced to a predicted consequence. A Bayesian change-hazard model then adapted much more effectively after reversals than a rolling evidence window. It also reduced binary branch use by about 36 percent.
+
+Experiment 017: with four possible modes, the 90 percent posterior-mass rule used 1.642 hypotheses on average rather than four. It saved 59 percent of exhaustive hypothesis computation and covered the true changed mode more reliably than a fixed-two rule. At this stage the extra hypotheses did not yet alter action.
+
+Experiment 018: hypotheses were allowed to predict distinct action consequences. They changed about 9.5 percent of actions and occasionally prevented traps. Posterior-mass deliberation approximated exhaustive planning at much lower compute. It did not improve return over fixed two. Considering more possibilities produced more protection and less goal-directed behaviour.
+
+This was a failed dominance test. It was also a useful result. Competence and protection were not the same objective.
+
+Experiment 019 made that trade-off explicit. A protected risk budget was placed in N and tested on 200 untouched paired worlds. All eleven frozen confirmation checks passed.
+
+At a moderate risk budget, posterior-mass Chevron used 1.408 hypotheses instead of a fixed two. It saved 29.6 percent of model calls and produced a small confirmed reduction in trap rate. The experiment did not resolve a difference in overall return between those two conditions.
+
+Against exhaustive four-hypothesis planning, it saved 64.8 percent of model calls and achieved statistically indistinguishable trap protection. Its mean return was about 0.009 lower.
+
+A stricter budget prevented more traps. It also sacrificed substantially more return.
+
+Protection was controllable. It was not free.
+
+What the results support
+The strongest supported conclusion is limited:
+
+In a supplied changing-world model, a protected risk budget produces a reproducible competence–protection frontier. Posterior-mass Chevron deliberation can approximate exhaustive trap protection using substantially fewer simulated hypotheses, while exposing rather than hiding the cost in task performance.
+
+This could be useful when mistakes have asymmetric consequences, exhaustive deliberation is expensive, volatile results should not immediately alter durable memory, and safety preferences must remain stable while empirical beliefs change.
+
+The controls matter.
+
+Given the same beliefs, consequence model and risk preference, Chevron chose the same actions as a conventional planner. It has not demonstrated superior Bayesian inference. Its current contribution is an explicit organization of memory, uncertainty, permission and compute.
+
+Nor has it solved catastrophic forgetting. The experiments used supplied hypotheses, likelihoods and consequence structures. The agent learned which prepared possibility was probably active. It did not learn the possibilities themselves.
+
+Can it learn?
+The model is complete enough to face the question for which it was built.
+
+Can it learn?
+
+Not merely update probabilities over alternatives supplied in advance. Can it discover consequences, form new hypotheses, preserve old competence and decide which volatile results should become part of its lasting structure?
+
+The next experiment should remove the supplied action–consequence model. The agent must learn it from real outcomes. P may accumulate provisional estimates. Repeated support may permit consolidation into N. S may use the learned model to simulate actions, but imagined outcomes must remain unable to train that model as though they had occurred.
+
+The comparisons remain ordinary ones: a conventional continual learner with the same capacity, fixed and adaptive deliberation, protected and immediate writes, with and without provisional memory.
+
+The measures should include new acquisition, old retention, catastrophic forgetting, unsafe writes, trap exposure, calibration, return and compute.
+
+The desired sequence is simple:
+
+unexpected result
+
+→ unresolved evidence
+
+→ provisional learning
+
+→ cautious action and wider deliberation
+
+→ repeated real support
+
+→ consolidation
+
+→ reduced uncertainty
+
+→ competent action
+
+A continuing agent cannot preserve everything. Some retained knowledge will be false. Nor can it expose everything to revision. Then nothing remains from which revision can be judged.
+
+The self proposed here is not a hidden substance. It is a maintained relation between adaptation and retention: the capacity to change without surrendering the conditions under which change is evaluated.
+
+Chevron Agent is now a testable form of that idea.
+
+These experiments do not establish that it is correct. They establish that it can be tested.
+
+What follows should preserve only what survives contact with evidence.
+
+Does Chevron deserve assent?
+Not yet.
+
+It has earned the next test.
+
+Code and detailed experiment reports
+
+https://github.com/andrekramer/chevron-agent
+
+Selected lineage
+Vaswani et al., Attention Is All You Need:
+
+https://arxiv.org/abs/1706.03762
+
+Carpenter and Grossberg, Adaptive Resonance Theory: Stable Self-Organization of Neural Recognition Codes in Response to Arbitrary Lists of Input Patterns:
+
+https://escholarship.org/uc/item/4ss1m049
+
+Grossberg, Adaptive Resonance Theory: How a brain learns to consciously attend, learn, and recognize a changing world:
+
+https://doi.org/10.1016/j.neunet.2012.09.017
+
+Kaelbling, Littman and Cassandra, Planning and Acting in Partially Observable Stochastic Domains:
+
+https://doi.org/10.1016/S0004-3702(98)00023-X
+
+McClelland, McNaughton and O’Reilly, Why There Are Complementary Learning Systems in the Hippocampus and Neocortex:
+
+https://doi.org/10.1037/0033-295X.102.3.419
+
+Kirkpatrick et al., Overcoming Catastrophic Forgetting in Neural Networks:
+
+https://arxiv.org/abs/1612.00796
+
+Zenke, Poole and Ganguli, Continual Learning Through Synaptic Intelligence:
+
+https://arxiv.org/abs/1703.04200
+
+Achiam et al., Constrained Policy Optimization:
+
+https://arxiv.org/abs/1705.10528
+
+Ramsauer et al., Hopfield Networks Is All You Need:
+
+https://arxiv.org/abs/2008.02217
+
+
+
+
+Andre with ChatGPT-5.6-Sol, September 2026
+
+Thanks for reading Andre's Baccalaureus in Arte Ingeniaria! Subscribe for free to receive new posts and support my work.
+
+Discussion about this post
+Write a comment...
+
+
+Dialectic substacks
+Technical (thesis) and Personal (antithesis) substacks
+Apr 22, 2025 • Andre Kramer
+
+2
+
+
+
+
+
+The unreasonable effectiveness of thinking
+Prompted by the new AI reasoning models.
+Feb 6, 2025 • Andre Kramer
+
+3
+
+
+
+
+
+AI, draw a self portrait using ascii art
+Prompting multiple LLMs with Triskelion to draw themselves
+Feb 12, 2025 • Andre Kramer
+
+2
+
+
+
+
+
+We philosopher kings
+Existential pluralism as a mode or stance for ASI (Artificial Super Intelligence)
+Apr 24, 2025 • Andre Kramer
+
+2
+
+
+
+
+
+The Mandala as Substrate
+Chevron Networks, Inertial VSR, and the Order of Consequence
+May 11 • Andre Kramer
+
+1
+
+
+
+
+
+CAP on ASI
+Why the CAP Theorem may prevent some AI Doom Scenarios
+Jun 4, 2025 • Andre Kramer
+
+2
+
+
+
+
+
+Computer Love
+A Personal AI Safety Statement
+Jan 29, 2025 • Andre Kramer
+
+2
+
+
+
+
+
+AI Thrinakia
+Helios’ Island of TOEs
+Sep 29, 2025 • Andre Kramer
+
+1
+
+
+
+
+
+WIP: Resonance, Memory, and Self-Learning
+Inertial VSR, codec dynamics, and A/N dual-path learning for continual agency
+Feb 2 • Andre Kramer
+
+2
+
+
+
+
+
+Symbiotic AI - a new synthesis
+A safer AI than by Alchemy?
+May 12, 2025 • Andre Kramer
+
+1
+
+
+
+
+
+© 2026 Andre Kramer · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture
+
